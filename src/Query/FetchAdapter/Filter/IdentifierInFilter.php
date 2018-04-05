@@ -12,16 +12,6 @@ class IdentifierInFilter implements ArrayFetchFilterInterface
         $this->ids = $ids;
     }
 
-    /**
-     * Returns the filter's name.
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return 'IdentifierInFilter';
-    }
-
     public function filterArrayResults(array $value)
     {
         return array_filter($value, function ($entry) {

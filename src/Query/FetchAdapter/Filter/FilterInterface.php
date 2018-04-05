@@ -5,10 +5,5 @@
  */
 interface FilterInterface
 {
-    /**
-     * Returns the filter's name.
-     *
-     * @return string
-     */
-    public function getName();
+
 }

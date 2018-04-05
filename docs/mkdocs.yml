@@ -1,0 +1,8 @@
+site_name: GraphQL Framework
+theme: readthedocs
+pages:
+  - 'GraphQL Framework': 'index.md'
+  - 'Getting Started': 'getting-started.md'
+  - 'Configuration': 'configuration.md'
+  - 'Entry Point': 'entry.md'
+  - 'Schema Generator': 'generator.md'

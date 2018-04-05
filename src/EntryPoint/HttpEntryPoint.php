@@ -27,6 +27,16 @@ class HttpEntryPoint
         $this->configuration = $configuration;
     }
 
+	/**
+	 * Executes the PSR-7 request given, creating a new context along with it.
+	 *
+	 * @param $psr7Request
+	 */
+    public function executeQuery($psr7Request)
+	{
+
+	}
+
     /**
      * Processes a PSR-7 HTTP request, and returns a PSR-7 HTTP response or an adequate HTTP exception
      * to be displayed to an end-user.
@@ -34,7 +44,7 @@ class HttpEntryPoint
      * @param mixed $psr7Request
      * @param GraphQLConfiguration $configuration
      */
-    public static function processPSR7Request($psr7Request, GraphQLConfiguration $configuration)
+    public static function executeQueryWithConfig($psr7Request, GraphQLConfiguration $configuration)
     {
 
     }

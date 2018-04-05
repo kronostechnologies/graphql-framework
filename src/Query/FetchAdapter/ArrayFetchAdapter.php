@@ -15,6 +15,9 @@ class ArrayFetchAdapter implements FetchAdapterInterface
      */
     protected $filters = [];
 
+	/**
+	 * @param array $dataSource
+	 */
     public function __construct(array $dataSource)
     {
         $this->dataSource = $dataSource;
@@ -50,12 +53,13 @@ class ArrayFetchAdapter implements FetchAdapterInterface
         return $firstResult;
     }
 
-    /**
-     * Applies a filter to the current fetch adapter to be used with fetchAll.
-     *
-     * @param FilterInterface $filter
-     * @throws Exception
-     */
+	/**
+	 * Applies a filter to the current fetch adapter to be used with fetchAll.
+	 *
+	 * @param FilterInterface $filter
+	 * @return ArrayFetchAdapter
+	 * @throws Exception
+	 */
     public function applyFilter(FilterInterface $filter)
     {
         if ($filter instanceof ArrayFetchFilterInterface) {
@@ -64,5 +68,7 @@ class ArrayFetchAdapter implements FetchAdapterInterface
             $className = self::class;
             throw new Exception("Filter {$filter->getName()} was used in {$className}, but it does not extend ArrayFetchFilterInterface");
         }
+
+        return $this;
     }
 }
