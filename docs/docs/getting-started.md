@@ -1,5 +1,3 @@
-# Getting Started
-
 Before setting things up, we must make sure all the necessary requirements are setup correctly.
 
 ## Requirements
@@ -7,7 +5,7 @@ Before setting things up, we must make sure all the necessary requirements are s
 * A GraphQL schema (.graphqls) containing the definition of your types. To learn how to make one, see the official site: [https://graphql.org/learn/schema/](https://graphql.org/learn/schema/)
 * A directory and PHP namespace in which to generate the schema types and DTOs (for the underlying GraphQL library).
 
-## Structure
+## Basic project structure
 
 A basic GraphQL project should have the following structure.
 
@@ -23,7 +21,7 @@ A basic GraphQL project should have the following structure.
         main.graphqls       <-- (Sample file name)
 ```
 
-## Schema Generator
+## Generating the Schema files
 
 First off, let's use a basic schema to ensure everything is working correctly. We will use one directly from the GraphQL generator repository. Put this in the `Schema/main.graphqls` file:
 
@@ -66,7 +64,7 @@ Once it is setup, you can install `grunt` [https://gruntjs.com/getting-started](
 
 You can run `grunt generate-schema` to generate it without needing to change a graphqls file.
 
-## Setting up a FetchAdapter
+## Setting up a FetchAdapter for Item
 
 Fetch adapters bridge the database or service layer to GraphQL. In our case, we don't have a database, so we will use the `ArrayFetchAdapter` to make a mock database. This adapter uses a flat array as its data source.
 
@@ -171,7 +169,7 @@ This filter uses `array_chunk` to separate the values array by pagesize and retu
 
 ## Setting up the QueryController
 
-A controller is directly bound to its type field automatically. For the query controllers, we need to resolve two fields: `item` and `items`. By default, the framework expects controller methods to have a function named `get(FieldNameInCamelCase)`. For resolving `item`, we will have a function named `getItem`, and for resolving `items`, we will have another one named `getItems`. If you forget to create a controller or field in the controller, the framework will inform you through its logger of what actions you should take.
+A controller is directly bound to its type field automatically. For the query controller, we need to resolve two fields: `item` and `items`. By default, the framework expects controller methods to have a function named `getFieldNameInCamelCase` per complex field. For resolving `item`, we will have a function named `getItem`, and for resolving `items`, we will have another one named `getItems`. If you forget to create a controller or field in the controller, the framework will inform you through its logger of what actions you should take.
 
 Now for the QueryController itself (`Controllers\QueryController.php`):
 
@@ -209,3 +207,72 @@ For `getItem`, we use the `IdentifierInFilter` we created earlier, passing a sin
 For `getItems`, we use the `PageFilter`, passing our arguments to it, and fetch all the dataset available.
 
 The `ItemFetchAdapter` is reset each time a field is resolved, so don't worry about data integrity here.
+
+## ItemController
+
+Normally, we'd need a controller for every types. However, if you check the definition for `Item`:
+
+```
+type Item implements Identifiable {
+	id: ID,
+	name: String,
+	color: Color
+}
+```
+
+There are no complex fields present. That is, no field need to be fetched from an external source with a `FetchAdapter`.
+
+**For this reason, there is no need to create an ItemController.**
+
+## Current structure
+
+As of now, the structure for the GraphQL project should look as is:
+
+```text
+\GraphQL
+    \Controllers
+        QueryController.php
+    \FetchAdapters
+        ItemFetchAdapter.php
+        \Filters
+            IdentifierInFilter.php
+            PageFilter.php
+    \GeneratedSchema
+        ...
+    \Schema
+        main.graphqls
+```
+
+## Entry point
+
+For our project entry point, let's use a simple HTTP endpoint, under index.php.
+
+```
+// ToDo: Composer autoload
+// ToDo: Namespace include
+
+$configuration = GraphQLConfiguration::new()
+    ->setControllersDirectory(__DIR__ . '\\GraphQL\\Controllers')
+    ->setControllersNamespace('\\GraphQL\\Controllers')
+    ->setGeneratedSchemaDirectory(__DIR__ . '\\GraphQL\\GeneratedSchema')
+    ->setGeneratedSchemaNamespace('\\GraphQL\\GeneratedSchema');
+
+// Get the HTTP request
+$request = Request::fromGlobals();
+
+// Execute HTTP request
+$response = HttpEntryPoint::executeQueryWithConfig($request, $configuration);
+
+// ToDo: Headers + status code
+echo $response->getBody();
+```
+
+## Running and testing
+
+Finally, let's run and test our project.
+
+```
+php -S localhost:8000
+```
+
+Now, access http://localhost:8000/ and you should be able to use it as a compatible GraphQL endpoint.
