@@ -2,6 +2,7 @@ site_name: GraphQL Framework
 theme: readthedocs
 pages:
   - 'GraphQL Framework': 'index.md'
+  - 'Principles & Architecture': 'principles.md'
   - 'Getting Started': 'getting-started.md'
   - 'Configuration': 'configuration.md'
   - 'Controllers': 'controllers.md'
