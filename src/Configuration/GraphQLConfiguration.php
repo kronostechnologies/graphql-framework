@@ -1,5 +1,7 @@
 <?php
 
+use Psr\Cache\CacheItemPoolInterface;
+
 /**
  * GraphQL Service configuration, which must be passed from the service initially.
  */
@@ -68,6 +70,31 @@ class GraphQLConfiguration
      * @var TypeRegistryInterface
      */
     protected $typeRegistry;
+
+	/**
+	 * @var Psr\Cache\CacheItemPoolInterface
+	 */
+    protected $cacheAdapter;
+
+	/**
+	 * @var bool
+	 */
+    protected $isTypeRegistryCacheEnabled = true;
+
+	/**
+	 * @var bool
+	 */
+    protected $isControllersCacheEnabled = true;
+
+	/**
+	 * @var bool
+	 */
+    protected $isResolveCacheEnabled = true;
+
+	/**
+	 * @var bool
+	 */
+    protected $isFetchAdapterCacheEnabled = true;
 
     /**
      * @return string
@@ -179,6 +206,56 @@ class GraphQLConfiguration
 	public function setInDevMode($inDevMode)
 	{
 		$this->inDevMode = $inDevMode;
+		return $this;
+	}
+
+	/**
+	 * @param \Psr\Cache\CacheItemPoolInterface $cacheAdapter
+	 * @return GraphQLConfiguration
+	 */
+	public function setCacheAdapter(CacheItemPoolInterface $cacheAdapter)
+	{
+		$this->cacheAdapter = $cacheAdapter;
+		return $this;
+	}
+
+	/**
+	 * @param bool $isTypeRegistryCacheEnabled
+	 * @return GraphQLConfiguration
+	 */
+	public function setIsTypeRegistryCacheEnabled($isTypeRegistryCacheEnabled)
+	{
+		$this->isTypeRegistryCacheEnabled = $isTypeRegistryCacheEnabled;
+		return $this;
+	}
+
+	/**
+	 * @param bool $isControllersCacheEnabled
+	 * @return GraphQLConfiguration
+	 */
+	public function setIsControllersCacheEnabled($isControllersCacheEnabled)
+	{
+		$this->isControllersCacheEnabled = $isControllersCacheEnabled;
+		return $this;
+	}
+
+	/**
+	 * @param bool $isResolveCacheEnabled
+	 * @return GraphQLConfiguration
+	 */
+	public function setIsResolveCacheEnabled($isResolveCacheEnabled)
+	{
+		$this->isResolveCacheEnabled = $isResolveCacheEnabled;
+		return $this;
+	}
+
+	/**
+	 * @param bool $isFetchAdapterCacheEnabled
+	 * @return GraphQLConfiguration
+	 */
+	public function setIsFetchAdapterCacheEnabled($isFetchAdapterCacheEnabled)
+	{
+		$this->isFetchAdapterCacheEnabled = $isFetchAdapterCacheEnabled;
 		return $this;
 	}
 }

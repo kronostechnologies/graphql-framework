@@ -66,7 +66,8 @@ class ArrayFetchAdapter implements FetchAdapterInterface
             $this->filters[] = $filter;
         } else {
             $className = self::class;
-            throw new Exception("Filter {$filter->getName()} was used in {$className}, but it does not extend ArrayFetchFilterInterface");
+			$filterFQN = get_class($filter);
+            throw new Exception("Filter {$filterFQN} was used in {$className}, but it does not extend ArrayFetchFilterInterface");
         }
 
         return $this;

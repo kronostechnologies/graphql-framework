@@ -1,0 +1,13 @@
+{
+    "name": "maboily/graphql-framework",
+    "authors": [
+        {
+            "name": "Marc-Andre Boily",
+            "email": "maboily@kronostechnologies.com"
+        }
+    ],
+    "require": {
+        "doctrine/dbal": "^2.5",
+        "psr/cache": "^1.0"
+    }
+}
