@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Principles & Architecture - GraphQL Framework</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Principles & Architecture";
+    var mkdocs_page_input_path = "principles.md";
+    var mkdocs_page_url = "/principles/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> GraphQL Framework</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">GraphQL Framework</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Principles & Architecture</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#principles-architecture">Principles &amp; Architecture</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#workflow">Workflow</a></li>
+        
+            <li><a class="toctree-l3" href="#architecture">Architecture</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../getting-started/">Getting Started</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../configuration/">Configuration</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../controllers/">Controllers</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../fetch-adapter/">Fetch Adapters</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../filters/">Filters</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../entry/">Entry Point</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../development-mode/">Development Mode</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../generator/">Schema Generator</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../type-registry/">Type Registry</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../cache/">Cache</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">GraphQL Framework</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Principles & Architecture</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="principles-architecture">Principles &amp; Architecture</h1>
+<p>This framework is built on a few tenants:</p>
+<ol>
+<li><strong>Ease of use</strong>: This section and Getting started should be good enough to start using it. Really, the only thing you'd need to know are what schema you want, and which data store you want to use. </li>
+<li><strong>Reduced boilerplate code</strong>: This framework uses heavy abstractions over the excellent <a href="https://github.com/webonyx/graphql-php">WebOnyx GraphQL PHP library</a>. It is, however, a very configuration-over-convenience library, which the framework aims to correct.</li>
+<li><strong>Assisting the developer</strong>: By throwing helpful error messages, such as informing that a controller is missing a function to get X field, or that a translator is missing for Y type.</li>
+<li><strong>Optimization</strong>: All the last 3 points should have a minimal impact on the optimization.</li>
+</ol>
+<h2 id="workflow">Workflow</h2>
+<p>When working with the library, you should follow this workflow:</p>
+<ol>
+<li>Create a GraphQL schema to expose.</li>
+<li>Create a GraphQL entry point.</li>
+<li>Create a Controller for each type in the GraphQL schema.</li>
+<li>Create a FetchAdapter for each type in the GraphQL schema.</li>
+<li>Test your API.</li>
+</ol>
+<p>See <a href="../getting-started/">Getting Started</a> for a better starting example.</p>
+<h2 id="architecture">Architecture</h2>
+<p><img alt="Full Request Flow" src="../images/request-global.png" /></p>
+<p>Here is the flow of a query in the framework, cut piece-by-piece.</p>
+<p><img alt="Step 1 Request Flow" src="../images/request-step-1.png" /></p>
+<p>We have received a GraphQL request from a client. The <code>GraphQLConfiguration</code> object is built and used throughout the entire framework.</p>
+<p><img alt="Step 2 Request Flow" src="../images/request-step-2.png" /></p>
+<p>The HTTP entry point the takes the configuration and begin executing the query as any other by passing the arguments and query text to the <code>QueryExecutor</code>, which acts as the core object of the framework.</p>
+<p><img alt="Step 3 Request Flow" src="../images/request-step-3.png" /></p>
+<p>The <code>QueryExecutor</code> executes the query on the auto-generated schema. The Generated Schema then reaches the Query Resolver, which is used to determine the correct controller and controller function to execute.</p>
+<p><img alt="Step 4 Request Flow" src="../images/request-step-4.png" /></p>
+<p>Once the correct controller is determined, its resolve function is executed.</p>
+<p><img alt="Step 5 Request Flow" src="../images/request-step-5.png" /></p>
+<p>The Fetch Adapter is used by the controller to get a specific query result.</p>
+<p><img alt="Step 6 Request Flow" src="../images/request-step-6.png" /></p>
+<p>The Fetch Adapter communicates with a translator to convert the given entities to their target GraphQL DTO correctly.</p>
+<p>Finally, the result is returned to the client.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../getting-started/" class="btn btn-neutral float-right" title="Getting Started">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href=".." class="btn btn-neutral" title="GraphQL Framework"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../getting-started/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/require.js"></script>
+      <script src="../search/search.js"></script>
+
+</body>
+</html>

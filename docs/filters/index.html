@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Filters - GraphQL Framework</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Filters";
+    var mkdocs_page_input_path = "filters.md";
+    var mkdocs_page_url = "/filters/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> GraphQL Framework</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">GraphQL Framework</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../principles/">Principles & Architecture</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../getting-started/">Getting Started</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../configuration/">Configuration</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../controllers/">Controllers</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../fetch-adapter/">Fetch Adapters</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Filters</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#filters">Filters</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#doctrinefilterinterface">DoctrineFilterInterface</a></li>
+        
+            <li><a class="toctree-l3" href="#arrayfilterinterface">ArrayFilterInterface</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../entry/">Entry Point</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../development-mode/">Development Mode</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../generator/">Schema Generator</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../type-registry/">Type Registry</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../cache/">Cache</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">GraphQL Framework</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Filters</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="filters">Filters</h1>
+<p>Filters are applied directly to <code>FetchAdapters</code>. If creating your own Fetch Adapter, a custom filter based on <code>FilterInterface</code> should also be created.</p>
+<h2 id="doctrinefilterinterface">DoctrineFilterInterface</h2>
+<p>These filters are applied directly to a Doctrine <code>QueryBuilder</code>. Simply extending the <code>DoctrineFilterInterface</code> and detailing the function <code>applyToQueryBuilder</code> suffices.</p>
+<p>Example filter:</p>
+<pre><code>class IdentifierInFilter implements DoctrineFilterInterface
+{
+    protected $ids;
+
+    public function __construct(array $ids)
+    {
+        $this-&gt;ids = $ids;
+    }
+
+    public function applyToQueryBuilder(QueryBuilder $queryBuilder)
+    {
+        return $queryBuilder-&gt;where($queryBuilder-&gt;expr()
+            -&gt;in('id', $this-&gt;ids)
+        );
+    }
+}
+</code></pre>
+
+<h2 id="arrayfilterinterface">ArrayFilterInterface</h2>
+<p>These filters are applied directly to an array. The dataset is already loaded in memory at that point, and the filters only need to filter out the unnecessary array values.</p>
+<p>Example filter:</p>
+<pre><code>class IdentifierInFilter implements ArrayFetchFilterInterface
+{
+    protected $ids;
+
+    public function __construct(array $ids)
+    {
+        $this-&gt;ids = $ids;
+    }
+
+    public function filterArrayResults(array $value)
+    {
+        return array_filter($value, function ($entry) {
+            return in_array($entry['id'], $this-&gt;ids);
+        });
+    }
+}
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../entry/" class="btn btn-neutral float-right" title="Entry Point">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../fetch-adapter/" class="btn btn-neutral" title="Fetch Adapters"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../fetch-adapter/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../entry/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/require.js"></script>
+      <script src="../search/search.js"></script>
+
+</body>
+</html>

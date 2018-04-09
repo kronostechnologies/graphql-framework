@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Getting Started - GraphQL Framework</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Getting Started";
+    var mkdocs_page_input_path = "getting-started.md";
+    var mkdocs_page_url = "/getting-started/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> GraphQL Framework</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">GraphQL Framework</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../principles/">Principles & Architecture</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Getting Started</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#requirements">Requirements</a></li>
+    
+
+    <li class="toctree-l2"><a href="#basic-project-structure">Basic project structure</a></li>
+    
+
+    <li class="toctree-l2"><a href="#generating-the-schema-files">Generating the Schema files</a></li>
+    
+
+    <li class="toctree-l2"><a href="#setting-up-a-fetchadapter-for-item">Setting up a FetchAdapter for Item</a></li>
+    
+
+    <li class="toctree-l2"><a href="#filtering-by-id-pagination">Filtering by ID &amp; pagination</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#identifierinfilter">IdentifierInFilter</a></li>
+        
+            <li><a class="toctree-l3" href="#pagefilter">PageFilter</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l2"><a href="#setting-up-the-querycontroller">Setting up the QueryController</a></li>
+    
+
+    <li class="toctree-l2"><a href="#itemcontroller">ItemController</a></li>
+    
+
+    <li class="toctree-l2"><a href="#current-structure">Current structure</a></li>
+    
+
+    <li class="toctree-l2"><a href="#entry-point">Entry point</a></li>
+    
+
+    <li class="toctree-l2"><a href="#running-and-testing">Running and testing</a></li>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../configuration/">Configuration</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../controllers/">Controllers</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../fetch-adapter/">Fetch Adapters</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../filters/">Filters</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../entry/">Entry Point</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../development-mode/">Development Mode</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../generator/">Schema Generator</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../type-registry/">Type Registry</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../cache/">Cache</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">GraphQL Framework</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Getting Started</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>Before setting things up, we must make sure all the necessary requirements are setup correctly.</p>
+<h2 id="requirements">Requirements</h2>
+<ul>
+<li>A GraphQL schema (.graphqls) containing the definition of your types. To learn how to make one, see the official site: <a href="https://graphql.org/learn/schema/">https://graphql.org/learn/schema/</a></li>
+<li>A directory and PHP namespace in which to generate the schema types and DTOs (for the underlying GraphQL library).</li>
+</ul>
+<h2 id="basic-project-structure">Basic project structure</h2>
+<p>A basic GraphQL project should have the following structure.</p>
+<pre><code class="text">\GraphQL
+    \Controllers            &lt;-- Controllers
+    \FetchAdapters          &lt;-- FetchAdapters
+        \Filters            &lt;-- Custom Filters
+    \GeneratedSchema        &lt;-- The generated schema PHP files
+        \DTOs               &lt;-- (Auto-generated)
+        \Types              &lt;-- (Auto-generated)
+    \Schema                 &lt;-- Your graphqls file(s)
+        main.graphqls       &lt;-- (Sample file name)
+    \Translators            &lt;-- Translators for creating GraphQL &amp; Service DTOs
+</code></pre>
+
+<h2 id="generating-the-schema-files">Generating the Schema files</h2>
+<p>First off, let's use a basic schema to ensure everything is working correctly. We will use one directly from the GraphQL generator repository. Put this in the <code>Schema/main.graphqls</code> file:</p>
+<pre><code>scalar DateTime
+scalar Cursor
+
+interface Identifiable {
+    id: ID
+}
+
+enum Color {
+    BLUE,
+    RED,
+    YELLOW,
+    GREEN,
+    PURPLE,
+    CYAN
+}
+
+type Item implements Identifiable {
+    id: ID,
+    name: String,
+    color: Color
+}
+
+type Query {
+    item(id: ID): Item!
+    items(page: Int, perPage: Int): [Item!]!
+}
+</code></pre>
+
+<p>The generator should be ran each time a graphqls file is modified under the <code>Schema</code> directory, on all files in that directory. A grunt hook is available to do just that.</p>
+<pre><code>TODO: Grunt hook
+</code></pre>
+
+<p>Once it is setup, you can install <code>grunt</code> <a href="https://gruntjs.com/getting-started">https://gruntjs.com/getting-started</a>. Running <code>grunt watch:generate-schema</code> will auto-regenerate the schema PHP files everytime a graphqls file is modified, while also announcing errors to the user.</p>
+<p>You can run <code>grunt generate-schema</code> to generate it without needing to change a graphqls file.</p>
+<h2 id="setting-up-a-fetchadapter-for-item">Setting up a FetchAdapter for Item</h2>
+<p>Fetch adapters bridge the database or service layer to GraphQL. In our case, we don't have a database, so we will use the <code>ArrayFetchAdapter</code> to make a mock database. This adapter uses a flat array as its data source.</p>
+<p>We do not need a <code>FetchAdapter</code> for the <code>Query</code> type, as it holds no data by itself. Instead, we will make one for the <code>Item</code> type which has 3 fields: <code>id</code>, <code>name</code>, and <code>color</code> (an enumeration). Create it under <code>FetchAdapters\ItemFetchAdapter.php</code>.</p>
+<pre><code>TODO: Namespace
+TODO: Validate generated ColorEnumType
+
+class ItemFetchAdapter extends ArrayFetchAdapter
+{
+    public function __construct()
+    {
+        // Dummy data source
+        $this-&gt;dataSource = [
+            [
+                'id' =&gt; 1,
+                'name' =&gt; 'Hello world',
+                'color' =&gt; 'Red',
+            ],
+
+            [
+                'id' =&gt; 2,
+                'name' =&gt; 'Second entry',
+                'color' =&gt; 'Yellow',
+            ],
+
+            [
+                'id' =&gt; 3,
+                'name' =&gt; 'Third entry',
+                'color' =&gt; 'Cyan',
+            ],
+
+            [
+                'id' =&gt; 4,
+                'name' =&gt; 'Last entry',
+                'color' =&gt; 'Purple',
+            ]
+        ];
+    }
+}
+</code></pre>
+
+<h2 id="filtering-by-id-pagination">Filtering by ID &amp; pagination</h2>
+<p>Before continuing, we have to take care of a few issues. Our <code>getField</code> function filters by ID and return a single result, whereas the <code>getFields</code> function takes some pagination arguments. We need to handle filtering on our specific dataset. Let's start with the IDs.</p>
+<h3 id="identifierinfilter">IdentifierInFilter</h3>
+<pre><code>ToDo: Namespace
+
+class IdentifierInFilter implements ArrayFetchFilterInterface
+{
+    protected $ids;
+
+    public function __construct(array $ids)
+    {
+        $this-&gt;ids = $ids;
+    }
+
+    public function filterArrayResults(array $value)
+    {
+        return array_filter($value, function ($entry) {
+            return in_array($entry['id'], $this-&gt;ids);
+        });
+    }
+}
+</code></pre>
+
+<p>We specify it is an <code>ArrayFetchFilterInterface</code> so the <code>FetchAdapter</code> we created earlier can apply the filter to the query correctly.</p>
+<p>This one simply uses <code>array_filter</code> to check if the entry's id matches one of the ids given to the given.</p>
+<h3 id="pagefilter">PageFilter</h3>
+<pre><code>ToDo: Namespace
+
+class PageFilter implements ArrayFetchFilterInterface
+{
+    protected $perPage;
+
+    protected $page;
+
+    public function __construct($perPage, $page)
+    {
+        $this-&gt;perPage = $perPage;
+        $this-&gt;page = $page;
+    }
+
+    public function filterArrayResults(array $value)
+    {
+        $pages = array_chunk($value, $this-&gt;perPage);
+
+        return $pages[$this-&gt;page - 1];       
+    }
+}
+</code></pre>
+
+<p>This filter uses <code>array_chunk</code> to separate the values array by pagesize and returns the corresponding index of the page.</p>
+<h2 id="setting-up-the-querycontroller">Setting up the QueryController</h2>
+<p>A controller is directly bound to its type field automatically. For the query controller, we need to resolve two fields: <code>item</code> and <code>items</code>. By default, the framework expects controller methods to have a function named <code>getFieldNameInCamelCase</code> per complex field. For resolving <code>item</code>, we will have a function named <code>getItem</code>, and for resolving <code>items</code>, we will have another one named <code>getItems</code>. If you forget to create a controller or field in the controller, the framework will inform you through its logger of what actions you should take.</p>
+<p>Now for the QueryController itself (<code>Controllers\QueryController.php</code>):</p>
+<pre><code>TODO: Namespace
+TODO: IdentifierInFilter, PageFilter
+
+class QueryController extends BaseController
+{
+    protected $itemFetchAdapter;
+
+    public function __construct(ItemFetchAdapter $itemFetchAdapter)
+    {
+        $this-&gt;itemFetchAdapter = $itemFetchAdapter;
+    }
+
+    public function getItem($id)
+    {
+        return $this-&gt;itemFetchAdapter
+            -&gt;applyFilter(new IdentifierInFilter([$id]))
+            -&gt;fetchOne();
+    }
+
+    public function getItems($page, $perPage)
+    {
+        return $this-&gt;itemFetchAdapter
+            -&gt;applyFilter(new PageFilter($page, $perPage))
+            -&gt;fetch();
+    }
+}
+</code></pre>
+
+<p>For <code>getItem</code>, we use the <code>IdentifierInFilter</code> we created earlier, passing a single ID to it, and fetch the first result from the dataset.</p>
+<p>For <code>getItems</code>, we use the <code>PageFilter</code>, passing our arguments to it, and fetch all the dataset available.</p>
+<p>The <code>ItemFetchAdapter</code> is reset each time a field is resolved, so don't worry about data integrity here.</p>
+<h2 id="itemcontroller">ItemController</h2>
+<p>Normally, we'd need a controller for every types. However, if you check the definition for <code>Item</code>:</p>
+<pre><code>type Item implements Identifiable {
+    id: ID,
+    name: String,
+    color: Color
+}
+</code></pre>
+
+<p>There are no complex fields present. That is, no field need to be fetched from an external source with a <code>FetchAdapter</code>.</p>
+<p><strong>For this reason, there is no need to create an ItemController.</strong></p>
+<h2 id="current-structure">Current structure</h2>
+<p>As of now, the structure for the GraphQL project should look as is:</p>
+<pre><code class="text">\GraphQL
+    \Controllers
+        QueryController.php
+    \FetchAdapters
+        ItemFetchAdapter.php
+        \Filters
+            IdentifierInFilter.php
+            PageFilter.php
+    \GeneratedSchema
+        ...
+    \Schema
+        main.graphqls
+    \Translators
+</code></pre>
+
+<h2 id="entry-point">Entry point</h2>
+<p>For our project entry point, let's use a simple HTTP endpoint, under index.php.</p>
+<pre><code>// ToDo: Composer autoload
+// ToDo: Namespace include
+
+$configuration = GraphQLConfiguration::create()
+    -&gt;setControllersDirectory(__DIR__ . '\\GraphQL\\Controllers')
+    -&gt;setControllersNamespace('\\GraphQL\\Controllers')
+    -&gt;setGeneratedSchemaDirectory(__DIR__ . '\\GraphQL\\GeneratedSchema')
+    -&gt;setGeneratedSchemaNamespace('\\GraphQL\\GeneratedSchema');
+
+// Get the HTTP request
+$request = Request::fromGlobals();
+
+// Execute HTTP request
+$response = HttpEntryPoint::executeQueryWithConfig($request, $configuration);
+
+// ToDo: Headers + status code
+echo $response-&gt;getBody();
+</code></pre>
+
+<h2 id="running-and-testing">Running and testing</h2>
+<p>Finally, let's run and test our project.</p>
+<pre><code>php -S localhost:8000
+</code></pre>
+
+<p>Now, access <a href="http://localhost:8000/">http://localhost:8000/</a> and you should be able to use it as a compatible GraphQL endpoint.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../configuration/" class="btn btn-neutral float-right" title="Configuration">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../principles/" class="btn btn-neutral" title="Principles & Architecture"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../principles/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../configuration/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/require.js"></script>
+      <script src="../search/search.js"></script>
+
+</body>
+</html>

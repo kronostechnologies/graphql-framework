@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Entry Point - GraphQL Framework</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Entry Point";
+    var mkdocs_page_input_path = "entry.md";
+    var mkdocs_page_url = "/entry/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> GraphQL Framework</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">GraphQL Framework</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../principles/">Principles & Architecture</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../getting-started/">Getting Started</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../configuration/">Configuration</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../controllers/">Controllers</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../fetch-adapter/">Fetch Adapters</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../filters/">Filters</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Entry Point</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#entry-point">Entry Point</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#httpentrypoint">HttpEntryPoint</a></li>
+        
+            <li><a class="toctree-l3" href="#rawqueryentrypoint">RawQueryEntryPoint</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../development-mode/">Development Mode</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../generator/">Schema Generator</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../type-registry/">Type Registry</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../cache/">Cache</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">GraphQL Framework</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Entry Point</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="entry-point">Entry Point</h1>
+<p>The entry points are used for initializing a call to the GraphQL framework. Queries can come from multiple sources, such as an HTTP request or an inner service call. Entry points provide a way of calling the inner GraphQL framework services without having to deal with trivial initialization procedures. They can also provide helpful exception-wrapping.</p>
+<h2 id="httpentrypoint">HttpEntryPoint</h2>
+<p>This entry point takes a standardized HTTP request (PSR-7) as its initial values, and returns a PSR-7 HTTP response. The configuration object must also be passed here.</p>
+<pre><code class="php">// Setup configuration
+$configuration = new GraphQLConfiguration();
+// ...
+
+// Fetch PSR-7 Request
+$request = Request::fromGlobals();
+
+// Execute from EntryPoint
+$entryPoint = new HttpEntryPoint($configuration);
+$response = $entryPoint-&gt;executeQuery($request);
+</code></pre>
+
+<p>Or with the short-hand function:</p>
+<pre><code class="php">// Set $configuration and $request...
+$response = HttpEntryPoint::executeQueryWithConfig($request, $configuration);
+</code></pre>
+
+<h2 id="rawqueryentrypoint">RawQueryEntryPoint</h2>
+<p>Useful if you need to call the GraphQL service from your inner services. This entry point takes as input the query itself and the parameters, returning the raw response string as a result.</p>
+<pre><code class="php">// Set $configuration, $query and $arguments...
+$response = RawQueryEntryPoint::executeQueryWithConfig($query, $arguments, $configuration);
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../development-mode/" class="btn btn-neutral float-right" title="Development Mode">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../filters/" class="btn btn-neutral" title="Filters"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../filters/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../development-mode/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/require.js"></script>
+      <script src="../search/search.js"></script>
+
+</body>
+</html>
