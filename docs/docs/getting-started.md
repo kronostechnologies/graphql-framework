@@ -19,6 +19,7 @@ A basic GraphQL project should have the following structure.
         \Types              <-- (Auto-generated)
     \Schema                 <-- Your graphqls file(s)
         main.graphqls       <-- (Sample file name)
+    \Translators            <-- Translators for creating GraphQL & Service DTOs
 ```
 
 ## Generating the Schema files
@@ -241,6 +242,7 @@ As of now, the structure for the GraphQL project should look as is:
         ...
     \Schema
         main.graphqls
+    \Translators
 ```
 
 ## Entry point
@@ -275,4 +277,4 @@ Finally, let's run and test our project.
 php -S localhost:8000
 ```
 
-Now, access http://localhost:8000/ and you should be able to use it as a compatible GraphQL endpoint.
+Now, access [http://localhost:8000/](http://localhost:8000/) and you should be able to use it as a compatible GraphQL endpoint.

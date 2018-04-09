@@ -29,4 +29,11 @@ interface FetchAdapterInterface
      * @param FilterInterface $filter
      */
     public function applyFilter(FilterInterface $filter);
+
+	/**
+	 * Translates the result from a FetchAdapterInterface to a GraphQL DTO.
+	 *
+	 * @return mixed
+	 */
+    public function translateResult();
 }

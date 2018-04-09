@@ -5,6 +5,8 @@
  */
 class ArrayFetchAdapter implements FetchAdapterInterface
 {
+	use FetchAdapterCacheAwareTrait;
+
     /**
      * @var array
      */

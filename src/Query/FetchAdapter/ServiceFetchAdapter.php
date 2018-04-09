@@ -1,14 +1,11 @@
 <?php
 
 
-class DoctrineFetchAdapter implements FetchAdapterInterface
+/**
+ * A fetch adapter closely link to another service.
+ */
+class ServiceFetchAdapter implements FetchAdapterInterface
 {
-	use FetchAdapterCacheAwareTrait;
-
-	/**
-	 * @var ArrayFetchFilterInterface[]
-	 */
-	protected $filters = [];
 
 	/**
 	 * Fetch and return multiple results from the underlying abstraction layer.
@@ -34,19 +31,9 @@ class DoctrineFetchAdapter implements FetchAdapterInterface
 	 * Applies a filter to the current fetch adapter to be used with fetchAll.
 	 *
 	 * @param FilterInterface $filter
-	 * @return DoctrineFetchAdapter
-	 * @throws Exception
 	 */
 	public function applyFilter(FilterInterface $filter)
 	{
-		if ($filter instanceof DoctrineFilterInterface) {
-			$this->filters[] = $filter;
-		} else {
-			$className = self::class;
-			$filterFQN = get_class($filter);
-			throw new Exception("Filter {$filterFQN} was used in {$className}, but it does not extend DoctrineFilterInterface");
-		}
-
-		return $this;
+		// TODO: Implement applyFilter() method.
 	}
 }
