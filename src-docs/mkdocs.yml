@@ -13,3 +13,4 @@ pages:
   - 'Schema Generator': 'generator.md'
   - 'Type Registry': 'type-registry.md'
   - 'Cache': 'cache.md'
+site_dir: '../docs'
