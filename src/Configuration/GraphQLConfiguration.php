@@ -19,6 +19,20 @@ class GraphQLConfiguration
      */
     protected $controllersNamespace;
 
+	/**
+	 * Directory of the auto-generated schema.
+	 *
+	 * @var string
+	 */
+    protected $generatedSchemaDirectory;
+
+	/**
+	 * Namespace of the auto-generated schema from a graphqls file.
+	 *
+	 * @var string
+	 */
+    protected $generatedSchemaNamespace;
+
     /**
      * PSR-4 logger instance for the GraphQL service.
      *
@@ -87,27 +101,84 @@ class GraphQLConfiguration
         return $this->inDevMode;
     }
 
-    /**
-     * @return string
-     */
-    public function getTypeStoreClassName()
-    {
-        return $this->typeStoreClassName;
-    }
+	/**
+	 * @return string
+	 */
+	public function getGeneratedSchemaDirectory()
+	{
+		return $this->generatedSchemaDirectory;
+	}
 
-    /**
-     * @return string[]
-     */
-    public function getAdditionalGraphQLTypes()
-    {
-        return $this->additionalGraphQLTypes;
-    }
+	/**
+	 * @return string
+	 */
+	public function getGeneratedSchemaNamespace()
+	{
+		return $this->generatedSchemaNamespace;
+	}
 
-    /**
-     * @return TypeRegistryInterface
-     */
-    public function getTypeRegistry()
-    {
-        return $this->typeRegistry;
-    }
+    public static function create()
+	{
+		return new self();
+	}
+
+	/**
+	 * @param string $controllersDirectory
+	 * @return GraphQLConfiguration
+	 */
+	public function setControllersDirectory($controllersDirectory)
+	{
+		$this->controllersDirectory = $controllersDirectory;
+		return $this;
+	}
+
+	/**
+	 * @param string $controllersNamespace
+	 * @return GraphQLConfiguration
+	 */
+	public function setControllersNamespace($controllersNamespace)
+	{
+		$this->controllersNamespace = $controllersNamespace;
+		return $this;
+	}
+
+	/**
+	 * @param string $generatedSchemaDirectory
+	 * @return GraphQLConfiguration
+	 */
+	public function setGeneratedSchemaDirectory($generatedSchemaDirectory)
+	{
+		$this->generatedSchemaDirectory = $generatedSchemaDirectory;
+		return $this;
+	}
+
+	/**
+	 * @param string $generatedSchemaNamespace
+	 * @return GraphQLConfiguration
+	 */
+	public function setGeneratedSchemaNamespace($generatedSchemaNamespace)
+	{
+		$this->generatedSchemaNamespace = $generatedSchemaNamespace;
+		return $this;
+	}
+
+	/**
+	 * @param mixed $logger
+	 * @return GraphQLConfiguration
+	 */
+	public function setLogger($logger)
+	{
+		$this->logger = $logger;
+		return $this;
+	}
+
+	/**
+	 * @param bool $inDevMode
+	 * @return GraphQLConfiguration
+	 */
+	public function setInDevMode($inDevMode)
+	{
+		$this->inDevMode = $inDevMode;
+		return $this;
+	}
 }

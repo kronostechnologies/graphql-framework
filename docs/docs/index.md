@@ -1,3 +1,1 @@
 # GraphQL Framework
-
-## Getting started

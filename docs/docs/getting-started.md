@@ -251,7 +251,7 @@ For our project entry point, let's use a simple HTTP endpoint, under index.php.
 // ToDo: Composer autoload
 // ToDo: Namespace include
 
-$configuration = GraphQLConfiguration::new()
+$configuration = GraphQLConfiguration::create()
     ->setControllersDirectory(__DIR__ . '\\GraphQL\\Controllers')
     ->setControllersNamespace('\\GraphQL\\Controllers')
     ->setGeneratedSchemaDirectory(__DIR__ . '\\GraphQL\\GeneratedSchema')
