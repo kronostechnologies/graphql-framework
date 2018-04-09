@@ -91,4 +91,11 @@ class AutomatedTypeRegistry implements TypeRegistryInterface
     {
         return $this->getTypeNamed('mutation');
     }
+
+    public static function restoreFromCache(TypeRegistryCachedData $cachedData)
+	{
+		$inst = new self($cachedData->getTypesDirectory());
+
+
+	}
 }

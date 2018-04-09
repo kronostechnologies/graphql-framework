@@ -20,7 +20,16 @@ $response = $entryPoint->executeQuery($request);
 ```
 
 Or with the short-hand function:
-```
+```php
 // Set $configuration and $request...
 $response = HttpEntryPoint::executeQueryWithConfig($request, $configuration);
+```
+
+## RawQueryEntryPoint
+
+Useful if you need to call the GraphQL service from your inner services. This entry point takes as input the query itself and the parameters, returning the raw response string as a result.
+
+```php
+// Set $configuration, $query and $arguments...
+$response = RawQueryEntryPoint::executeQueryWithConfig($query, $arguments, $configuration);
 ```

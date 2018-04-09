@@ -10,6 +10,8 @@ In particular, this caches the available types from an `AutomatedTypeRegistry`. 
 
 This cache level **NEEDS TO** be persisted between requests.
 
+A type registry cache is created each time the controllers directory or namespace changes.
+
 ### Level 2: Controllers cache
 
 The controllers cache handle the following:
