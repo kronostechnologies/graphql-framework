@@ -8,16 +8,16 @@ jobs:
       - checkout
 
       - restore_cache:
-        keys:
-        - deps-{{ checksum "composer.json" }}
-        - deps-
+          keys:
+          - deps-{{ checksum "composer.json" }}
+          - deps-
 
       - run: composer install -n --prefer-dist
 
       - save_cache:
-        paths:
-          - ./vendor
-        key: deps-{{ checksum "composer.json" }}
+          paths:
+            - ./vendor
+          key: deps-{{ checksum "composer.json" }}
 
       - run: ./vendor/bin/phpunit
 
