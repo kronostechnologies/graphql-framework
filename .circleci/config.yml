@@ -20,3 +20,10 @@ jobs:
         key: deps-{{ checksum "composer.json" }}
 
       - run: ./vendor/bin/phpunit
+
+workflows:
+  version: 2
+
+  unit-tests:
+    jobs:
+      - unit-tests
