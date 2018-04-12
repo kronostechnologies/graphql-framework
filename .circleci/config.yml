@@ -2,9 +2,14 @@ version: 2
 jobs:
   unit-tests:
     docker:
-      - image: circleci/php:7.2-fpm-browsers
+      - image: _/php:7.2-cli-alpine
+
+    working_directory:
+      - /framework
 
     steps:
+      - run: ./.circleci/scripts/bootstrap.sh
+
       - checkout
 
       - restore_cache:
@@ -12,7 +17,7 @@ jobs:
           - deps-{{ checksum "composer.json" }}
           - deps-
 
-      - run: composer install -n --prefer-dist
+      - run: /composer/composer.phar install -n --prefer-dist
 
       - save_cache:
           paths:
