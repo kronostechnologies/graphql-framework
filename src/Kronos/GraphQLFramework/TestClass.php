@@ -3,7 +3,6 @@
 
 namespace Kronos\GraphQLFramework;
 
-
 class TestClass
 {
 
