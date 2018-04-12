@@ -7,9 +7,9 @@ jobs:
     working_directory: /framework
 
     steps:
-      - run: ./.circleci/scripts/bootstrap.sh
-
       - checkout
+
+      - run: ./.circleci/scripts/bootstrap.sh
 
       - restore_cache:
           keys:
