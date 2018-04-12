@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+        colors="true"
+        verbose="true"
+        failOnRisky="true"
+        beStrictAboutChangesToGlobalState="true"
+        beStrictAboutOutputDuringTests="true"
+        beStrictAboutTestsThatDoNotTestAnything="true"
+        bootstrap="./tests/Kronos/Tests/TestInit.php"
+>
+    <testsuites>
+        <testsuite name="GraphQL Framework Test Suite">
+            <directory>./tests/Kronos/Tests/GraphQLFramework</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

@@ -3,3 +3,6 @@
 
 # Package Manager
 /vendor/
+
+# Various caches
+/.phpcs-cache/
