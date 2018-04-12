@@ -2,7 +2,7 @@ version: 2
 jobs:
   unit-tests:
     docker:
-      - image: _/php:7.2-cli-alpine
+      - image: php:7.2-cli-alpine
 
     working_directory: /framework
 
