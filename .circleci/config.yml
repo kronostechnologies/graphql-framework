@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  unit-tests:
+    docker:
+      - image: circleci/php:7.2-fpm-browsers
+
+    steps:
+      - checkout
+
+      - restore_cache:
+        keys:
+        - deps-{{ checksum "composer.json" }}
+        - deps-
+
+      - run: composer install -n --prefer-dist
+
+      - save_cache:
+        paths:
+          - ./vendor
+        key: deps-{{ checksum "composer.json" }}
+
+      - run: ./vendor/bin/phpunit
