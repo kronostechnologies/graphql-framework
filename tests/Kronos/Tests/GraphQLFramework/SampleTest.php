@@ -11,14 +11,4 @@ class SampleTest extends TestCase
     {
         $this->assertTrue(true);
     }
-
-    public function test_Risky()
-    {
-
-    }
-
-    public function test_NotPass()
-    {
-        $this->assertFalse(true);
-    }
 }
