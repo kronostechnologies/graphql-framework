@@ -26,7 +26,7 @@ jobs:
       - run:
           command: |
             mkdir -p ~/phpunit
-            phpunit --log-junit ~/phpunit/junit.xml tests
+            ./vendor/bin/phpunit --log-junit ~/phpunit/junit.xml tests
           when: always
 
       - store_test_results:
