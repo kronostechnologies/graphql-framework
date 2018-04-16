@@ -15,11 +15,22 @@ class DirectoryStringBuilder
      */
     public static function join(...$directories)
     {
-        $trimmedParams = array_map(function ($param) {
+        $trimmedDirs = array_map(function ($param) {
             return trim($param, "\\/");
         }, $directories);
 
-        return "/" . implode("/", $trimmedParams);
+        $retVal = "";
+
+        foreach ($trimmedDirs as $trimmedDir)
+        {
+            if ($retVal === "" && strpos($trimmedDir, ".") === 0) {
+                $retVal .= $trimmedDir;
+            } else {
+                $retVal .= "/" . $trimmedDir;
+            }
+        }
+
+        return $retVal;
     }
 
     /**
