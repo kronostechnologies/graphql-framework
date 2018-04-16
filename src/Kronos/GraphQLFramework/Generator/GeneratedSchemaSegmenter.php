@@ -4,6 +4,8 @@
 namespace Kronos\GraphQLFramework\Generator;
 
 
+use Kronos\GraphQLFramework\Utils\DirectoryStringBuilder;
+
 class GeneratedSchemaSegmenter
 {
     const GENERATED_SCHEMA_DTO_DIR = 'DTO';
@@ -35,7 +37,7 @@ class GeneratedSchemaSegmenter
      */
     public function getTypesDirectory()
     {
-
+        return DirectoryStringBuilder::join($this->generatedSchemaDirectory, self::GENERATED_SCHEMA_TYPE_DIR);
     }
 
     /**
@@ -43,6 +45,6 @@ class GeneratedSchemaSegmenter
      */
     public function getDTOsDirectory()
     {
-
+        return DirectoryStringBuilder::join($this->generatedSchemaDirectory, self::GENERATED_SCHEMA_DTO_DIR);
     }
 }
