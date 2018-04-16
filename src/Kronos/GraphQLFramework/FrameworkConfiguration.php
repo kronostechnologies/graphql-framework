@@ -174,6 +174,10 @@ class FrameworkConfiguration
         return $this->getPersistentCacheStatus($this->forceControllersCacheOnOrOff, 'ControllersCache');
     }
 
+    /**
+     * @param bool|null $forceStatus
+     * @return bool
+     */
     protected function getEphemeralCacheStatus($forceStatus)
     {
         if ($forceStatus === true || $forceStatus === false) {
@@ -296,6 +300,56 @@ class FrameworkConfiguration
     public function setCacheAdapter(CacheItemPoolInterface $cacheAdapter = null)
     {
         $this->cacheAdapter = $cacheAdapter;
+        return $this;
+    }
+
+    /**
+     * @param null|LoggerInterface $logger
+     * @return FrameworkConfiguration
+     */
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
+        return $this;
+    }
+
+    /**
+     * @param string $controllersDirectory
+     * @return FrameworkConfiguration
+     */
+    public function setControllersDirectory($controllersDirectory)
+    {
+        $this->controllersDirectory = $controllersDirectory;
+        return $this;
+    }
+
+    /**
+     * @param string $controllersNamespace
+     * @return FrameworkConfiguration
+     */
+    public function setControllersNamespace($controllersNamespace)
+    {
+        $this->controllersNamespace = $controllersNamespace;
+        return $this;
+    }
+
+    /**
+     * @param string $generatedSchemaDirectory
+     * @return FrameworkConfiguration
+     */
+    public function setGeneratedSchemaDirectory($generatedSchemaDirectory)
+    {
+        $this->generatedSchemaDirectory = $generatedSchemaDirectory;
+        return $this;
+    }
+
+    /**
+     * @param string $generatedSchemaNamespace
+     * @return FrameworkConfiguration
+     */
+    public function setGeneratedSchemaNamespace($generatedSchemaNamespace)
+    {
+        $this->generatedSchemaNamespace = $generatedSchemaNamespace;
         return $this;
     }
 }
