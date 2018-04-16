@@ -1,6 +1,8 @@
 # Cache
 
-The GraphQL framework handles 4 cache levels from the get-go. Turning on developer mode in the configuration will fully disabled all cache layers, so they are effectively only active in production.
+The GraphQL framework handles 4 cache levels from the get-go. Turning on developer mode in the configuration will fully disabled all **persistent** cache layers (levels 1 and 2 for now), so they are effectively only active in production.
+
+A cache adapter must be configured in order to enable the cache in production.
 
 ## Levels
 
