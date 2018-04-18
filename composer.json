@@ -16,7 +16,8 @@
     "autoload": {
         "psr-4": {
             "Kronos\\": "src/Kronos/",
-            "Kronos\\Tests\\": "tests/Kronos/Tests/"
+            "Kronos\\Tests\\": "tests/Kronos/Tests/",
+            "Kronos\\Mocks\\Schema\\": "tests/Kronos/Mocks/Schema/"
         }
     }
 

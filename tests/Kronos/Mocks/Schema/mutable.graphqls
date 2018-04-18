@@ -1,0 +1,24 @@
+interface Animal {
+    id: ID!,
+    name: String!,
+    ageYears: Int
+}
+
+type Cat implements Animal {
+
+}
+
+type Dog implements Animal {
+
+}
+
+type Query {
+    pet(id: ID!): Animal
+    pets: [Animal!]
+}
+
+type Mutation {
+    addDog(name: String!, age: number): Dog
+    addCat(name: String!, age: number): Cat
+    deleteAnimal(id: ID!): Boolean!
+}
