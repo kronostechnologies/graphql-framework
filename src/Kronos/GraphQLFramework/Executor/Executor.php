@@ -4,7 +4,11 @@
 namespace Kronos\GraphQLFramework\Executor;
 
 
+use Exception;
+use GraphQL\GraphQL;
+use GraphQL\Type\Schema;
 use Kronos\GraphQLFramework\FrameworkConfiguration;
+use Kronos\GraphQLFramework\TypeRegistry\Automated\GeneratedSchemaDefinition;
 use Kronos\GraphQLFramework\TypeRegistry\AutomatedTypeRegistry;
 
 class Executor
@@ -18,6 +22,11 @@ class Executor
 	 * @var AutomatedTypeRegistry
 	 */
 	protected $typeRegistry;
+
+	/**
+	 * @var Schema
+	 */
+	protected $schema;
 
 	/**
 	 * @param FrameworkConfiguration $configuration
@@ -35,11 +44,24 @@ class Executor
 	}
 
 	/**
-	 * @param string $typesDirectory
+	 * @param string $schemaDirectory
 	 */
-	protected function configureAutomatedTypesRegistry($typesDirectory)
+	protected function configureAutomatedTypesRegistry($schemaDirectory)
 	{
+		$schemaDefinition = new GeneratedSchemaDefinition($schemaDirectory);
+		$typesDirectory = $schemaDefinition->getTypesDirectory();
 
+		$this->typeRegistry = new AutomatedTypeRegistry($typesDirectory);
+	}
+
+	protected function loadSchema()
+	{
+		if ($this->schema === null) {
+			$this->schema = new Schema([
+				'query' => $this->typeRegistry->getQueryType(),
+				'mutation' => $this->typeRegistry->getMutationType()
+			]);
+		}
 	}
 
 	/**
@@ -51,6 +73,20 @@ class Executor
 	 */
 	public function executeQuery($queryString, array $variables)
 	{
+		$this->loadSchema();
 
+		try {
+			$resolversResult = GraphQL::executeQuery(
+				$this->schema,
+				$queryString,
+				null,
+				null,
+				$variables
+			);
+
+			return new ExecutorResult(json_encode($resolversResult->jsonSerialize()));
+		} catch (Exception $ex) {
+			return new ExecutorResult("", $ex);
+		}
 	}
 }
