@@ -72,4 +72,13 @@ class DirectoryLister
 
 		return $filteredFiles;
 	}
+
+	/**
+	 * @param string $extension
+	 * @return string[]
+	 */
+	public function getFilesFilteredByExtension($extension)
+	{
+		return $this->getFilesFilteredByRegex("/\.{$extension}/i");
+	}
 }

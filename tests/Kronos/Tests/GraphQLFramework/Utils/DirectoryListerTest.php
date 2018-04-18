@@ -128,4 +128,53 @@ class DirectoryListerTest extends TestCase
 		$this->assertCount(1, $retVal);
 		$this->assertContains($this->getRealPath(self::RECURSIVE_DIR_FILE_4), $retVal);
 	}
+
+	public function test_NonRecursiveDirFilterWithPHP_getFilesFilteredByExtension_ReturnsCorrectFilename()
+	{
+		$lister = $this->givenNonRecursiveDirectoryLister();
+
+		$retVal = $lister->getFilesFilteredByExtension("php");
+
+		$this->assertCount(1, $retVal);
+		$this->assertContains($this->getRealPath(self::NON_RECURSIVE_DIR_FILE_3), $retVal);
+	}
+
+	public function test_NonRecursiveDirFilterWithPHPUppercase_getFilesFilteredByExtension_ReturnsCorrectFilename()
+	{
+		$lister = $this->givenNonRecursiveDirectoryLister();
+
+		$retVal = $lister->getFilesFilteredByExtension("PHP");
+
+		$this->assertCount(1, $retVal);
+		$this->assertContains($this->getRealPath(self::NON_RECURSIVE_DIR_FILE_3), $retVal);
+	}
+
+	public function test_NonRecursiveDirFilterWithPNG_getFilesFilteredByExtension_ReturnsCorrectFilename()
+	{
+		$lister = $this->givenNonRecursiveDirectoryLister();
+
+		$retVal = $lister->getFilesFilteredByExtension("png");
+
+		$this->assertCount(1, $retVal);
+		$this->assertContains($this->getRealPath(self::NON_RECURSIVE_DIR_FILE_2), $retVal);
+	}
+
+	public function test_NonRecursiveDirFilterWithBin_getFilesFilteredByExtension_ReturnsEmptyArray()
+	{
+		$lister = $this->givenNonRecursiveDirectoryLister();
+
+		$retVal = $lister->getFilesFilteredByExtension("bin");
+
+		$this->assertCount(0, $retVal);
+	}
+
+	public function test_RecursiveDirFilterWithRtf_getFilesFilteredByExtension_ReturnsEmptyArray()
+	{
+		$lister = $this->givenRecursiveDirectoryLister();
+
+		$retVal = $lister->getFilesFilteredByExtension("rtf");
+
+		$this->assertCount(1, $retVal);
+		$this->assertContains($this->getRealPath(self::RECURSIVE_DIR_FILE_4), $retVal);
+	}
 }
