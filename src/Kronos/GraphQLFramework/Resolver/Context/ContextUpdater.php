@@ -38,6 +38,15 @@ class ContextUpdater
 	}
 
 	/**
+	 * @param FrameworkConfiguration $configuration
+	 */
+	public function setConfiguration(FrameworkConfiguration $configuration)
+	{
+		$this->activeContext = $this->getOrCreateContext()
+			->withConfiguration($configuration);
+	}
+
+	/**
 	 * @param string $fullQueryString
 	 * @param array|null $variables
 	 * @throws VariablesMustBeArrayException
