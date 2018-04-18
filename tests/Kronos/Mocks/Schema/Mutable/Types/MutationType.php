@@ -4,7 +4,6 @@ namespace Kronos\Mocks\Schema\Mutable\Types;
 
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use Kronos\Mocks\Schema\Mutable\TypeStore;
 
 class MutationType extends ObjectType
 {
@@ -20,7 +19,7 @@ class MutationType extends ObjectType
 							'type' => Type::nonNull(Type::string())
 						],
 						'age' => [
-							'type' => TypeStore::number()
+							'type' => Type::int()
 						]
 					],
 					'resolve' => function ($root, $args) use ($queryResolver) {
@@ -34,7 +33,7 @@ class MutationType extends ObjectType
 							'type' => Type::nonNull(Type::string())
 						],
 						'age' => [
-							'type' => TypeStore::number()
+							'type' => Type::int()
 						]
 					],
 					'resolve' => function ($root, $args) use ($queryResolver) {

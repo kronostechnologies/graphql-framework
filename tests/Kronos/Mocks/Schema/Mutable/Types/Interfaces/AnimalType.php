@@ -4,7 +4,6 @@ namespace Kronos\Mocks\Schema\Mutable\Types\Interfaces;
 
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\Type;
-use Kronos\Mocks\Schema\Mutable\TypeStore;
 
 class AnimalType extends InterfaceType
 {

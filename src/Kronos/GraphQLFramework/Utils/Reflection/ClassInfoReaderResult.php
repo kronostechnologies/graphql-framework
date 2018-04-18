@@ -42,4 +42,12 @@ class ClassInfoReaderResult
     {
         return $this->className;
     }
+
+	/**
+	 * @return string
+	 */
+    public function getFQN()
+	{
+		return $this->namespace . '\\' . $this->className;
+	}
 }

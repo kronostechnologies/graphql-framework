@@ -1,0 +1,18 @@
+interface Animal {
+    id: ID!,
+    name: String!,
+    ageYears: Integer
+}
+
+type Cat implements Animal {
+
+}
+
+type Dog implements Animal {
+
+}
+
+type Query {
+    pet(id: ID!): Animal,
+    pets: [Animal!]
+}

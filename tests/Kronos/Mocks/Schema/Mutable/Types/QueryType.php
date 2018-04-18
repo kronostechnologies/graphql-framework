@@ -4,7 +4,6 @@ namespace Kronos\Mocks\Schema\Mutable\Types;
 
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use Kronos\Mocks\Schema\Mutable\TypeStore;
 
 class QueryType extends ObjectType
 {
