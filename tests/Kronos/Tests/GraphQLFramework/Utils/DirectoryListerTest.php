@@ -6,6 +6,7 @@ namespace Kronos\Tests\GraphQLFramework\Utils;
 
 use Kronos\GraphQLFramework\Utils\DirectoryLister;
 use PHPUnit\Framework\TestCase;
+use function realpath;
 
 class DirectoryListerTest extends TestCase
 {
@@ -38,6 +39,15 @@ class DirectoryListerTest extends TestCase
 		return new DirectoryLister(self::NON_RECURSIVE_DIR);
 	}
 
+	/**
+	 * @param string $path
+	 * @return bool|string
+	 */
+	protected function getRealPath($path)
+	{
+		return realpath($path);
+	}
+
 	public function test_NonRecursiveDirectory_getAllFiles_ReturnsRightNumberOfFiles()
 	{
 		$lister = $this->givenNonRecursiveDirectoryLister();
@@ -53,9 +63,9 @@ class DirectoryListerTest extends TestCase
 
 		$retVal = $lister->getAllFiles();
 
-		$this->assertContains(self::NON_RECURSIVE_DIR_FILE_1, $retVal);
-		$this->assertContains(self::NON_RECURSIVE_DIR_FILE_2, $retVal);
-		$this->assertContains(self::NON_RECURSIVE_DIR_FILE_3, $retVal);
+		$this->assertContains($this->getRealPath(self::NON_RECURSIVE_DIR_FILE_1), $retVal);
+		$this->assertContains($this->getRealPath(self::NON_RECURSIVE_DIR_FILE_2), $retVal);
+		$this->assertContains($this->getRealPath(self::NON_RECURSIVE_DIR_FILE_3), $retVal);
 	}
 
 	public function test_RecursiveDirectory_getAllFiles_ReturnsRightNumberOfFiles()
@@ -73,9 +83,9 @@ class DirectoryListerTest extends TestCase
 
 		$retVal = $lister->getAllFiles();
 
-		$this->assertContains(self::RECURSIVE_DIR_FILE_1, $retVal);
-		$this->assertContains(self::RECURSIVE_DIR_FILE_2, $retVal);
-		$this->assertContains(self::RECURSIVE_DIR_FILE_3, $retVal);
-		$this->assertContains(self::RECURSIVE_DIR_FILE_4, $retVal);
+		$this->assertContains($this->getRealPath(self::RECURSIVE_DIR_FILE_1), $retVal);
+		$this->assertContains($this->getRealPath(self::RECURSIVE_DIR_FILE_2), $retVal);
+		$this->assertContains($this->getRealPath(self::RECURSIVE_DIR_FILE_3), $retVal);
+		$this->assertContains($this->getRealPath(self::RECURSIVE_DIR_FILE_4), $retVal);
 	}
 }
