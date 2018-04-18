@@ -1,7 +1,7 @@
 interface Animal {
     id: ID!,
     name: String!,
-    ageYears: Integer
+    ageYears: Int
 }
 
 type Cat implements Animal {

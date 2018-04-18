@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 class AutomatedTypeRegistryTest extends TestCase
 {
 	const DIR_MUTABLE_SCHEMA = __DIR__ . '/../../../Mocks/Schema/Mutable/Types/';
+	const DIR_IMMUTABLE_SCHEMA = __DIR__ . '/../../../Mocks/Schema/Immutable/Types/';
 	const DIR_INVALID_SCHEMA = __DIR__ . '/../../../Mocks/Schema/Invalid/Types/';
 
 	public function test_WithQueryTypeSchema_getQueryType_ReturnsTypeObject()
@@ -60,10 +61,14 @@ class AutomatedTypeRegistryTest extends TestCase
 		$this->assertSame('Mutation', $retVal->name);
 	}
 
-//	public function test_NoMutationTypeSchema_getMutationType_ReturnsNull()
-//	{
-//
-//	}
+	public function test_NoMutationTypeSchema_getMutationType_ReturnsNull()
+	{
+		$registry = new AutomatedTypeRegistry(self::DIR_IMMUTABLE_SCHEMA);
+
+		$retVal = $registry->getMutationType();
+
+		$this->assertSame(null, $retVal);
+	}
 
 	public function test_WithMutationTypeSchema_doesTypeExist_ReturnsTrue()
 	{
@@ -74,10 +79,14 @@ class AutomatedTypeRegistryTest extends TestCase
 		$this->assertTrue($retVal);
 	}
 
-//	public function test_NoMutationTypeSchema_doesTypeExist_ReturnsFalse()
-//	{
-//
-//	}
+	public function test_NoMutationTypeSchema_doesTypeExist_ReturnsFalse()
+	{
+		$registry = new AutomatedTypeRegistry(self::DIR_IMMUTABLE_SCHEMA);
+
+		$retVal = $registry->doesTypeExist('Mutation');
+
+		$this->assertFalse($retVal);
+	}
 
 	public function test_NoQueryTypeSchema_getTypeByName_ThrowsTypeNotFoundException()
 	{
