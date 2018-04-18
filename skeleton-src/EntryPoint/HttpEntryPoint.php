@@ -1,5 +1,9 @@
 <?php
 
+use Grpc\Server;
+use Kronos\GraphQLFramework\Executor;
+use Psr\Http\Message\ServerRequestInterface;
+
 /**
  * Acts as an entry point to the GraphQL service layer for HTTP requests. Takes a PSR-7 object as
  * an entry point, along with a PSR-3 logger. The logger is given the job of filtering what's unimportant
@@ -30,15 +34,15 @@ class HttpEntryPoint
 	/**
 	 * Executes the PSR-7 request given, creating a new context along with it.
 	 *
-	 * @param $psr7Request
+	 * @param ServerRequestInterface $psr7Request
 	 */
-    public function executeQuery($psr7Request)
+    public function executeQuery(ServerRequestInterface $psr7Request)
 	{
-
+		$executor = new Executor($this->configuration);
 	}
 
     /**
-     * Processes a PSR-7 HTTP request, and returns a PSR-7 HTTP response or an adequate HTTP exception
+     * One-time processes a PSR-7 HTTP request, and returns a PSR-7 HTTP response or an adequate HTTP exception
      * to be displayed to an end-user.
      *
      * @param mixed $psr7Request
@@ -46,7 +50,7 @@ class HttpEntryPoint
      */
     public static function executeQueryWithConfig($psr7Request, GraphQLConfiguration $configuration)
     {
-
+		$instSelf = new self($configuration);
+		return $instSelf->executeQuery($psr7Request);
     }
-
 }

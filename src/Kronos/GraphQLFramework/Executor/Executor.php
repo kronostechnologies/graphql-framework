@@ -1,9 +1,10 @@
 <?php
 
 
-namespace Kronos\GraphQLFramework;
+namespace Kronos\GraphQLFramework\Executor;
 
 
+use Kronos\GraphQLFramework\FrameworkConfiguration;
 use Kronos\GraphQLFramework\TypeRegistry\AutomatedTypeRegistry;
 
 class Executor
@@ -46,6 +47,7 @@ class Executor
 	 *
 	 * @param string $queryString
 	 * @param array $variables
+	 * @return ExecutorResult
 	 */
 	public function executeQuery($queryString, array $variables)
 	{
