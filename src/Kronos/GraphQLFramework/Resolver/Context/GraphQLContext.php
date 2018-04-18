@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Kronos\GraphQLFramework\Resolver;
+namespace Kronos\GraphQLFramework\Resolver\Context;
 
 
-use GraphQLConfiguration;
+use Kronos\GraphQLFramework\FrameworkConfiguration;
 
 /**
  * Immutable context object available to the framework user.
@@ -95,10 +95,10 @@ class GraphQLContext
 	 * Returns a NEW instance of the GraphQL Context with the given configuration. This will not overwrite the
 	 * existing GraphQLContext by itself.
 	 *
-	 * @param GraphQLConfiguration $configuration
+	 * @param FrameworkConfiguration $configuration
 	 * @return GraphQLContext
 	 */
-	public function withConfiguration(GraphQLConfiguration $configuration)
+	public function withConfiguration(FrameworkConfiguration $configuration)
 	{
 		$inst = clone $this;
 		$inst->configuration = $configuration;
