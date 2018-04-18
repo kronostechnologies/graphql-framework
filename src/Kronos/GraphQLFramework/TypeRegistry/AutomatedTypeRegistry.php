@@ -4,11 +4,15 @@
 namespace Kronos\GraphQLFramework\TypeRegistry;
 
 use function array_shift;
+use ErrorException;
+use Exception;
 use function file_get_contents;
 use GraphQL\Type\Definition\Type;
+use Kronos\GraphQLFramework\TypeRegistry\Exception\InternalSchemaException;
 use Kronos\GraphQLFramework\TypeRegistry\Exception\TypeNotFoundException;
 use Kronos\GraphQLFramework\Utils\DirectoryLister;
 use Kronos\GraphQLFramework\Utils\Reflection\ClassInfoReader;
+use function restore_error_handler;
 
 /**
  * Auto-detects types from the specified directory.
@@ -51,6 +55,7 @@ class AutomatedTypeRegistry
 	/**
 	 * @return DiscoveredType[]
 	 * @throws \Kronos\GraphQLFramework\Utils\Reflection\Exception\NoClassNameFoundException
+	 * @throws InternalSchemaException
 	 */
 	protected function getDiscoveredTypes()
 	{
@@ -70,7 +75,12 @@ class AutomatedTypeRegistry
 
 				if (!in_array($typeName, $this->pendingTypes) && !$this->doesTypeExist($typeName)) {
 					$this->pendingTypes[] = $typeName;
-					$this->discoveredTypes[] = new DiscoveredType($typeName, new $typeFQN($this, null));
+
+					try {
+						$this->discoveredTypes[] = new DiscoveredType($typeName, new $typeFQN($this, null));
+					} catch (\Throwable $ex) {
+						throw new InternalSchemaException($typeName, $ex->getMessage(), $ex);
+					}
 				}
 			}
 
