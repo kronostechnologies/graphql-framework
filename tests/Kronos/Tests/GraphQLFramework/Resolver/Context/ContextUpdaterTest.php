@@ -7,6 +7,7 @@ namespace Kronos\Tests\GraphQLFramework\Resolver\Context;
 use Kronos\GraphQLFramework\FrameworkConfiguration;
 use Kronos\GraphQLFramework\Resolver\Context\ContextUpdater;
 use Kronos\GraphQLFramework\Resolver\Context\Exception\ArgumentsMustBeArrayException;
+use Kronos\GraphQLFramework\Resolver\Context\Exception\VariablesMustBeArrayException;
 use Kronos\GraphQLFramework\Resolver\Context\GraphQLContext;
 use PHPUnit\Framework\TestCase;
 
@@ -72,5 +73,34 @@ class ContextUpdaterTest extends TestCase
 		$this->expectException(ArgumentsMustBeArrayException::class);
 
 		$updater->setCurrentResolverPath(null, new \stdClass());
+	}
+
+	public function test_NullVariables_setInitialData_VariablesIsEmptyArray()
+	{
+		$updater = new ContextUpdater();
+		$updater->setInitialData(null, null);
+
+		$context = $updater->getActiveContext();
+
+		$this->assertSame([], $context->getVariables());
+	}
+
+	public function test_SetVariables_setInitialData_VariablesIsRightValue()
+	{
+		$updater = new ContextUpdater();
+		$updater->setInitialData(null, ['a' => '1', 'b' => '2']);
+
+		$context = $updater->getActiveContext();
+
+		$this->assertSame(['a' => '1', 'b' => '2'], $context->getVariables());
+	}
+
+	public function test_SetStdClassVariables_setInitialData_ThrowsVariablesMustBeArrayException()
+	{
+		$updater = new ContextUpdater();
+
+		$this->expectException(VariablesMustBeArrayException::class);
+
+		$updater->setInitialData(null, new \stdClass());
 	}
 }

@@ -6,6 +6,7 @@ namespace Kronos\GraphQLFramework\Resolver\Context;
 
 use Kronos\GraphQLFramework\FrameworkConfiguration;
 use Kronos\GraphQLFramework\Resolver\Context\Exception\ArgumentsMustBeArrayException;
+use Kronos\GraphQLFramework\Resolver\Context\Exception\VariablesMustBeArrayException;
 
 class ContextUpdater
 {
@@ -14,6 +15,11 @@ class ContextUpdater
 	 */
 	protected $activeContext;
 
+	/**
+	 * @param object|null $root
+	 * @param array|null $arguments
+	 * @throws ArgumentsMustBeArrayException
+	 */
 	public function setCurrentResolverPath($root, $arguments)
 	{
 		$argumentsToSet = $arguments;
@@ -32,6 +38,28 @@ class ContextUpdater
 	}
 
 	/**
+	 * @param string $fullQueryString
+	 * @param array|null $variables
+	 * @throws VariablesMustBeArrayException
+	 */
+	public function setInitialData($fullQueryString, $variables)
+	{
+		$variablesToSet = $variables;
+
+		if ($variablesToSet !== null && !is_array($variablesToSet)) {
+			throw new VariablesMustBeArrayException();
+		}
+
+		if ($variablesToSet === null) {
+			$variablesToSet = [];
+		}
+
+		$this->activeContext = $this->getOrCreateContext()
+			->withFullQueryString($fullQueryString ?: "")
+			->withVariables($variablesToSet);
+	}
+
+	/**
 	 * @return GraphQLContext
 	 */
 	protected function getOrCreateContext()
@@ -43,6 +71,9 @@ class ContextUpdater
 		return $this->activeContext;
 	}
 
+	/**
+	 * @return GraphQLContext
+	 */
 	protected function getDefaultContext()
 	{
 		$initialContext = new GraphQLContext();
