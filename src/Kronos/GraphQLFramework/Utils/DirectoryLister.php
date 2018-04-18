@@ -5,6 +5,7 @@ namespace Kronos\GraphQLFramework\Utils;
 
 
 use FilesystemIterator;
+use function preg_match;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
@@ -56,5 +57,19 @@ class DirectoryLister
 		$files = $this->getFilesUnderDirectory();
 
 		return $files;
+	}
+
+	/**
+	 * @param string $pattern
+	 * @return string[]
+	 */
+	public function getFilesFilteredByRegex($pattern)
+	{
+		$files = $this->getFilesUnderDirectory();
+		$filteredFiles = array_filter($files, function ($filename) use ($pattern) {
+			return preg_match($pattern, $filename);
+		});
+
+		return $filteredFiles;
 	}
 }

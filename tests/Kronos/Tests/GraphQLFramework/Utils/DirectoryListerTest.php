@@ -88,4 +88,44 @@ class DirectoryListerTest extends TestCase
 		$this->assertContains($this->getRealPath(self::RECURSIVE_DIR_FILE_3), $retVal);
 		$this->assertContains($this->getRealPath(self::RECURSIVE_DIR_FILE_4), $retVal);
 	}
+
+	public function test_NonRecursiveDirFilterWithExtensionless_getFilesFilteredByRegex_ReturnsCorrectFilename()
+	{
+		$lister = $this->givenNonRecursiveDirectoryLister();
+
+		$retVal = $lister->getFilesFilteredByRegex("/extensionless/");
+
+		$this->assertCount(1, $retVal);
+		$this->assertContains($this->getRealPath(self::NON_RECURSIVE_DIR_FILE_1), $retVal);
+	}
+
+	public function test_NonRecursiveDirFilterWithNoResult_getFilesFilteredByRegex_ReturnsEmptyArray()
+	{
+		$lister = $this->givenNonRecursiveDirectoryLister();
+
+		$retVal = $lister->getFilesFilteredByRegex("/noresult/");
+
+		$this->assertCount(0, $retVal);
+	}
+
+	public function test_NonRecursiveDirFilterWithDot_getFilesFilteredByRegex_ReturnsCorrectFilenames()
+	{
+		$lister = $this->givenNonRecursiveDirectoryLister();
+
+		$retVal = $lister->getFilesFilteredByRegex("/\./");
+
+		$this->assertCount(2, $retVal);
+		$this->assertContains($this->getRealPath(self::NON_RECURSIVE_DIR_FILE_2), $retVal);
+		$this->assertContains($this->getRealPath(self::NON_RECURSIVE_DIR_FILE_3), $retVal);
+	}
+
+	public function test_RecursiveDirFilterWithRtfExtension_getFilesFilteredByRegex_ReturnsCorrectFilename()
+	{
+		$lister = $this->givenRecursiveDirectoryLister();
+
+		$retVal = $lister->getFilesFilteredByRegex("/\.rtf/");
+
+		$this->assertCount(1, $retVal);
+		$this->assertContains($this->getRealPath(self::RECURSIVE_DIR_FILE_4), $retVal);
+	}
 }
