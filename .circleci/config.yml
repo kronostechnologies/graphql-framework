@@ -1,4 +1,9 @@
 version: 2
+
+machine:
+  environment:
+    CC_TEST_REPORTER_ID: 4abf175e62fe3d417ee9e8db291e4ad3dc74b97fd9e65671cb095b8a400bd50f
+
 jobs:
   unit-tests:
     docker:
@@ -8,6 +13,13 @@ jobs:
 
     steps:
       - checkout
+
+      - run:
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+
+      - run: ./cc-test-reporter before-build
 
       - run: ./.circleci/scripts/bootstrap.sh
 
@@ -26,7 +38,8 @@ jobs:
       - run:
           command: |
             mkdir -p ~/phpunit
-            ./vendor/bin/phpunit --log-junit ~/phpunit/junit.xml tests
+            ./vendor/bin/phpunit --coverage-clover clover.xml --log-junit ~/phpunit/junit.xml tests
+            ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
           when: always
 
       - store_test_results:
