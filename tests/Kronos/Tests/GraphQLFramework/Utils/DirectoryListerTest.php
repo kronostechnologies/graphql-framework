@@ -5,6 +5,7 @@ namespace Kronos\Tests\GraphQLFramework\Utils;
 
 
 use Kronos\GraphQLFramework\Utils\DirectoryLister;
+use Kronos\Tests\GraphQLFramework\Utils\Exception\DirectoryNotFoundException;
 use PHPUnit\Framework\TestCase;
 use function realpath;
 
@@ -176,5 +177,14 @@ class DirectoryListerTest extends TestCase
 
 		$this->assertCount(1, $retVal);
 		$this->assertContains($this->getRealPath(self::RECURSIVE_DIR_FILE_4), $retVal);
+	}
+
+	public function test_NonExistingDirectory_getAllFiles_ThrowsDirectoryNotFoundException()
+	{
+		$lister = new DirectoryLister("/abc111/aa/bb/cc");
+
+		$this->expectException(DirectoryNotFoundException::class);
+
+		$lister->getAllFiles();
 	}
 }

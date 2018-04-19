@@ -5,10 +5,12 @@ namespace Kronos\GraphQLFramework\Utils;
 
 
 use FilesystemIterator;
+use Kronos\Tests\GraphQLFramework\Utils\Exception\DirectoryNotFoundException;
 use function preg_match;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
+use UnexpectedValueException;
 
 class DirectoryLister
 {
@@ -36,7 +38,12 @@ class DirectoryLister
 	protected function getFilesUnderDirectory()
 	{
 		if (!$this->listedFiles) {
-			$recurDirIter = new RecursiveDirectoryIterator($this->directoryPath, FilesystemIterator::SKIP_DOTS);
+			try {
+				$recurDirIter = new RecursiveDirectoryIterator($this->directoryPath, FilesystemIterator::SKIP_DOTS);
+			} catch (UnexpectedValueException $ex) {
+				throw new DirectoryNotFoundException($this->directoryPath, $ex);
+			}
+
 			$recurIter = new RecursiveIteratorIterator($recurDirIter);
 
 			$this->listedFiles = [];

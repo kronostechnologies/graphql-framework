@@ -14,7 +14,7 @@ use Kronos\GraphQLFramework\FrameworkConfiguration;
 class GraphQLContext
 {
 	/**
-	 * @var GraphQLConfiguration
+	 * @var FrameworkConfiguration
 	 */
 	protected $configuration;
 
