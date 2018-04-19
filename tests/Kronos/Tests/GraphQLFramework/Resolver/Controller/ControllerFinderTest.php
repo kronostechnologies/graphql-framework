@@ -49,6 +49,7 @@ class ControllerFinderTest extends TestCase
 		$finder = new ControllerFinder(self::CONTROLLERS_TEST_DIR, $this->loggerMock);
 
 		$retVal = $finder->getPotentialControllerClasses();
+		$retVal = $this->getMappedFQNs($retVal);
 
 		$this->assertCount(4, $retVal);
 	}
@@ -58,6 +59,7 @@ class ControllerFinderTest extends TestCase
 		$finder = new ControllerFinder(self::CONTROLLERS_TEST_DIR, $this->loggerMock);
 
 		$retVal = $finder->getPotentialControllerClasses();
+		$retVal = $this->getMappedFQNs($retVal);
 
 		$this->assertContains(self::CONTROLLER_FILE_A, $retVal);
 		$this->assertContains(self::CONTROLLER_FILE_B, $retVal);
@@ -70,6 +72,7 @@ class ControllerFinderTest extends TestCase
 		$finder = new ControllerFinder(self::CONTROLLERS_TEST_DIR, $this->loggerMock);
 
 		$retVal = $finder->getPotentialControllerClasses();
+		$retVal = $this->getMappedFQNs($retVal);
 
 		$this->assertNotContains(self::OTHER_CLASS_1, $retVal);
 		$this->assertNotContains(self::OTHER_CLASS_2, $retVal);
@@ -84,5 +87,12 @@ class ControllerFinderTest extends TestCase
 			->with($this->stringContains('The class name is missing for the controller located at'));
 
 		$finder->getPotentialControllerClasses();
+	}
+
+	protected function getMappedFQNs($results)
+	{
+		return array_map(function ($result) {
+			return $result->getFQN();
+		}, $results);
 	}
 }

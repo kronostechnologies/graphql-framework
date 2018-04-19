@@ -8,6 +8,7 @@ use function file_get_contents;
 use Kronos\GraphQLFramework\Resolver\Controller\Exception\ControllerDirNotFoundException;
 use Kronos\GraphQLFramework\Utils\DirectoryLister;
 use Kronos\GraphQLFramework\Utils\Reflection\ClassInfoReader;
+use Kronos\GraphQLFramework\Utils\Reflection\ClassInfoReaderResult;
 use Kronos\GraphQLFramework\Utils\Reflection\Exception\NoClassNameFoundException;
 use Kronos\Tests\GraphQLFramework\Utils\Exception\DirectoryNotFoundException;
 use Psr\Log\LoggerAwareInterface;
@@ -30,7 +31,7 @@ class ControllerFinder implements LoggerAwareInterface
 	/**
 	 * In-memory cached controllers found.
 	 *
-	 * @var string[]
+	 * @var ClassInfoReaderResult[]
 	 */
 	protected $controllers;
 
@@ -49,7 +50,7 @@ class ControllerFinder implements LoggerAwareInterface
 	 * checked here if they are extended by BaseController, so it is not known yet if they really are valid
 	 * controllers.
 	 *
-	 * @return string[]
+	 * @return ClassInfoReaderResult[]
 	 * @throws ControllerDirNotFoundException
 	 */
 	public function getPotentialControllerClasses()
@@ -66,7 +67,7 @@ class ControllerFinder implements LoggerAwareInterface
 			$controllerFQNs = [];
 			foreach ($controllerFilenames as $controllerFilename) {
 				try {
-					$controllerFQNs[] = $this->getControllerFQNFromFilename($controllerFilename);
+					$controllerFQNs[] = $this->getClassResultFromFilename($controllerFilename);
 				} catch (NoClassNameFoundException $ex) {
 					$this->logger->warning("The class name is missing for the controller located at {$controllerFilename}");
 				}
@@ -81,17 +82,17 @@ class ControllerFinder implements LoggerAwareInterface
 	/**
 	 * While calling getPotentialControllerClasses, we expect the FQNs not the filenames.
 	 *
-	 * @return string
-	 * @throws \Kronos\GraphQLFramework\Utils\Reflection\Exception\NoClassNameFoundException
+	 * @param string $filename
+	 * @return ClassInfoReaderResult
+	 * @throws NoClassNameFoundException
 	 */
-	protected function getControllerFQNFromFilename($filename)
+	protected function getClassResultFromFilename($filename)
 	{
 		$fileContent = file_get_contents($filename);
 
 		$classInfo = new ClassInfoReader($fileContent);
-		$result = $classInfo->read();
 
-		return $result->getFQN();
+		return $classInfo->read();
 	}
 
 	/**
