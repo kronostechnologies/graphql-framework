@@ -1,0 +1,7 @@
+exclude_patterns:
+- ".circleci/"
+- "docs/"
+- "skeleton-src/"
+- "src-docs/"
+- "tests/"
+- "vendor/"
