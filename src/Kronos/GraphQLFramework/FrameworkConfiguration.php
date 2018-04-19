@@ -7,11 +7,12 @@ namespace Kronos\GraphQLFramework;
 use Kronos\GraphQLFramework\Exception\NoCacheAdapterConfiguredException;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class FrameworkConfiguration
 {
     /**
-     * @var LoggerInterface|null
+     * @var LoggerInterface
      */
     protected $logger;
 
@@ -55,7 +56,12 @@ class FrameworkConfiguration
      */
     protected $forceFetchAdapterCacheOnOrOff;
 
-    /**
+    public function __construct()
+	{
+		$this->logger = new NullLogger();
+	}
+
+	/**
      * @return FrameworkConfiguration
      */
     public static function create()
@@ -64,7 +70,7 @@ class FrameworkConfiguration
     }
 
     /**
-     * @return null|LoggerInterface
+     * @return LoggerInterface
      */
     public function getLogger()
     {
@@ -278,10 +284,10 @@ class FrameworkConfiguration
     }
 
     /**
-     * @param null|LoggerInterface $logger
+     * @param LoggerInterface $logger
      * @return FrameworkConfiguration
      */
-    public function setLogger($logger)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
         return $this;

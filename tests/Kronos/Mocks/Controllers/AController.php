@@ -8,5 +8,8 @@ use Kronos\GraphQLFramework\BaseController;
 
 class AController extends BaseController
 {
-
+	public function getTestField()
+	{
+		return 'Hello';
+	}
 }
