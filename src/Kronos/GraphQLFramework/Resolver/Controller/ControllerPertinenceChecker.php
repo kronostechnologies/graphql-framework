@@ -3,6 +3,7 @@
 
 namespace Kronos\GraphQLFramework\Resolver\Controller;
 
+use Kronos\GraphQLFramework\Utils\Reflection\ClassInfoReaderResult;
 use Kronos\Tests\GraphQLFramework\BaseController;
 use ReflectionClass;
 
@@ -14,13 +15,24 @@ class ControllerPertinenceChecker
 	const BASE_CONTROLLER_FQN = BaseController::class;
 
 	/**
+	 * @param ClassInfoReaderResult[] $controllers
+	 * @return ClassInfoReaderResult[]
+	 */
+	public function getPertinentControllers(array $controllers)
+	{
+		return array_filter($controllers, function (ClassInfoReaderResult $controller) {
+			return $this->isControllerPertinent($controller->getFQN());
+		});
+	}
+
+	/**
 	 * @param string $controllerFQN
 	 * @return bool
 	 * @throws \ReflectionException
 	 */
 	public function isControllerPertinent($controllerFQN)
 	{
-		 return $this->doesFQNInherits($controllerFQN, self::BASE_CONTROLLER_FQN);
+		return $this->doesFQNInherits($controllerFQN, self::BASE_CONTROLLER_FQN);
 	}
 
 	/**
