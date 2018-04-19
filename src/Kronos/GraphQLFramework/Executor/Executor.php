@@ -32,7 +32,7 @@ class Executor
 	 * @param FrameworkConfiguration $configuration
 	 * @param AutomatedTypeRegistry|null $customTypeRegistry Only used for mocking currently.
 	 */
-	public function __construct(FrameworkConfiguration $configuration, AutomatedTypeRegistry $customTypeRegistry = null)
+	public function __construct(FrameworkConfiguration $configuration, $customTypeRegistry = null)
 	{
 		$this->configuration = $configuration;
 
@@ -73,9 +73,9 @@ class Executor
 	 */
 	public function executeQuery($queryString, array $variables)
 	{
-		$this->loadSchema();
-
 		try {
+			$this->loadSchema();
+
 			$resolversResult = GraphQL::executeQuery(
 				$this->schema,
 				$queryString,

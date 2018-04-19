@@ -163,7 +163,6 @@ class AutomatedTypeRegistry
 	/**
 	 * Helper function fetch mutation type. Can return null as per the RFC, which means mutations are not supported.
 	 * @return Type|null
-	 * @throws TypeNotFoundException
 	 * @throws NoClassNameFoundException
 	 * @throws InternalSchemaException
 	 */
