@@ -4,13 +4,16 @@
 namespace Kronos\GraphQLFramework\Resolver;
 
 
+use Kronos\GraphQLFramework\BaseController;
 use Kronos\GraphQLFramework\FrameworkConfiguration;
 use Kronos\GraphQLFramework\Resolver\Context\ContextUpdater;
 use Kronos\GraphQLFramework\Resolver\Controller\ControllerFinder;
 use Kronos\GraphQLFramework\Resolver\Controller\ControllerMatcher;
 use Kronos\GraphQLFramework\Resolver\Controller\ControllerPertinenceChecker;
+use Kronos\GraphQLFramework\Resolver\Exception\MissingFieldResolverException;
 use Kronos\GraphQLFramework\Utils\Reflection\ClassInfoReaderResult;
-use Kronos\Tests\GraphQLFramework\BaseController;
+use Kronos\GraphQLFramework\Utils\Reflection\ClassMethodsReader;
+use Kronos\GraphQLFramework\Utils\Reflection\Exception\NoClassMethodFoundException;
 
 class Resolver
 {
@@ -85,18 +88,47 @@ class Resolver
 	}
 
 	/**
+	 * @param BaseController $controllerInstance
+	 * @param string $fieldName
+	 * @return mixed
+	 * @throws NoClassMethodFoundException
+	 * @throws \ReflectionException
+	 */
+	protected function callFieldMethodForFieldName(BaseController $controllerInstance, $fieldName)
+	{
+		$expectedMethod = $controllerInstance::getFieldMemberQueryFunctionName($fieldName);
+
+		$methodsReader = new ClassMethodsReader(get_class($controllerInstance));
+
+		$matchingMethod = $methodsReader->getMethodForName($expectedMethod);
+
+		return $controllerInstance->$matchingMethod();
+	}
+
+	/**
 	 * @param object|null $root
 	 * @param array|null $args
 	 * @param string $typeName
 	 * @param string $fieldName
+	 * @return mixed
 	 * @throws Context\Exception\ArgumentsMustBeArrayException
 	 * @throws Controller\Exception\ControllerDirNotFoundException
 	 * @throws Controller\Exception\NoMatchingControllerFoundException
+	 * @throws MissingFieldResolverException
+	 * @throws \ReflectionException
 	 */
 	public function resolveFieldOfType($root, $args, $typeName, $fieldName)
 	{
 		$this->contextUpdater->setCurrentResolverPath($root, $args);
 
-		$controller = $this->instanciateControllerForType($typeName);
+		$controllerInstance = $this->instanciateControllerForType($typeName);
+
+		try {
+			$result = $this->callFieldMethodForFieldName($controllerInstance, $fieldName);
+		} catch (NoClassMethodFoundException $ex) {
+			throw new MissingFieldResolverException($typeName, $fieldName);
+		}
+
+		return $result;
 	}
 }

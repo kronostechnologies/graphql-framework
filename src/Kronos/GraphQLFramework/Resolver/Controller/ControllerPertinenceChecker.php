@@ -3,8 +3,8 @@
 
 namespace Kronos\GraphQLFramework\Resolver\Controller;
 
+use Kronos\GraphQLFramework\BaseController;
 use Kronos\GraphQLFramework\Utils\Reflection\ClassInfoReaderResult;
-use Kronos\Tests\GraphQLFramework\BaseController;
 use ReflectionClass;
 
 /**
