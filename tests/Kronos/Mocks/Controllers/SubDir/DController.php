@@ -4,7 +4,9 @@
 namespace Kronos\Mocks\Controllers\SubDir;
 
 
-class DController
+use Kronos\Mocks\Controllers\CustomControllerBase;
+
+class DController extends CustomControllerBase
 {
 
 }

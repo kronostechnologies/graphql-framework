@@ -4,7 +4,9 @@
 namespace Kronos\Mocks\Controllers;
 
 
-class CustomControllerBase
+use Kronos\Tests\GraphQLFramework\BaseController;
+
+class CustomControllerBase extends BaseController
 {
 
 }
