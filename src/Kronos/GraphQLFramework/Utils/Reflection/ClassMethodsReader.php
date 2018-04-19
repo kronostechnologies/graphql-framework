@@ -43,7 +43,7 @@ class ClassMethodsReader
 
 			$this->knownMethods = [];
 			foreach ($methods as $method) {
-				$this->knownMethods[strtolower($method)] = $method;
+				$this->knownMethods[strtolower($method->getName())] = $method->getName();
 			}
 		}
 
