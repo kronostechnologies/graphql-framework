@@ -23,17 +23,7 @@ class FrameworkConfiguration
     /**
      * @var string
      */
-    protected $controllersNamespace;
-
-    /**
-     * @var string
-     */
     protected $generatedSchemaDirectory;
-
-    /**
-     * @var string
-     */
-    protected $generatedSchemaNamespace;
 
     /**
      * @var bool
@@ -92,25 +82,9 @@ class FrameworkConfiguration
     /**
      * @return string
      */
-    public function getControllersNamespace()
-    {
-        return $this->controllersNamespace;
-    }
-
-    /**
-     * @return string
-     */
     public function getGeneratedSchemaDirectory()
     {
         return $this->generatedSchemaDirectory;
-    }
-
-    /**
-     * @return string
-     */
-    public function getGeneratedSchemaNamespace()
-    {
-        return $this->generatedSchemaNamespace;
     }
 
     /**
@@ -324,32 +298,12 @@ class FrameworkConfiguration
     }
 
     /**
-     * @param string $controllersNamespace
-     * @return FrameworkConfiguration
-     */
-    public function setControllersNamespace($controllersNamespace)
-    {
-        $this->controllersNamespace = $controllersNamespace;
-        return $this;
-    }
-
-    /**
      * @param string $generatedSchemaDirectory
      * @return FrameworkConfiguration
      */
     public function setGeneratedSchemaDirectory($generatedSchemaDirectory)
     {
         $this->generatedSchemaDirectory = $generatedSchemaDirectory;
-        return $this;
-    }
-
-    /**
-     * @param string $generatedSchemaNamespace
-     * @return FrameworkConfiguration
-     */
-    public function setGeneratedSchemaNamespace($generatedSchemaNamespace)
-    {
-        $this->generatedSchemaNamespace = $generatedSchemaNamespace;
         return $this;
     }
 }
