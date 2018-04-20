@@ -16,7 +16,7 @@ class DirectoryNotFoundException extends FrameworkException
 	 */
 	protected $directory;
 
-	public function __construct($directory, Throwable $previous = null)
+	public function __construct($directory, $previous = null)
 	{
 		$this->directory = $directory;
 
