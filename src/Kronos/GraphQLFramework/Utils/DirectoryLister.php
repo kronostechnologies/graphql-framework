@@ -41,7 +41,7 @@ class DirectoryLister
 		if (!$this->listedFiles) {
 			try {
 				$recurDirIter = new RecursiveDirectoryIterator($this->directoryPath, FilesystemIterator::SKIP_DOTS);
-			} catch (\Throwable $ex) {
+			} catch (\Exception $ex) {
 				throw new DirectoryNotFoundException($this->directoryPath, $ex);
 			}
 
