@@ -5,7 +5,49 @@ machine:
     CC_TEST_REPORTER_ID: 4abf175e62fe3d417ee9e8db291e4ad3dc74b97fd9e65671cb095b8a400bd50f
 
 jobs:
-  unit-tests:
+  unit-tests-5-6:
+    docker:
+      - image: php:5.6-cli-alpine
+
+    working_directory: /framework
+
+    steps:
+      - checkout
+
+      - run:
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+
+      - run: ./cc-test-reporter before-build
+
+      - run: ./.circleci/scripts/bootstrap.sh
+
+      - restore_cache:
+          keys:
+          - deps-{{ checksum "composer.json" }}
+          - deps-
+
+      - run: /composer/composer.phar install -n --prefer-dist
+
+      - save_cache:
+          paths:
+            - ./vendor
+          key: deps-{{ checksum "composer.json" }}
+
+      - run:
+          command: |
+            mkdir -p ~/phpunit
+            ./vendor/bin/phpunit --log-junit ~/phpunit/junit.xml tests
+          when: always
+
+      - store_test_results:
+          path: ~/phpunit
+
+      - store_artifacts:
+          path: ~/phpunit
+
+  unit-tests-7:
     docker:
       - image: php:7.2-cli-alpine
 
@@ -50,6 +92,10 @@ jobs:
 workflows:
   version: 2
 
-  unit-tests:
+  unit-tests-5-6:
     jobs:
-      - unit-tests
+      - unit-tests-5-6
+
+  unit-tests-7:
+    jobs:
+      - unit-tests-7
