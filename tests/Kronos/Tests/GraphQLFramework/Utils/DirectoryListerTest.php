@@ -179,9 +179,6 @@ class DirectoryListerTest extends TestCase
 		$this->assertContains($this->getRealPath(self::RECURSIVE_DIR_FILE_4), $retVal);
 	}
 
-    /**
-     * @requires PHP 7
-     */
 	public function test_NonExistingDirectory_getAllFiles_ThrowsDirectoryNotFoundException()
 	{
 		$lister = new DirectoryLister("/abc111/aa/bb/cc");

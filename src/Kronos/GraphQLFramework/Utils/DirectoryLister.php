@@ -32,15 +32,16 @@ class DirectoryLister
 		$this->directoryPath = $directoryPath;
 	}
 
-	/**
-	 * @return string[]
-	 */
+    /**
+     * @return string[]
+     * @throws DirectoryNotFoundException
+     */
 	protected function getFilesUnderDirectory()
 	{
 		if (!$this->listedFiles) {
 			try {
 				$recurDirIter = new RecursiveDirectoryIterator($this->directoryPath, FilesystemIterator::SKIP_DOTS);
-			} catch (UnexpectedValueException $ex) {
+			} catch (\Throwable $ex) {
 				throw new DirectoryNotFoundException($this->directoryPath, $ex);
 			}
 
