@@ -15,7 +15,7 @@ class ControllerDirNotFoundException extends FrameworkException
 	 * @param string $dir
 	 * @param Throwable|null $previous
 	 */
-	public function __construct($dir, Throwable $previous = null)
+	public function __construct($dir, $previous = null)
 	{
 		$message = str_replace("%dir%", $dir, self::MSG);
 
