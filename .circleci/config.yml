@@ -25,15 +25,15 @@ jobs:
 
       - restore_cache:
           keys:
-          - deps-{{ checksum "composer.json" }}
-          - deps-
+          - deps-5-6-{{ checksum "composer.json" }}
+          - deps-5-6-
 
       - run: /composer/composer.phar install -n --prefer-dist
 
       - save_cache:
           paths:
             - ./vendor
-          key: deps-{{ checksum "composer.json" }}
+          key: deps-5-6-{{ checksum "composer.json" }}
 
       - run:
           command: |
@@ -67,15 +67,15 @@ jobs:
 
       - restore_cache:
           keys:
-          - deps-{{ checksum "composer.json" }}
-          - deps-
+          - deps-7-{{ checksum "composer.json" }}
+          - deps-7-
 
       - run: /composer/composer.phar install -n --prefer-dist
 
       - save_cache:
           paths:
             - ./vendor
-          key: deps-{{ checksum "composer.json" }}
+          key: deps-7-{{ checksum "composer.json" }}
 
       - run:
           command: |
