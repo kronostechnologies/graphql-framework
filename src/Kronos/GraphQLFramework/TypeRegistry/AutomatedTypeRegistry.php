@@ -27,20 +27,10 @@ class AutomatedTypeRegistry
 	 */
 	protected $discoveredTypes = [];
 
-	/**
-	 * @var string[]
-	 */
-	protected $pendingTypes = [];
-
-	/**
-	 * @var bool
-	 */
-	protected $initialDiscoveryDone = false;
-
-	/*
-	 * @var bool
-	 */
-	protected $inDiscovery = false;
+    /**
+     * @var TypeClassDefinition[]
+     */
+	protected $typeClassesDefinitions;
 
 	/**
 	 * @param string $typesDirectory
@@ -50,44 +40,69 @@ class AutomatedTypeRegistry
 		$this->typesDirectory = $typesDirectory;
 	}
 
-	/**
-	 * @return DiscoveredType[]
-	 * @throws NoClassNameFoundException
-	 * @throws InternalSchemaException
-	 */
-	protected function getDiscoveredTypes()
-	{
-		if (!$this->initialDiscoveryDone) {
-			$this->inDiscovery = true;
+    /**
+     * @return TypeClassDefinition[]
+     */
+	protected function getTypeClassesDefinitions()
+    {
+        if ($this->typeClassesDefinitions === null) {
+            $this->typeClassesDefinitions = [];
 
-			$dirLister = new DirectoryLister($this->typesDirectory);
-			$typeFiles = $dirLister->getFilesFilteredByExtension('php');
+            $dirLister = new DirectoryLister($this->typesDirectory);
+            $typeFiles = $dirLister->getFilesFilteredByExtension('php');
 
-			foreach ($typeFiles as $typeFile) {
-				$typeFileContent = file_get_contents($typeFile);
-				$typeFileClassReader = new ClassInfoReader($typeFileContent);
+            foreach ($typeFiles as $typeFile) {
+                $typeFileContent = file_get_contents($typeFile);
+                $typeFileClassReader = new ClassInfoReader($typeFileContent);
 
-				$typeFileInfo = $typeFileClassReader->read();
-				$typeName = $this->getTypeNameFromClassName($typeFileInfo->getClassName());
-				$typeFQN = $typeFileInfo->getFQN();
+                $typeFileInfo = $typeFileClassReader->read();
+                $typeName = $this->getTypeNameFromClassName($typeFileInfo->getClassName());
+                $typeFQN = $typeFileInfo->getFQN();
 
-				if (!in_array($typeName, $this->pendingTypes) && !$this->doesTypeExist($typeName)) {
-					$this->pendingTypes[] = $typeName;
+                $this->typeClassesDefinitions[] = new TypeClassDefinition($typeName, $typeFQN);
+            }
+        }
 
-					try {
-						$this->discoveredTypes[] = new DiscoveredType($typeName, new $typeFQN($this, null));
-					} catch (\Throwable $ex) {
-						throw new InternalSchemaException($typeName, $ex->getMessage(), $ex);
-					}
-				}
-			}
+        return $this->typeClassesDefinitions;
+    }
 
-			$this->initialDiscoveryDone = true;
-			$this->inDiscovery = false;
-		}
+    /**
+     * @param $typeName
+     * @return DiscoveredType
+     */
+    protected function getDiscoveredType($typeName)
+    {
+        $similarDiscoveredType = array_filter($this->discoveredTypes, function (DiscoveredType $discoveredType) use ($typeName) {
+            return $discoveredType->getTypeName() === $typeName;
+        });
 
-		return $this->discoveredTypes;
-	}
+        if (count($similarDiscoveredType) > 0) {
+            $discoveredType = array_shift($similarDiscoveredType);
+        } else {
+            $typeClassDefinition = $this->getTypeClassesDefinitions();
+            $typeClassDefinition = array_filter($typeClassDefinition, function (TypeClassDefinition $typeClassDefinition) use ($typeName) {
+                return $typeClassDefinition->getTypeName() === $typeName;
+            });
+            $typeClassDefinition = array_shift($typeClassDefinition);
+
+            if ($typeClassDefinition === null) {
+                throw new TypeNotFoundException($typeName);
+            }
+
+            $typeFQN = $typeClassDefinition->getClassFQN();
+
+            try {
+                $typeInstance = new $typeFQN($this, null);
+            } catch (\Throwable $ex) {
+                throw new InternalSchemaException($typeName, $ex->getMessage(), $ex);
+            }
+
+            $discoveredType = new DiscoveredType($typeName, $typeInstance);
+            $this->discoveredTypes[] = $discoveredType;
+        }
+
+        return $discoveredType;
+    }
 
 	/**
 	 * @param string $className
@@ -111,19 +126,7 @@ class AutomatedTypeRegistry
 	 */
 	public function getTypeByName($soughtTypeName)
 	{
-		$discoveredTypes = $this->getDiscoveredTypes();
-
-		$matchingTypes = array_filter($discoveredTypes, function (DiscoveredType $discoveredType) use ($soughtTypeName) {
-			return $discoveredType->getTypeName() === $soughtTypeName;
-		});
-		/** @var DiscoveredType|bool $matchingType */
-		$matchingType = array_shift($matchingTypes);
-
-		if ($matchingType === null) {
-			throw new TypeNotFoundException($soughtTypeName);
-		}
-
-		return $matchingType->getTypeInstance();
+	    return $this->getDiscoveredType($soughtTypeName)->getTypeInstance();
 	}
 
 	/**
@@ -135,14 +138,10 @@ class AutomatedTypeRegistry
 	 */
 	public function doesTypeExist($soughtTypeName)
 	{
-		if ($this->inDiscovery) {
-			$discoveredTypes = $this->discoveredTypes;
-		} else {
-			$discoveredTypes = $this->getDiscoveredTypes();
-		}
+        $typeClassesDefinitions = $this->getTypeClassesDefinitions();
 
-		$matchingTypes = array_filter($discoveredTypes, function (DiscoveredType $discoveredType) use ($soughtTypeName) {
-			return $discoveredType->getTypeName() === $soughtTypeName;
+		$matchingTypes = array_filter($typeClassesDefinitions, function (TypeClassDefinition $typeClassDefinition) use ($soughtTypeName) {
+			return $typeClassDefinition->getTypeName() === $soughtTypeName;
 		});
 
 		return count($matchingTypes) > 0;
