@@ -22,6 +22,9 @@ class ControllerFinderTest extends TestCase
 		$this->loggerMock = $this->createMock(LoggerInterface::class);
 	}
 
+    /**
+     * @requires PHP 7
+     */
 	public function test_NonExistingDir_getAvailableControllerClasses_ThrowsControllerDirNotFound()
 	{
 		$finder = new ControllerFinder(MockData::NON_EXISTING_DIR, $this->loggerMock);
