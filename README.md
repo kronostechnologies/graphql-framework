@@ -1,6 +1,6 @@
 # GraphQL Framework
 
-[![CircleCI](https://circleci.com/gh/kronostechnologies/graphql-framework/tree/master.svg?style=svg)](https://circleci.com/gh/kronostechnologies/graphql-framework/tree/master) [![Maintainability](https://api.codeclimate.com/v1/badges/198f7b869eba7c71de44/maintainability)](https://codeclimate.com/github/kronostechnologies/graphql-framework/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/198f7b869eba7c71de44/maintainability)](https://codeclimate.com/github/kronostechnologies/graphql-framework/maintainability) [![CircleCI](https://circleci.com/gh/kronostechnologies/graphql-framework/tree/master.svg?style=svg)](https://circleci.com/gh/kronostechnologies/graphql-framework/tree/master)
 
 A PHP package acting as a harness around the various PHP GraphQL libraries available. It is closely coupled to Webonyx's GraphQL implementation and adds several layers of abstraction in order to ease the development of a GraphQL application or endpoint.
 
