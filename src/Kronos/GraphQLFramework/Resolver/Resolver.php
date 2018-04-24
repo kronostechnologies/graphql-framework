@@ -5,11 +5,12 @@ namespace Kronos\GraphQLFramework\Resolver;
 
 
 use Kronos\GraphQLFramework\Controller\BaseController;
+use Kronos\GraphQLFramework\Controller\ScalarController;
 use Kronos\GraphQLFramework\FrameworkConfiguration;
 use Kronos\GraphQLFramework\Resolver\Context\ContextUpdater;
 use Kronos\GraphQLFramework\Resolver\Controller\ControllerFinder;
 use Kronos\GraphQLFramework\Resolver\Controller\ControllerMatcher;
-use Kronos\GraphQLFramework\Resolver\Controller\ControllerPertinenceChecker;
+use Kronos\GraphQLFramework\Resolver\Controller\ClassInheritanceValidator;
 use Kronos\GraphQLFramework\Resolver\Exception\MissingFieldResolverException;
 use Kronos\GraphQLFramework\Utils\Reflection\ClassInfoReaderResult;
 use Kronos\GraphQLFramework\Utils\Reflection\ClassMethodsReader;
@@ -17,6 +18,10 @@ use Kronos\GraphQLFramework\Utils\Reflection\Exception\NoClassMethodFoundExcepti
 
 class Resolver
 {
+
+	const BASE_CONTROLLER_FQN = BaseController::class;
+	const SCALAR_CONTROLLER_FQN = ScalarController::class;
+
 	/**
 	 * @var FrameworkConfiguration
 	 */
@@ -30,7 +35,12 @@ class Resolver
 	/**
 	 * @var ClassInfoReaderResult[]
 	 */
-	protected $pertinentControllers;
+	protected $unfilteredClassInfoReaderResults;
+
+	/**
+	 * @var ClassInfoReaderResult[]
+	 */
+	protected $baseControllerClasses;
 
 	/**
 	 * @param FrameworkConfiguration $configuration
@@ -46,18 +56,42 @@ class Resolver
 	 * @return ClassInfoReaderResult[]
 	 * @throws Controller\Exception\ControllerDirNotFoundException
 	 */
-	protected function getPertinentControllers()
+	protected function getControllerFinderResults()
 	{
-		if ($this->pertinentControllers === null) {
+		if ($this->unfilteredClassInfoReaderResults === null) {
 			$finder = new ControllerFinder($this->configuration->getControllersDirectory(),
 				$this->configuration->getLogger());
-			$controllerClasses = $finder->getPotentialControllerClasses();
-
-			$pertinenceChecker = new ControllerPertinenceChecker();
-			$this->pertinentControllers = $pertinenceChecker->getPertinentControllers($controllerClasses);
+			$this->unfilteredClassInfoReaderResults = $finder->getPotentialControllerClasses();
 		}
 
-		return $this->pertinentControllers;
+		return $this->unfilteredClassInfoReaderResults;
+	}
+
+	/**
+	 * @param string $className
+	 * @return ClassInfoReaderResult[]
+	 * @throws Controller\Exception\ControllerDirNotFoundException
+	 */
+	protected function getControllersInheritingClassName($className)
+	{
+		$unfilteredClasses = $this->getControllerFinderResults();
+
+		$pertinenceChecker = new ClassInheritanceValidator($className);
+
+		return $pertinenceChecker->getPertinentControllers($unfilteredClasses);
+	}
+
+	/**
+	 * @return ClassInfoReaderResult[]
+	 * @throws Controller\Exception\ControllerDirNotFoundException
+	 */
+	protected function getBaseControllers()
+	{
+		if ($this->baseControllerClasses === null) {
+			$this->baseControllerClasses = $this->getControllersInheritingClassName(self::BASE_CONTROLLER_FQN);
+		}
+
+		return $this->baseControllerClasses;
 	}
 
 	/**
@@ -68,7 +102,7 @@ class Resolver
 	 */
 	protected function getControllerForType($typeName)
 	{
-		$pertinentControllers = $this->getPertinentControllers();
+		$pertinentControllers = $this->getBaseControllers();
 		$controllerMatcher = new ControllerMatcher($pertinentControllers);
 
 		return $controllerMatcher->getControllerForTypeName($typeName)->getFQN();

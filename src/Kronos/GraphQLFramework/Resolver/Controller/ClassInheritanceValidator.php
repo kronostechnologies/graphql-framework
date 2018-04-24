@@ -3,16 +3,23 @@
 
 namespace Kronos\GraphQLFramework\Resolver\Controller;
 
-use Kronos\GraphQLFramework\Controller\BaseController;
 use Kronos\GraphQLFramework\Utils\Reflection\ClassInfoReaderResult;
 use ReflectionClass;
 
 /**
- * Makes sure that whichever class we are looking at inherits BaseController in any way.
+ * Makes sure that whichever class we are looking at inherits the concerned class in any way.
  */
-class ControllerPertinenceChecker
+class ClassInheritanceValidator
 {
-	const BASE_CONTROLLER_FQN = BaseController::class;
+	protected $baseControllerFQN;
+
+	/**
+	 * @param string $baseControllerFQN
+	 */
+	public function __construct($baseControllerFQN)
+	{
+		$this->baseControllerFQN = $baseControllerFQN;
+	}
 
 	/**
 	 * @param ClassInfoReaderResult[] $controllers
@@ -32,7 +39,7 @@ class ControllerPertinenceChecker
 	 */
 	public function isControllerPertinent($controllerFQN)
 	{
-		return $this->doesFQNInherits($controllerFQN, self::BASE_CONTROLLER_FQN);
+		return $this->doesFQNInherits($controllerFQN, $this->baseControllerFQN);
 	}
 
 	/**
