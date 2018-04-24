@@ -4,7 +4,7 @@
 namespace Kronos\GraphQLFramework\Resolver;
 
 
-use Kronos\GraphQLFramework\BaseController;
+use Kronos\GraphQLFramework\Controller\BaseController;
 use Kronos\GraphQLFramework\FrameworkConfiguration;
 use Kronos\GraphQLFramework\Resolver\Context\ContextUpdater;
 use Kronos\GraphQLFramework\Resolver\Controller\ControllerFinder;
@@ -14,7 +14,6 @@ use Kronos\GraphQLFramework\Resolver\Exception\MissingFieldResolverException;
 use Kronos\GraphQLFramework\Utils\Reflection\ClassInfoReaderResult;
 use Kronos\GraphQLFramework\Utils\Reflection\ClassMethodsReader;
 use Kronos\GraphQLFramework\Utils\Reflection\Exception\NoClassMethodFoundException;
-use Psr\Log\NullLogger;
 
 class Resolver
 {

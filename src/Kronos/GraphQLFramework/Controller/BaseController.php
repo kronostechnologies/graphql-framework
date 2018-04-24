@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Kronos\GraphQLFramework;
+namespace Kronos\GraphQLFramework\Controller;
 
 
 use Kronos\GraphQLFramework\Resolver\Context\GraphQLContext;
