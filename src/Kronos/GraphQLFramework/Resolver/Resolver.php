@@ -132,4 +132,24 @@ class Resolver
 
 		return $result;
 	}
+
+	public function serializeScalarValue($typeName, $value)
+	{
+		// ToDo: Stub
+	}
+
+	public function getScalarFromValue($typeName, $value)
+	{
+		// ToDo: Stub
+	}
+
+	public function getScalarFromLiteral($typeName, $literalValue)
+	{
+		// ToDo: Stub
+	}
+
+	public function resolveInterfaceType($typeName, $value)
+	{
+		// ToDo: Stub
+	}
 }
