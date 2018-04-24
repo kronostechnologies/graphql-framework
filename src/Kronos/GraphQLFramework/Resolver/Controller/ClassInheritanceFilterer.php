@@ -9,7 +9,7 @@ use ReflectionClass;
 /**
  * Makes sure that whichever class we are looking at inherits the concerned class in any way.
  */
-class ClassInheritanceValidator
+class ClassInheritanceFilterer
 {
 	protected $baseControllerFQN;
 
@@ -25,7 +25,7 @@ class ClassInheritanceValidator
 	 * @param ClassInfoReaderResult[] $controllers
 	 * @return ClassInfoReaderResult[]
 	 */
-	public function getPertinentControllers(array $controllers)
+	public function getFilteredResults(array $controllers)
 	{
 		return array_filter($controllers, function (ClassInfoReaderResult $controller) {
 			return $this->isControllerPertinent($controller->getFQN());

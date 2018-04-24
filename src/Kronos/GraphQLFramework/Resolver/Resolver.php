@@ -10,7 +10,7 @@ use Kronos\GraphQLFramework\FrameworkConfiguration;
 use Kronos\GraphQLFramework\Resolver\Context\ContextUpdater;
 use Kronos\GraphQLFramework\Resolver\Controller\ControllerFinder;
 use Kronos\GraphQLFramework\Resolver\Controller\ControllerMatcher;
-use Kronos\GraphQLFramework\Resolver\Controller\ClassInheritanceValidator;
+use Kronos\GraphQLFramework\Resolver\Controller\ClassInheritanceFilterer;
 use Kronos\GraphQLFramework\Resolver\Exception\MissingFieldResolverException;
 use Kronos\GraphQLFramework\Utils\Reflection\ClassInfoReaderResult;
 use Kronos\GraphQLFramework\Utils\Reflection\ClassMethodsReader;
@@ -18,6 +18,8 @@ use Kronos\GraphQLFramework\Utils\Reflection\Exception\NoClassMethodFoundExcepti
 
 class Resolver
 {
+	const BASE_CONTROLLER_GROUP = 'BaseController';
+	const SCALAR_CONTROLLER_GROUP = 'ScalarController';
 
 	const BASE_CONTROLLER_FQN = BaseController::class;
 	const SCALAR_CONTROLLER_FQN = ScalarController::class;
@@ -35,12 +37,17 @@ class Resolver
 	/**
 	 * @var ClassInfoReaderResult[]
 	 */
-	protected $unfilteredClassInfoReaderResults;
+	protected $baseControllerClasses;
 
 	/**
 	 * @var ClassInfoReaderResult[]
 	 */
-	protected $baseControllerClasses;
+	protected $potentialControllerClasses;
+
+	/**
+	 * @var string[]
+	 */
+	protected $groupedControllers;
 
 	/**
 	 * @param FrameworkConfiguration $configuration
@@ -58,27 +65,40 @@ class Resolver
 	 */
 	protected function getControllerFinderResults()
 	{
-		if ($this->unfilteredClassInfoReaderResults === null) {
-			$finder = new ControllerFinder($this->configuration->getControllersDirectory(),
+		if ($this->potentialControllerClasses === null) {
+			$controllerFinder = new ControllerFinder($this->configuration->getControllersDirectory(),
 				$this->configuration->getLogger());
-			$this->unfilteredClassInfoReaderResults = $finder->getPotentialControllerClasses();
+			$this->potentialControllerClasses = $controllerFinder->getPotentialControllerClasses();
 		}
 
-		return $this->unfilteredClassInfoReaderResults;
+		return $this->potentialControllerClasses;
 	}
 
 	/**
 	 * @param string $className
 	 * @return ClassInfoReaderResult[]
-	 * @throws Controller\Exception\ControllerDirNotFoundException
 	 */
 	protected function getControllersInheritingClassName($className)
 	{
 		$unfilteredClasses = $this->getControllerFinderResults();
 
-		$pertinenceChecker = new ClassInheritanceValidator($className);
+		$inheritanceFilterer = new ClassInheritanceFilterer($className);
 
-		return $pertinenceChecker->getPertinentControllers($unfilteredClasses);
+		return $inheritanceFilterer->getFilteredResults($unfilteredClasses);
+	}
+
+	/**
+	 * @return ClassInfoReaderResult[]
+	 */
+	protected function getGroupedControllers()
+	{
+		if ($this->groupedControllers === null) {
+			$this->groupedControllers = [];
+			$this->groupedControllers[self::BASE_CONTROLLER_GROUP] = $this->getControllersInheritingClassName(self::BASE_CONTROLLER_FQN);
+			$this->groupedControllers[self::SCALAR_CONTROLLER_GROUP] = $this->getControllersInheritingClassName(self::SCALAR_CONTROLLER_FQN);
+		}
+
+		return $this->groupedControllers;
 	}
 
 	/**
@@ -87,6 +107,7 @@ class Resolver
 	 */
 	protected function getBaseControllers()
 	{
+		// ToDo: You were here too (delete this function)
 		if ($this->baseControllerClasses === null) {
 			$this->baseControllerClasses = $this->getControllersInheritingClassName(self::BASE_CONTROLLER_FQN);
 		}
@@ -100,8 +121,10 @@ class Resolver
 	 * @throws Controller\Exception\ControllerDirNotFoundException
 	 * @throws Controller\Exception\NoMatchingControllerFoundException
 	 */
-	protected function getControllerForType($typeName)
+	protected function getControllerForTypeExpectingGroup($typeName, $expectedGroup)
 	{
+		// ToDo: You were here (iterate & throw exception if expected group mismatches)
+		$this->getGroupedControllers();
 		$pertinentControllers = $this->getBaseControllers();
 		$controllerMatcher = new ControllerMatcher($pertinentControllers);
 
@@ -114,9 +137,9 @@ class Resolver
 	 * @throws Controller\Exception\ControllerDirNotFoundException
 	 * @throws Controller\Exception\NoMatchingControllerFoundException
 	 */
-	protected function instanciateControllerForType($typeName)
+	protected function instanciateControllerForTypeExpectingGroup($typeName, $expectedGroup)
 	{
-		$controllerFQN = $this->getControllerForType($typeName);
+		$controllerFQN = $this->getControllerForTypeExpectingGroup($typeName, $expectedGroup);
 
 		return new $controllerFQN($this->contextUpdater->getActiveContext());
 	}
@@ -155,7 +178,7 @@ class Resolver
 	{
 		$this->contextUpdater->setCurrentResolverPath($root, $args);
 
-		$controllerInstance = $this->instanciateControllerForType($typeName);
+		$controllerInstance = $this->instanciateControllerForType($typeName, self::BASE_CONTROLLER_GROUP);
 
 		try {
 			$result = $this->callFieldMethodForFieldName($controllerInstance, $fieldName);
