@@ -11,6 +11,8 @@ use Kronos\GraphQLFramework\Resolver\Context\ContextUpdater;
 use Kronos\GraphQLFramework\Resolver\Controller\ControllerFinder;
 use Kronos\GraphQLFramework\Resolver\Controller\ControllerMatcher;
 use Kronos\GraphQLFramework\Resolver\Controller\ClassInheritanceFilterer;
+use Kronos\GraphQLFramework\Resolver\Controller\Exception\InvalidControllerTypeException;
+use Kronos\GraphQLFramework\Resolver\Controller\Exception\NoMatchingControllerFoundException;
 use Kronos\GraphQLFramework\Resolver\Exception\MissingFieldResolverException;
 use Kronos\GraphQLFramework\Utils\Reflection\ClassInfoReaderResult;
 use Kronos\GraphQLFramework\Utils\Reflection\ClassMethodsReader;
@@ -117,25 +119,39 @@ class Resolver
 
 	/**
 	 * @param string $typeName
+	 * @param string $expectedGroup
 	 * @return string
 	 * @throws Controller\Exception\ControllerDirNotFoundException
-	 * @throws Controller\Exception\NoMatchingControllerFoundException
+	 * @throws InvalidControllerTypeException
+	 * @throws NoMatchingControllerFoundException
 	 */
 	protected function getControllerForTypeExpectingGroup($typeName, $expectedGroup)
 	{
-		// ToDo: You were here (iterate & throw exception if expected group mismatches)
-		$this->getGroupedControllers();
-		$pertinentControllers = $this->getBaseControllers();
-		$controllerMatcher = new ControllerMatcher($pertinentControllers);
+		foreach ($this->getGroupedControllers() as $groupName => $controllers) {
+			/** @var ClassInfoReaderResult[] $controllers */
+			$controllerMatcher = new ControllerMatcher($controllers);
 
-		return $controllerMatcher->getControllerForTypeName($typeName)->getFQN();
+
+			$matchingController = $controllerMatcher->getControllerForTypeName($typeName);
+
+			if ($matchingController !== null) {
+				if ($expectedGroup !== $groupName) {
+					throw new InvalidControllerTypeException($expectedGroup, $groupName);
+				} else {
+					return $matchingController->getFQN();
+				}
+			}
+		}
+
+		throw new NoMatchingControllerFoundException($typeName);
 	}
 
 	/**
 	 * @param string $typeName
+	 * @param string $expectedGroup
 	 * @return BaseController
 	 * @throws Controller\Exception\ControllerDirNotFoundException
-	 * @throws Controller\Exception\NoMatchingControllerFoundException
+	 * @throws NoMatchingControllerFoundException
 	 */
 	protected function instanciateControllerForTypeExpectingGroup($typeName, $expectedGroup)
 	{
@@ -156,7 +172,6 @@ class Resolver
 		$expectedMethod = $controllerInstance::getFieldMemberQueryFunctionName($fieldName);
 
 		$methodsReader = new ClassMethodsReader(get_class($controllerInstance));
-
 		$matchingMethod = $methodsReader->getMethodForName($expectedMethod);
 
 		return $controllerInstance->$matchingMethod();
@@ -178,7 +193,7 @@ class Resolver
 	{
 		$this->contextUpdater->setCurrentResolverPath($root, $args);
 
-		$controllerInstance = $this->instanciateControllerForType($typeName, self::BASE_CONTROLLER_GROUP);
+		$controllerInstance = $this->instanciateControllerForTypeExpectingGroup($typeName, self::BASE_CONTROLLER_GROUP);
 
 		try {
 			$result = $this->callFieldMethodForFieldName($controllerInstance, $fieldName);
@@ -191,17 +206,26 @@ class Resolver
 
 	public function serializeScalarValue($typeName, $value)
 	{
-		// ToDo: Stub
+		/** @var ScalarController $controllerInstance */
+		$controllerInstance = $this->instanciateControllerForTypeExpectingGroup($typeName, self::SCALAR_CONTROLLER_GROUP);
+
+		return $controllerInstance->serializeScalarValue($value);
 	}
 
 	public function getScalarFromValue($typeName, $value)
 	{
-		// ToDo: Stub
+		/** @var ScalarController $controllerInstance */
+		$controllerInstance = $this->instanciateControllerForTypeExpectingGroup($typeName, self::SCALAR_CONTROLLER_GROUP);
+
+		return $controllerInstance->getScalarFromValue($value);
 	}
 
 	public function getScalarFromLiteral($typeName, $literalValue)
 	{
-		// ToDo: Stub
+		/** @var ScalarController $controllerInstance */
+		$controllerInstance = $this->instanciateControllerForTypeExpectingGroup($typeName, self::SCALAR_CONTROLLER_GROUP);
+
+		return $controllerInstance->getScalarFromLiteral($literalValue);
 	}
 
 	public function resolveInterfaceType($typeName, $value)

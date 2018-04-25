@@ -41,7 +41,7 @@ class ClassInheritanceFiltererTest extends TestCase
 	{
 		$pertinenceChecker = new ClassInheritanceFilterer(Resolver::SCALAR_CONTROLLER_FQN);
 
-		$retVal = $pertinenceChecker->isControllerPertinent(MockData::SCALAR_CONTROLLER_NS);
+		$retVal = $pertinenceChecker->isControllerPertinent(MockData::CONTROLLER_NS_COLOR);
 
 		$this->assertTrue($retVal);
 	}
