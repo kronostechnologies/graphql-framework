@@ -29,13 +29,13 @@ class ControllerMatcherTest extends TestCase
 		return [$this->controllerAInfo, $this->controllerBInfo, $this->controllerCInfo, $this->controllerDInfo];
 	}
 
-	public function test_KnownControllersNonExistingType_getControllerForTypeName_ThrowsNoMatchingControllerFoundException()
+	public function test_KnownControllersNonExistingType_getControllerForTypeName_ReturnsNull()
 	{
 		$matcher = new ControllerMatcher($this->getKnownControllers());
 
-		$this->expectException(NoMatchingControllerFoundException::class);
+		$retVal = $matcher->getControllerForTypeName(MockData::INVALID_TYPE);
 
-		$matcher->getControllerForTypeName(MockData::INVALID_TYPE);
+		$this->assertSame(null, $retVal);
 	}
 
 	public function test_KnownController_getControllerForTypeNameA_ReturnsControllerAInfo()

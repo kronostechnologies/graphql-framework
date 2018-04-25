@@ -3,7 +3,7 @@
 
 namespace Kronos\GraphQLFramework\Resolver\Controller;
 
-use Kronos\GraphQLFramework\Resolver\Controller\Exception\NoMatchingControllerFoundException;
+
 use Kronos\GraphQLFramework\Utils\Reflection\ClassInfoReaderResult;
 use function preg_match;
 use function strtolower;
@@ -27,11 +27,10 @@ class ControllerMatcher
 	}
 
 	/**
-	 * Returns the controller information for the given type name. Throws an exception if none was found.
+	 * Returns the controller information for the given type name. Returns null if none was found.
 	 *
 	 * @param string $typeName
-	 * @throws NoMatchingControllerFoundException
-	 * @return ClassInfoReaderResult
+	 * @return ClassInfoReaderResult|null
 	 */
 	public function getControllerForTypeName($typeName)
 	{
@@ -44,7 +43,7 @@ class ControllerMatcher
 			}
 		}
 
-		throw new NoMatchingControllerFoundException($typeName);
+		return null;
 	}
 
 	/**

@@ -1,25 +1,14 @@
 <?php
 
 
-namespace Kronos\GraphQLFramework;
+namespace Kronos\GraphQLFramework\Controller;
 
 
-use Kronos\GraphQLFramework\Resolver\Context\GraphQLContext;
+use Kronos\GraphQLFramework\ContextAwareTrait;
 
-class BaseController
+abstract class BaseController
 {
-	/**
-	 * @var GraphQLContext
-	 */
-	protected $context;
-
-	/**
-	 * @param GraphQLContext $context
-	 */
-	public function __construct(GraphQLContext $context)
-	{
-		$this->context = $context;
-	}
+	use ContextAwareTrait;
 
 	/**
 	 * Returns the name of the function that should be executed for resolving a field. It does not check if the

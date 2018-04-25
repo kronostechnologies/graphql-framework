@@ -42,7 +42,7 @@ class GraphQLContext
 	 * Returns the configuration object initially provided to the entry point. Always defined as a GraphQLConfiguration
 	 * or implementor of it.
 	 *
-	 * @return GraphQLConfiguration
+	 * @return FrameworkConfiguration
 	 */
 	public function getConfiguration()
 	{
