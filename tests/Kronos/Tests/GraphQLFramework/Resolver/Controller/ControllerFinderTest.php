@@ -38,7 +38,7 @@ class ControllerFinderTest extends TestCase
 		$retVal = $finder->getPotentialControllerClasses();
 		$retVal = $this->getMappedFQNs($retVal);
 
-		$this->assertCount(5, $retVal);
+		$this->assertCount(6, $retVal);
 	}
 
 	public function test_ControllersTestDir_getAvailableControllerClasses_ContainsControllers()
@@ -53,6 +53,7 @@ class ControllerFinderTest extends TestCase
 		$this->assertContains(MockData::CONTROLLER_NS_C, $retVal);
 		$this->assertContains(MockData::CONTROLLER_NS_D, $retVal);
 		$this->assertContains(MockData::CONTROLLER_NS_COLOR, $retVal);
+		$this->assertContains(MockData::CONTROLLER_NS_ANIMAL, $retVal);
 	}
 
 	public function test_ControllersTestDir_getAvailableControllerClasses_DoesNotContainOtherClasses()

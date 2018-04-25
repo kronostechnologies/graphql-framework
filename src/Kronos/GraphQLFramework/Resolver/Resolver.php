@@ -5,6 +5,7 @@ namespace Kronos\GraphQLFramework\Resolver;
 
 
 use Kronos\GraphQLFramework\Controller\BaseController;
+use Kronos\GraphQLFramework\Controller\InterfaceController;
 use Kronos\GraphQLFramework\Controller\ScalarController;
 use Kronos\GraphQLFramework\FrameworkConfiguration;
 use Kronos\GraphQLFramework\Resolver\Context\ContextUpdater;
@@ -22,9 +23,11 @@ class Resolver
 {
 	const BASE_CONTROLLER_GROUP = 'BaseController';
 	const SCALAR_CONTROLLER_GROUP = 'ScalarController';
+	const INTERFACE_CONTROLLER_GROUP = 'InterfaceController';
 
 	const BASE_CONTROLLER_FQN = BaseController::class;
 	const SCALAR_CONTROLLER_FQN = ScalarController::class;
+	const INTERFACE_CONTROLLER_FQN = InterfaceController::class;
 
 	/**
 	 * @var FrameworkConfiguration
@@ -98,6 +101,7 @@ class Resolver
 			$this->groupedControllers = [];
 			$this->groupedControllers[self::BASE_CONTROLLER_GROUP] = $this->getControllersInheritingClassName(self::BASE_CONTROLLER_FQN);
 			$this->groupedControllers[self::SCALAR_CONTROLLER_GROUP] = $this->getControllersInheritingClassName(self::SCALAR_CONTROLLER_FQN);
+			$this->groupedControllers[self::INTERFACE_CONTROLLER_GROUP] = $this->getControllersInheritingClassName(self::INTERFACE_CONTROLLER_FQN);
 		}
 
 		return $this->groupedControllers;
@@ -204,6 +208,13 @@ class Resolver
 		return $result;
 	}
 
+	/**
+	 * @param string $typeName
+	 * @param mixed $value
+	 * @return mixed
+	 * @throws Controller\Exception\ControllerDirNotFoundException
+	 * @throws NoMatchingControllerFoundException
+	 */
 	public function serializeScalarValue($typeName, $value)
 	{
 		/** @var ScalarController $controllerInstance */
@@ -212,6 +223,13 @@ class Resolver
 		return $controllerInstance->serializeScalarValue($value);
 	}
 
+	/**
+	 * @param string $typeName
+	 * @param mixed $value
+	 * @return mixed
+	 * @throws Controller\Exception\ControllerDirNotFoundException
+	 * @throws NoMatchingControllerFoundException
+	 */
 	public function getScalarFromValue($typeName, $value)
 	{
 		/** @var ScalarController $controllerInstance */
@@ -220,6 +238,13 @@ class Resolver
 		return $controllerInstance->getScalarFromValue($value);
 	}
 
+	/**
+	 * @param string $typeName
+	 * @param string $literalValue
+	 * @return mixed
+	 * @throws Controller\Exception\ControllerDirNotFoundException
+	 * @throws NoMatchingControllerFoundException
+	 */
 	public function getScalarFromLiteral($typeName, $literalValue)
 	{
 		/** @var ScalarController $controllerInstance */
@@ -228,8 +253,18 @@ class Resolver
 		return $controllerInstance->getScalarFromLiteral($literalValue);
 	}
 
+	/**
+	 * @param string $typeName
+	 * @param mixed $value
+	 * @return mixed
+	 * @throws Controller\Exception\ControllerDirNotFoundException
+	 * @throws NoMatchingControllerFoundException
+	 */
 	public function resolveInterfaceType($typeName, $value)
 	{
-		// ToDo: Stub
+		/** @var InterfaceController $controllerInstance */
+		$controllerInstance = $this->instanciateControllerForTypeExpectingGroup($typeName, self::INTERFACE_CONTROLLER_GROUP);
+
+		return $controllerInstance->resolveInterfaceType($value);
 	}
 }

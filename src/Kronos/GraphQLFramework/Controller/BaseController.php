@@ -6,7 +6,7 @@ namespace Kronos\GraphQLFramework\Controller;
 
 use Kronos\GraphQLFramework\ContextAwareTrait;
 
-class BaseController
+abstract class BaseController
 {
 	use ContextAwareTrait;
 

@@ -152,4 +152,31 @@ class ResolverTest extends TestCase
 
 		$resolver->serializeScalarValue('A', '111');
 	}
+
+	public function test_PreconfiguredExistingInterfaceController_resolveInterfaceType_ReturnsResult()
+	{
+		$resolver = $this->resolver;
+
+		$retVal = $resolver->resolveInterfaceType('Animal', 'anystring');
+
+		$this->assertSame('Cat', $retVal);
+	}
+
+	public function test_PreconfiguredNonExistingInterfaceController_resolveInterfaceType_ThrowsNoMatchingControllerFoundException()
+	{
+		$resolver = $this->resolver;
+
+		$this->expectException(NoMatchingControllerFoundException::class);
+
+		$resolver->resolveInterfaceType('nonexistinginterfacetype', '111');
+	}
+
+	public function test_MistypedBaseController_resolveInterfaceType_ThrowsInvalidControllerTypeException()
+	{
+		$resolver = $this->resolver;
+
+		$this->expectException(InvalidControllerTypeException::class);
+
+		$resolver->resolveInterfaceType('Color', '111');
+	}
 }
