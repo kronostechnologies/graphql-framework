@@ -4,16 +4,16 @@
 namespace Kronos\GraphQLFramework\Resolver\Controller;
 
 
-use function file_get_contents;
 use Kronos\GraphQLFramework\Resolver\Controller\Exception\ControllerDirNotFoundException;
+use Kronos\GraphQLFramework\Resolver\Exception\DirectoryNotFoundException;
 use Kronos\GraphQLFramework\Utils\DirectoryLister;
 use Kronos\GraphQLFramework\Utils\Reflection\ClassInfoReader;
 use Kronos\GraphQLFramework\Utils\Reflection\ClassInfoReaderResult;
 use Kronos\GraphQLFramework\Utils\Reflection\Exception\NoClassNameFoundException;
-use Kronos\Tests\GraphQLFramework\Utils\Exception\DirectoryNotFoundException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
+use function file_get_contents;
 
 class ControllerFinder implements LoggerAwareInterface
 {

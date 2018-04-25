@@ -4,8 +4,8 @@
 namespace Kronos\Tests\GraphQLFramework\Utils;
 
 
+use Kronos\GraphQLFramework\Resolver\Exception\DirectoryNotFoundException;
 use Kronos\GraphQLFramework\Utils\DirectoryLister;
-use Kronos\Tests\GraphQLFramework\Utils\Exception\DirectoryNotFoundException;
 use PHPUnit\Framework\TestCase;
 use function realpath;
 

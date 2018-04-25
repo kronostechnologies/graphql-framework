@@ -3,14 +3,14 @@
 
 namespace Kronos\GraphQLFramework\TypeRegistry;
 
-use function array_shift;
-use function file_get_contents;
 use GraphQL\Type\Definition\Type;
 use Kronos\GraphQLFramework\TypeRegistry\Exception\InternalSchemaException;
 use Kronos\GraphQLFramework\TypeRegistry\Exception\TypeNotFoundException;
 use Kronos\GraphQLFramework\Utils\DirectoryLister;
 use Kronos\GraphQLFramework\Utils\Reflection\ClassInfoReader;
 use Kronos\GraphQLFramework\Utils\Reflection\Exception\NoClassNameFoundException;
+use function array_shift;
+use function file_get_contents;
 
 /**
  * Auto-detects types from the specified directory.
@@ -40,9 +40,11 @@ class AutomatedTypeRegistry
 		$this->typesDirectory = $typesDirectory;
 	}
 
-    /**
-     * @return TypeClassDefinition[]
-     */
+	/**
+	 * @return TypeClassDefinition[]
+	 * @throws NoClassNameFoundException
+	 * @throws \Kronos\GraphQLFramework\Resolver\Exception\DirectoryNotFoundException
+	 */
 	protected function getTypeClassesDefinitions()
     {
         if ($this->typeClassesDefinitions === null) {
@@ -66,10 +68,14 @@ class AutomatedTypeRegistry
         return $this->typeClassesDefinitions;
     }
 
-    /**
-     * @param $typeName
-     * @return DiscoveredType
-     */
+	/**
+	 * @param $typeName
+	 * @return DiscoveredType
+	 * @throws InternalSchemaException
+	 * @throws NoClassNameFoundException
+	 * @throws TypeNotFoundException
+	 * @throws \Kronos\GraphQLFramework\Resolver\Exception\DirectoryNotFoundException
+	 */
     protected function getDiscoveredType($typeName)
     {
         $similarDiscoveredType = array_filter($this->discoveredTypes, function (DiscoveredType $discoveredType) use ($typeName) {
@@ -123,6 +129,7 @@ class AutomatedTypeRegistry
 	 * @throws TypeNotFoundException
 	 * @throws NoClassNameFoundException
 	 * @throws InternalSchemaException
+	 * @throws \Kronos\GraphQLFramework\Resolver\Exception\DirectoryNotFoundException
 	 */
 	public function getTypeByName($soughtTypeName)
 	{
@@ -134,7 +141,7 @@ class AutomatedTypeRegistry
 	 * @param string $soughtTypeName
 	 * @return bool
 	 * @throws NoClassNameFoundException
-	 * @throws InternalSchemaException
+	 * @throws \Kronos\GraphQLFramework\Resolver\Exception\DirectoryNotFoundException
 	 */
 	public function doesTypeExist($soughtTypeName)
 	{
@@ -153,6 +160,7 @@ class AutomatedTypeRegistry
 	 * @throws TypeNotFoundException
 	 * @throws NoClassNameFoundException
 	 * @throws InternalSchemaException
+	 * @throws \Kronos\GraphQLFramework\Resolver\Exception\DirectoryNotFoundException
 	 */
 	public function getQueryType()
 	{
@@ -164,6 +172,8 @@ class AutomatedTypeRegistry
 	 * @return Type|null
 	 * @throws NoClassNameFoundException
 	 * @throws InternalSchemaException
+	 * @throws TypeNotFoundException
+	 * @throws \Kronos\GraphQLFramework\Resolver\Exception\DirectoryNotFoundException
 	 */
 	public function getMutationType()
 	{

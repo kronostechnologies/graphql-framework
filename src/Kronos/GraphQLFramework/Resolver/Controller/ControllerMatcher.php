@@ -3,7 +3,7 @@
 
 namespace Kronos\GraphQLFramework\Resolver\Controller;
 
-use Kronos\GraphQLFramework\Resolver\Controller\Exception\NoMatchingControllerFoundException;
+
 use Kronos\GraphQLFramework\Utils\Reflection\ClassInfoReaderResult;
 use function preg_match;
 use function strtolower;

@@ -1,11 +1,10 @@
 <?php
 
 
-namespace Kronos\Tests\GraphQLFramework\Utils\Exception;
+namespace Kronos\GraphQLFramework\Resolver\Exception;
 
 
 use Kronos\GraphQLFramework\Exception\FrameworkException;
-use Throwable;
 
 class DirectoryNotFoundException extends FrameworkException
 {

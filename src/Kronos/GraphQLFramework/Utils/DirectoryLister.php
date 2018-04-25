@@ -5,12 +5,12 @@ namespace Kronos\GraphQLFramework\Utils;
 
 
 use FilesystemIterator;
-use Kronos\Tests\GraphQLFramework\Utils\Exception\DirectoryNotFoundException;
-use function preg_match;
+use Kronos\GraphQLFramework\Resolver\Exception\DirectoryNotFoundException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
-use UnexpectedValueException;
+use function preg_match;
+
 
 class DirectoryLister
 {
@@ -59,6 +59,7 @@ class DirectoryLister
 
 	/**
 	 * @return string[]
+	 * @throws \Kronos\GraphQLFramework\Resolver\Exception\DirectoryNotFoundException
 	 */
 	public function getAllFiles()
 	{
@@ -70,6 +71,7 @@ class DirectoryLister
 	/**
 	 * @param string $pattern
 	 * @return string[]
+	 * @throws DirectoryNotFoundException
 	 */
 	public function getFilesFilteredByRegex($pattern)
 	{
@@ -84,6 +86,7 @@ class DirectoryLister
 	/**
 	 * @param string $extension
 	 * @return string[]
+	 * @throws \Kronos\GraphQLFramework\Resolver\Exception\DirectoryNotFoundException
 	 */
 	public function getFilesFilteredByExtension($extension)
 	{
