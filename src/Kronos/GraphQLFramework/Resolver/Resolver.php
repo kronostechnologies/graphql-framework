@@ -82,6 +82,7 @@ class Resolver
 	/**
 	 * @param string $className
 	 * @return ClassInfoReaderResult[]
+	 * @throws Controller\Exception\ControllerDirNotFoundException
 	 */
 	protected function getControllersInheritingClassName($className)
 	{
@@ -105,20 +106,6 @@ class Resolver
 		}
 
 		return $this->groupedControllers;
-	}
-
-	/**
-	 * @return ClassInfoReaderResult[]
-	 * @throws Controller\Exception\ControllerDirNotFoundException
-	 */
-	protected function getBaseControllers()
-	{
-		// ToDo: You were here too (delete this function)
-		if ($this->baseControllerClasses === null) {
-			$this->baseControllerClasses = $this->getControllersInheritingClassName(self::BASE_CONTROLLER_FQN);
-		}
-
-		return $this->baseControllerClasses;
 	}
 
 	/**
@@ -156,6 +143,7 @@ class Resolver
 	 * @return BaseController
 	 * @throws Controller\Exception\ControllerDirNotFoundException
 	 * @throws NoMatchingControllerFoundException
+	 * @throws InvalidControllerTypeException
 	 */
 	protected function instanciateControllerForTypeExpectingGroup($typeName, $expectedGroup)
 	{
@@ -192,6 +180,7 @@ class Resolver
 	 * @throws Controller\Exception\NoMatchingControllerFoundException
 	 * @throws MissingFieldResolverException
 	 * @throws \ReflectionException
+	 * @throws InvalidControllerTypeException
 	 */
 	public function resolveFieldOfType($root, $args, $typeName, $fieldName)
 	{
@@ -214,6 +203,7 @@ class Resolver
 	 * @return mixed
 	 * @throws Controller\Exception\ControllerDirNotFoundException
 	 * @throws NoMatchingControllerFoundException
+	 * @throws InvalidControllerTypeException
 	 */
 	public function serializeScalarValue($typeName, $value)
 	{
@@ -229,6 +219,7 @@ class Resolver
 	 * @return mixed
 	 * @throws Controller\Exception\ControllerDirNotFoundException
 	 * @throws NoMatchingControllerFoundException
+	 * @throws InvalidControllerTypeException
 	 */
 	public function getScalarFromValue($typeName, $value)
 	{
@@ -244,6 +235,7 @@ class Resolver
 	 * @return mixed
 	 * @throws Controller\Exception\ControllerDirNotFoundException
 	 * @throws NoMatchingControllerFoundException
+	 * @throws InvalidControllerTypeException
 	 */
 	public function getScalarFromLiteral($typeName, $literalValue)
 	{
@@ -259,6 +251,7 @@ class Resolver
 	 * @return mixed
 	 * @throws Controller\Exception\ControllerDirNotFoundException
 	 * @throws NoMatchingControllerFoundException
+	 * @throws InvalidControllerTypeException
 	 */
 	public function resolveInterfaceType($typeName, $value)
 	{
