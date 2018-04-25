@@ -9,13 +9,10 @@ use Kronos\GraphQLFramework\Controller\InterfaceController;
 use Kronos\GraphQLFramework\Controller\ScalarController;
 use Kronos\GraphQLFramework\FrameworkConfiguration;
 use Kronos\GraphQLFramework\Resolver\Context\ContextUpdater;
-use Kronos\GraphQLFramework\Resolver\Controller\ControllerFinder;
-use Kronos\GraphQLFramework\Resolver\Controller\ControllerMatcher;
-use Kronos\GraphQLFramework\Resolver\Controller\ClassInheritanceFilterer;
+use Kronos\GraphQLFramework\Resolver\Controller\ControllerStore;
 use Kronos\GraphQLFramework\Resolver\Controller\Exception\InvalidControllerTypeException;
 use Kronos\GraphQLFramework\Resolver\Controller\Exception\NoMatchingControllerFoundException;
 use Kronos\GraphQLFramework\Resolver\Exception\MissingFieldResolverException;
-use Kronos\GraphQLFramework\Utils\Reflection\ClassInfoReaderResult;
 use Kronos\GraphQLFramework\Utils\Reflection\ClassMethodsReader;
 use Kronos\GraphQLFramework\Utils\Reflection\Exception\NoClassMethodFoundException;
 
@@ -40,19 +37,9 @@ class Resolver
 	protected $contextUpdater;
 
 	/**
-	 * @var ClassInfoReaderResult[]
+	 * @var ControllerStore
 	 */
-	protected $baseControllerClasses;
-
-	/**
-	 * @var ClassInfoReaderResult[]
-	 */
-	protected $potentialControllerClasses;
-
-	/**
-	 * @var string[]
-	 */
-	protected $groupedControllers;
+	protected $controllerStore;
 
 	/**
 	 * @param FrameworkConfiguration $configuration
@@ -62,50 +49,7 @@ class Resolver
 		$this->configuration = $configuration;
 		$this->contextUpdater = new ContextUpdater();
 		$this->contextUpdater->setConfiguration($configuration);
-	}
-
-	/**
-	 * @return ClassInfoReaderResult[]
-	 * @throws Controller\Exception\ControllerDirNotFoundException
-	 */
-	protected function getControllerFinderResults()
-	{
-		if ($this->potentialControllerClasses === null) {
-			$controllerFinder = new ControllerFinder($this->configuration->getControllersDirectory(),
-				$this->configuration->getLogger());
-			$this->potentialControllerClasses = $controllerFinder->getPotentialControllerClasses();
-		}
-
-		return $this->potentialControllerClasses;
-	}
-
-	/**
-	 * @param string $className
-	 * @return ClassInfoReaderResult[]
-	 * @throws Controller\Exception\ControllerDirNotFoundException
-	 */
-	protected function getControllersInheritingClassName($className)
-	{
-		$unfilteredClasses = $this->getControllerFinderResults();
-
-		$inheritanceFilterer = new ClassInheritanceFilterer($className);
-
-		return $inheritanceFilterer->getFilteredResults($unfilteredClasses);
-	}
-
-	/**
-	 * @return ClassInfoReaderResult[]
-	 */
-	protected function getGroupedControllers()
-	{
-		if ($this->groupedControllers === null) {
-			$this->groupedControllers = [];
-			$this->groupedControllers[self::BASE_CONTROLLER_GROUP] = $this->getControllersInheritingClassName(self::BASE_CONTROLLER_FQN);
-			$this->groupedControllers[self::SCALAR_CONTROLLER_GROUP] = $this->getControllersInheritingClassName(self::SCALAR_CONTROLLER_FQN);
-			$this->groupedControllers[self::INTERFACE_CONTROLLER_GROUP] = $this->getControllersInheritingClassName(self::INTERFACE_CONTROLLER_FQN);
-		}
-
-		return $this->groupedControllers;
+		$this->controllerStore = new ControllerStore($configuration);
 	}
 
 	/**
@@ -118,23 +62,7 @@ class Resolver
 	 */
 	protected function getControllerForTypeExpectingGroup($typeName, $expectedGroup)
 	{
-		foreach ($this->getGroupedControllers() as $groupName => $controllers) {
-			/** @var ClassInfoReaderResult[] $controllers */
-			$controllerMatcher = new ControllerMatcher($controllers);
-
-
-			$matchingController = $controllerMatcher->getControllerForTypeName($typeName);
-
-			if ($matchingController !== null) {
-				if ($expectedGroup !== $groupName) {
-					throw new InvalidControllerTypeException($expectedGroup, $groupName);
-				} else {
-					return $matchingController->getFQN();
-				}
-			}
-		}
-
-		throw new NoMatchingControllerFoundException($typeName);
+		return $this->controllerStore->getControllerForTypeExpectingGroup($typeName, $expectedGroup);
 	}
 
 	/**
