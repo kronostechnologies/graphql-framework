@@ -27,6 +27,7 @@ class HttpEntryPoint
 
 	/**
 	 * @param ServerRequestInterface $request
+	 * @return ResponseInterface
 	 * @throws \HttpException
 	 * @throws HttpQueryRequiredException
 	 * @throws HttpVariablesIncorrectlyDefinedException
@@ -34,9 +35,9 @@ class HttpEntryPoint
     public function executeRequest(ServerRequestInterface $request)
     {
         if ($request->getMethod() === 'GET') {
-            $this->executeGetRequest($request);
+            return $this->executeGetRequest($request);
         } else if ($request->getMethod() === 'POST') {
-            $this->executePostRequest($request);
+            return $this->executePostRequest($request);
         } else {
             throw new \HttpException("Unsupported method {$request->getMethod()} for GraphQL. Only GET and POST are allowed.", 405);
         }
