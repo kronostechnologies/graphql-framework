@@ -5,10 +5,11 @@ namespace Kronos\GraphQLFramework\Hydrator;
 
 
 use ArgumentCountError;
-use function array_key_exists;
+use Kronos\GraphQLFramework\Hydrator\Definition\BaseDTODefinition;
 use Kronos\GraphQLFramework\Hydrator\Exception\DTORequiresArgumentsException;
 use ReflectionClass;
 use ReflectionProperty;
+use function array_key_exists;
 
 class DTOHydrator
 {
@@ -21,24 +22,48 @@ class DTOHydrator
 	 */
 	public function fromSimpleArray($className, array $values)
 	{
-		$reflectionClass = new ReflectionClass($className);
-		$properties = $reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC);
+		$instance = $this->createDTOInstance($className);
+		$this->setPropertiesInInstance($instance, $values);
 
+		return $instance;
+	}
+
+	public function fromBaseDTODefinition(BaseDTODefinition $definition, array $values)
+	{
+
+	}
+
+	/**
+	 * @param string $fqn
+	 * @return mixed
+	 * @throws DTORequiresArgumentsException
+	 */
+	protected function createDTOInstance($fqn)
+	{
 		try {
-			$instance = $reflectionClass->newInstance();
+			return new $fqn();
 		} catch (ArgumentCountError $ex) {
-			throw new DTORequiresArgumentsException($className);
+			throw new DTORequiresArgumentsException($fqn);
 		}
+	}
+
+	/**
+	 * @param mixed $instance
+	 * @param array $propertiesValuesArray
+	 * @throws \ReflectionException
+	 */
+	protected function setPropertiesInInstance(&$instance, array $propertiesValuesArray)
+	{
+		$reflectionClass = new ReflectionClass($instance);
+		$properties = $reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC);
 
 		foreach ($properties as $property) {
 			/** @var ReflectionProperty $property */
-			if (array_key_exists($property->getName(),$values)) {
-				$property->setValue($instance, $values[$property->getName()]);
+			if (array_key_exists($property->getName(),$propertiesValuesArray)) {
+				$property->setValue($instance, $propertiesValuesArray[$property->getName()]);
 			} else {
 				$property->setValue($instance, new UndefinedValue());
 			}
 		}
-
-		return $instance;
 	}
 }
