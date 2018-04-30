@@ -220,6 +220,12 @@ class DTOHydratorTest extends TestCase
 		$this->assertSame(null, $retVal->getFieldThree());
 	}
 
+	/**
+	 * Exceptions are not thrown with PHP <7, so it cannot be caught.
+	 * @requires PHP 7
+	 * @throws DTORequiresArgumentsException
+	 * @throws \ReflectionException
+	 */
 	public function test_WithConstructorDTO_fromSimpleArray_ThrowsException()
 	{
 		$arrSet = $this->getFilledSemiPrivateDTO();
