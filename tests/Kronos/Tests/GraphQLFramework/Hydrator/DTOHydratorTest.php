@@ -5,10 +5,12 @@ namespace Kronos\Tests\GraphQLFramework\Hydrator;
 
 
 use Kronos\GraphQLFramework\Hydrator\DTOHydrator;
+use Kronos\GraphQLFramework\Hydrator\Exception\DTORequiresArgumentsException;
 use Kronos\GraphQLFramework\Hydrator\UndefinedValue;
 use Kronos\Mocks\DTO\BasicDTO;
 use Kronos\Mocks\DTO\DepthDTO;
 use Kronos\Mocks\DTO\SemiPrivateDTO;
+use Kronos\Mocks\DTO\WithConstructorDTO;
 use PHPUnit\Framework\TestCase;
 
 class DTOHydratorTest extends TestCase
@@ -173,5 +175,14 @@ class DTOHydratorTest extends TestCase
 		$retVal = $this->hydrator->fromSimpleArray(SemiPrivateDTO::class, $arrSet);
 
 		$this->assertSame(null, $retVal->getFieldThree());
+	}
+
+	public function test_WithConstructorDTO_fromSimpleArray_ThrowsException()
+	{
+		$arrSet = $this->getFilledSemiPrivateDTO();
+
+		$this->expectException(DTORequiresArgumentsException::class);
+
+		$this->hydrator->fromSimpleArray(WithConstructorDTO::class, $arrSet);
 	}
 }
