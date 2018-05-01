@@ -6,6 +6,7 @@ pages:
   - 'Getting Started': 'getting-started.md'
   - 'Configuration': 'configuration.md'
   - 'Controllers': 'controllers.md'
+  - 'Data / DTOs translation': 'data.md'
   - 'Fetch Adapters': 'fetch-adapter.md'
   - 'Filters': 'filters.md'
   - 'Entry Point': 'entry.md'
