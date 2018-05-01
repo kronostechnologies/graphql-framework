@@ -22,7 +22,7 @@ Along with creating a lot of code just for the fetching logic, the latter case c
 
 Hydrators allow an array data structure to be translated into a DTO.
 
-By calling ```$this->getHydrator()->fromSimpleArray($dtoFQN, $data)``` in a controller, you can create a DTO instance filled with values. Undefined values by the user are set to `UndefinedValue`.
+By calling ```$this->hydrator->fromSimpleArray($dtoFQN, $data)``` in a controller, you can create a DTO instance filled with values. Undefined values by the user are set to `UndefinedValue`.
 
 Example:
 
@@ -44,7 +44,7 @@ $args = [
 
 // Controller function code (from arguments)
 /** @var SampleDTO $dto */
-$dto = $this->getHydrator()->fromSimpleArray(SampleDTO::class, $this->getContext()->getCurrentArguments());
+$dto = $this->hydrator->fromSimpleArray(SampleDTO::class, $this->getContext()->getCurrentArguments());
 ```
 
 Result:
@@ -52,15 +52,6 @@ Result:
 $dto->fieldOne === 1;
 $dto->fieldTwo === null;
 $dto->fieldThree instanceof UndefinedValue;
-```
-
-## Shortcut method
-
-A basic shortcut method is available to an arguments DTO quickly.
-
-```
-$this->getCurrentArgumentsDTO($dtoClassName);
-// Equal to $this->getHydrator()->fromSimpleArray($dtoClassName, , $this->getContext()->getCurrentArguments());
 ```
 
 ## Nested DTOs
@@ -95,7 +86,7 @@ Afterwards, you can pass the DTO definition class name in a controller:
 
 ```
 // $data being the input array
-$dto = $this->getHydrator()->fromDTODefinition(DTODefinitionName::class, $data);
+$dto = $this->hydrator->fromDTODefinition(DTODefinitionName::class, $data);
 ```
 
 The returned DTO will be filled with nested values. Be careful as an unset nested value will return an `UndefinedValue` in the DTO instead of the initially wanted DTO.

@@ -4,11 +4,22 @@
 namespace Kronos\GraphQLFramework\Controller;
 
 
-use Kronos\GraphQLFramework\ContextAwareTrait;
+use Kronos\GraphQLFramework\Resolver\Context\GraphQLContext;
 
 abstract class InterfaceController
 {
-	use ContextAwareTrait;
+	/**
+	 * @var GraphQLContext
+	 */
+	protected $context;
+
+	/**
+	 * @param GraphQLContext $context
+	 */
+	public function __construct(GraphQLContext $context)
+	{
+		$this->context = $context;
+	}
 
 	/**
 	 * @param mixed $value
