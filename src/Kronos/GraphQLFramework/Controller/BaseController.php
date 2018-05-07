@@ -4,11 +4,30 @@
 namespace Kronos\GraphQLFramework\Controller;
 
 
-use Kronos\GraphQLFramework\ContextAwareTrait;
+use Kronos\GraphQLFramework\Hydrator\DTOHydrator;
+use Kronos\GraphQLFramework\Resolver\Context\GraphQLContext;
 
 abstract class BaseController
 {
-	use ContextAwareTrait;
+	/**
+	 * @var GraphQLContext
+	 */
+	protected $context;
+
+	/**
+	 * @var DTOHydrator
+	 */
+	protected $hydrator;
+
+	/**
+	 * @param GraphQLContext $context
+	 * @param DTOHydrator|null $hydrator
+	 */
+	public function __construct(GraphQLContext $context, DTOHydrator $hydrator = null)
+	{
+		$this->context = $context;
+		$this->hydrator = $hydrator ?: new DTOHydrator();
+	}
 
 	/**
 	 * Returns the name of the function that should be executed for resolving a field. It does not check if the

@@ -26,6 +26,7 @@
             "Kronos\\Tests\\": "tests/Kronos/Tests/",
 
             "Kronos\\Mocks\\Controllers\\": "tests/Kronos/Mocks/Controllers/",
+            "Kronos\\Mocks\\DTO\\": "tests/Kronos/Mocks/DTO/",
             "Kronos\\Mocks\\Schema\\": "tests/Kronos/Mocks/Schema/"
         }
     }

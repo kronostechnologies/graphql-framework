@@ -4,11 +4,22 @@
 namespace Kronos\GraphQLFramework\Controller;
 
 
-use Kronos\GraphQLFramework\ContextAwareTrait;
+use Kronos\GraphQLFramework\Resolver\Context\GraphQLContext;
 
 abstract class ScalarController
 {
-	use ContextAwareTrait;
+	/**
+	 * @var GraphQLContext
+	 */
+	protected $context;
+
+	/**
+	 * @param GraphQLContext $context
+	 */
+	public function __construct(GraphQLContext $context)
+	{
+		$this->context = $context;
+	}
 
 	public abstract function serializeScalarValue($value);
 	public abstract function getScalarFromValue($value);

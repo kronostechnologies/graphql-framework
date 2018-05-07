@@ -74,6 +74,11 @@
           
             <li class="toctree-l1">
 		
+    <a class="" href="../data/">Data / DTOs translation</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <a class="" href="../fetch-adapter/">Fetch Adapters</a>
 	    </li>
           
@@ -154,7 +159,8 @@
             <div class="section">
               
                 <h1 id="cache">Cache</h1>
-<p>The GraphQL framework handles 4 cache levels from the get-go. Turning on developer mode in the configuration will fully disabled all cache layers, so they are effectively only active in production.</p>
+<p>The GraphQL framework handles 4 cache levels from the get-go. Turning on developer mode in the configuration will fully disabled all <strong>persistent</strong> cache layers (levels 1 and 2 for now), so they are effectively only active in production.</p>
+<p>A cache adapter must be configured in order to enable the cache in production.</p>
 <h2 id="levels">Levels</h2>
 <h3 id="level-1-type-registry-cache">Level 1: Type Registry cache</h3>
 <p>In particular, this caches the available types from an <code>AutomatedTypeRegistry</code>. After the first request is done, this cache is built and will prevent listing all files under the generated schema directory.</p>

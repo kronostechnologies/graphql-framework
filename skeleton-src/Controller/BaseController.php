@@ -1,5 +1,7 @@
 <?php
 
+use Kronos\GraphQLFramework\Hydrator\DTOHydrator;
+
 /**
  * Describes a GraphQL controller, known as a Resolver in the last iteration of the GraphQL framework.
  * This class is responsible of fully expanding a specified field for the resolve functions of the GraphQL
@@ -19,13 +21,20 @@ abstract class BaseController
      */
     private $context;
 
-    /**
-     * BaseController constructor.
-     * @param GraphQLContext $context
-     */
-    public function __construct(GraphQLContext $context)
+	/**
+	 * @var DTOHydrator
+	 */
+    private $hydrator;
+
+	/**
+	 * BaseController constructor.
+	 * @param GraphQLContext $context
+	 * @param DTOHydrator|null $hydrator
+	 */
+    public function __construct(GraphQLContext $context, DTOHydrator $hydrator = null)
     {
         $this->context = $context;
+        $this->hydrator = $hydrator ?: new DTOHydrator();
     }
 
     /**
