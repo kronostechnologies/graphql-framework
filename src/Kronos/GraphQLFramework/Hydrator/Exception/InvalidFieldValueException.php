@@ -5,7 +5,6 @@ namespace Kronos\GraphQLFramework\Hydrator\Exception;
 
 
 use Kronos\GraphQLFramework\Exception\FrameworkException;
-use Throwable;
 use function str_replace;
 
 class InvalidFieldValueException extends FrameworkException
@@ -16,9 +15,9 @@ class InvalidFieldValueException extends FrameworkException
 	 * @param string $fieldName
 	 * @param string $dtoName
 	 * @param string $typeName
-	 * @param Throwable|null $previous
+	 * @param mixed|null $previous
 	 */
-	public function __construct($fieldName, $dtoName, $typeName, Throwable $previous = null)
+	public function __construct($fieldName, $dtoName, $typeName, $previous = null)
 	{
 		$message = self::MSG;
 
