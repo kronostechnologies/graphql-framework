@@ -4,7 +4,7 @@
 namespace Kronos\GraphQLFramework\Executor;
 
 
-use Exception;
+use GraphQL\Error\Debug;
 use GraphQL\GraphQL;
 use GraphQL\Type\Schema;
 use Kronos\GraphQLFramework\FrameworkConfiguration;
@@ -75,20 +75,20 @@ class Executor
 	 */
 	public function executeQuery($queryString, array $variables)
 	{
-		try {
-			$this->loadSchema();
+        $this->loadSchema();
 
-			$resolversResult = GraphQL::executeQuery(
-				$this->schema,
-				$queryString,
-				null,
-				null,
-				$variables
-			);
+        $resolversResult = GraphQL::executeQuery(
+            $this->schema,
+            $queryString,
+            null,
+            null,
+            $variables
+        );
 
-			return new ExecutorResult(json_encode($resolversResult->jsonSerialize()));
-		} catch (Exception $ex) {
-			return new ExecutorResult("", $ex);
-		}
+        if ($this->configuration->isDevModeEnabled()) {
+            return new ExecutorResult(json_encode($resolversResult->toArray(Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE)));
+        } else {
+            return new ExecutorResult(json_encode($resolversResult->toArray()));
+        }
 	}
 }

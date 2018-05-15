@@ -134,9 +134,9 @@ class HttpEntryPoint
 
 		$result = $executor->executeQuery($queryString, $variables);
 
-		$statusCode = ($result->hasError() ? 500 : 200);
+		$statusCode = ($result->getUnderlyingException() !== null ? 500 : 200);
 		$headers = [];
 
-		return new Response($statusCode, $headers, $result->getResponseText());
-	}
+            return new Response($statusCode, $headers, $result->getResponseText());
+    }
 }
