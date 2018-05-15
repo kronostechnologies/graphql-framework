@@ -328,9 +328,11 @@ class FrameworkConfiguration
 
     /**
      * @param null|\stdClass $customContext
+     * @return FrameworkConfiguration
      */
     public function setCustomContext($customContext)
     {
         $this->customContext = $customContext;
+        return $this;
     }
 }

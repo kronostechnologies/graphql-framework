@@ -10,7 +10,7 @@ use Throwable;
 
 class MissingFieldResolverException extends FrameworkException
 {
-	const MSG = 'The type "%typeName%" is missing a resolver in its controller for the field "%fieldName"';
+	const MSG = 'The type "%typeName%" is missing a resolver in its controller for the field "%fieldName%"';
 
 	/**
 	 * @param string $typeName
