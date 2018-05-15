@@ -96,10 +96,12 @@ class HttpEntryPoint
         $variables = array_key_exists('variables', $parsedBody) ? $parsedBody['variables'] : null;
         $query = $parsedBody['query'];
 
-        $areVariablesSet = ($variables !== null && trim($variables) !== "");
+        $areVariablesSet = ($variables !== null && !empty($variables));
 
         if ($areVariablesSet) {
-			$variables = json_decode($variables, true);
+            if (is_string($variables)) {
+                $variables = json_decode($variables, true);
+            }
 
 			if ($variables === null) {
 				throw new HttpVariablesIncorrectlyDefinedException('POST');
