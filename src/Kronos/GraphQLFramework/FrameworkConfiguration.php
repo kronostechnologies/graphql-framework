@@ -56,6 +56,11 @@ class FrameworkConfiguration
      */
     protected $forceFetchAdapterCacheOnOrOff;
 
+    /**
+     * @var \stdClass|null
+     */
+    protected $customContext;
+
     public function __construct()
 	{
 		$this->logger = new NullLogger();
@@ -311,5 +316,21 @@ class FrameworkConfiguration
     {
         $this->generatedSchemaDirectory = $generatedSchemaDirectory;
         return $this;
+    }
+
+    /**
+     * @return null|\stdClass
+     */
+    public function getCustomContext()
+    {
+        return $this->customContext;
+    }
+
+    /**
+     * @param null|\stdClass $customContext
+     */
+    public function setCustomContext($customContext)
+    {
+        $this->customContext = $customContext;
     }
 }
