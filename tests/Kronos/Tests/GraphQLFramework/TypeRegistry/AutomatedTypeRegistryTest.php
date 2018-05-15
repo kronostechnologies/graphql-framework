@@ -6,6 +6,8 @@ namespace Kronos\Tests\GraphQLFramework\TypeRegistry;
 
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use Kronos\GraphQLFramework\FrameworkConfiguration;
+use Kronos\GraphQLFramework\Resolver\Resolver;
 use Kronos\GraphQLFramework\TypeRegistry\AutomatedTypeRegistry;
 use Kronos\GraphQLFramework\TypeRegistry\Exception\TypeNotFoundException;
 use PHPUnit\Framework\TestCase;
@@ -16,9 +18,19 @@ class AutomatedTypeRegistryTest extends TestCase
 	const DIR_IMMUTABLE_SCHEMA = __DIR__ . '/../../../Mocks/Schema/Immutable/Types/';
 	const DIR_INVALID_SCHEMA = __DIR__ . '/../../../Mocks/Schema/Invalid/Types/';
 
+    /**
+     * @var Resolver
+     */
+	protected $resolver;
+
+	protected function setUp()
+    {
+        $this->resolver = new Resolver(new FrameworkConfiguration());
+    }
+
 	public function test_WithQueryTypeSchema_getQueryType_ReturnsTypeObject()
 	{
-		$registry = new AutomatedTypeRegistry(self::DIR_MUTABLE_SCHEMA);
+		$registry = new AutomatedTypeRegistry($this->resolver, self::DIR_MUTABLE_SCHEMA);
 
 		$retVal = $registry->getTypeByName('Query');
 
@@ -27,7 +39,7 @@ class AutomatedTypeRegistryTest extends TestCase
 
 	public function test_WithQueryTypeSchema_getQueryType_DefinitionHasQueryType()
 	{
-		$registry = new AutomatedTypeRegistry(self::DIR_MUTABLE_SCHEMA);
+		$registry = new AutomatedTypeRegistry($this->resolver, self::DIR_MUTABLE_SCHEMA);
 
 		$retVal = $registry->getTypeByName('Query');
 
@@ -36,7 +48,7 @@ class AutomatedTypeRegistryTest extends TestCase
 
 	public function test_NoQueryTypeSchema_getQueryType_ThrowsTypeNotFoundException()
 	{
-		$registry = new AutomatedTypeRegistry(self::DIR_INVALID_SCHEMA);
+		$registry = new AutomatedTypeRegistry($this->resolver, self::DIR_INVALID_SCHEMA);
 
 		$this->expectException(TypeNotFoundException::class);
 
@@ -45,7 +57,7 @@ class AutomatedTypeRegistryTest extends TestCase
 
 	public function test_WithMutationTypeSchema_getMutationType_ReturnsTypeObject()
 	{
-		$registry = new AutomatedTypeRegistry(self::DIR_MUTABLE_SCHEMA);
+		$registry = new AutomatedTypeRegistry($this->resolver, self::DIR_MUTABLE_SCHEMA);
 
 		$retVal = $registry->getMutationType();
 
@@ -54,7 +66,7 @@ class AutomatedTypeRegistryTest extends TestCase
 
 	public function test_WithMutationTypeSchema_getMutationType_DefinitionHasMutationType()
 	{
-		$registry = new AutomatedTypeRegistry(self::DIR_MUTABLE_SCHEMA);
+		$registry = new AutomatedTypeRegistry($this->resolver, self::DIR_MUTABLE_SCHEMA);
 
 		$retVal = $registry->getTypeByName('Mutation');
 
@@ -63,7 +75,7 @@ class AutomatedTypeRegistryTest extends TestCase
 
 	public function test_NoMutationTypeSchema_getMutationType_ReturnsNull()
 	{
-		$registry = new AutomatedTypeRegistry(self::DIR_IMMUTABLE_SCHEMA);
+		$registry = new AutomatedTypeRegistry($this->resolver, self::DIR_IMMUTABLE_SCHEMA);
 
 		$retVal = $registry->getMutationType();
 
@@ -72,7 +84,7 @@ class AutomatedTypeRegistryTest extends TestCase
 
 	public function test_WithMutationTypeSchema_doesTypeExist_ReturnsTrue()
 	{
-		$registry = new AutomatedTypeRegistry(self::DIR_MUTABLE_SCHEMA);
+		$registry = new AutomatedTypeRegistry($this->resolver, self::DIR_MUTABLE_SCHEMA);
 
 		$retVal = $registry->doesTypeExist('Mutation');
 
@@ -81,7 +93,7 @@ class AutomatedTypeRegistryTest extends TestCase
 
 	public function test_NoMutationTypeSchema_doesTypeExist_ReturnsFalse()
 	{
-		$registry = new AutomatedTypeRegistry(self::DIR_IMMUTABLE_SCHEMA);
+		$registry = new AutomatedTypeRegistry($this->resolver, self::DIR_IMMUTABLE_SCHEMA);
 
 		$retVal = $registry->doesTypeExist('Mutation');
 
@@ -90,7 +102,7 @@ class AutomatedTypeRegistryTest extends TestCase
 
 	public function test_NoQueryTypeSchema_getTypeByName_ThrowsTypeNotFoundException()
 	{
-		$registry = new AutomatedTypeRegistry(self::DIR_INVALID_SCHEMA);
+		$registry = new AutomatedTypeRegistry($this->resolver, self::DIR_INVALID_SCHEMA);
 
 		$this->expectException(TypeNotFoundException::class);
 
@@ -99,7 +111,7 @@ class AutomatedTypeRegistryTest extends TestCase
 
 	public function test_WithQueryTypeSchema_multipleGetQueryType_ReturnsSameTypeInstance()
 	{
-		$registry = new AutomatedTypeRegistry(self::DIR_MUTABLE_SCHEMA);
+		$registry = new AutomatedTypeRegistry($this->resolver, self::DIR_MUTABLE_SCHEMA);
 
 		$fetch1 = $registry->getQueryType();
 		$fetch2 = $registry->getTypeByName('Query');
@@ -109,7 +121,7 @@ class AutomatedTypeRegistryTest extends TestCase
 
 	public function test_WithQueryTypeSchema_getQueryTypeAndGetTypeByName_ReturnsSameType()
 	{
-		$registry = new AutomatedTypeRegistry(self::DIR_MUTABLE_SCHEMA);
+		$registry = new AutomatedTypeRegistry($this->resolver, self::DIR_MUTABLE_SCHEMA);
 
 		$queryTypeVal = $registry->getQueryType();
 		$byNameVal = $registry->getTypeByName('Query');
@@ -119,7 +131,7 @@ class AutomatedTypeRegistryTest extends TestCase
 
 	public function test_WithMutationTypeSchema_getMutationTypeAndGetTypeByName_ReturnsSameType()
 	{
-		$registry = new AutomatedTypeRegistry(self::DIR_MUTABLE_SCHEMA);
+		$registry = new AutomatedTypeRegistry($this->resolver, self::DIR_MUTABLE_SCHEMA);
 
 		$mutationTypeVal = $registry->getMutationType();
 		$byNameVal = $registry->getTypeByName('Mutation');
