@@ -8,6 +8,7 @@ use Exception;
 use GraphQL\GraphQL;
 use GraphQL\Type\Schema;
 use Kronos\GraphQLFramework\FrameworkConfiguration;
+use Kronos\GraphQLFramework\Resolver\Resolver;
 use Kronos\GraphQLFramework\TypeRegistry\Automated\GeneratedSchemaDefinition;
 use Kronos\GraphQLFramework\TypeRegistry\AutomatedTypeRegistry;
 
@@ -50,8 +51,9 @@ class Executor
 	{
 		$schemaDefinition = new GeneratedSchemaDefinition($schemaDirectory);
 		$typesDirectory = $schemaDefinition->getTypesDirectory();
+		$resolver = new Resolver($this->configuration);
 
-		$this->typeRegistry = new AutomatedTypeRegistry($typesDirectory);
+		$this->typeRegistry = new AutomatedTypeRegistry($resolver, $typesDirectory);
 	}
 
 	protected function loadSchema()

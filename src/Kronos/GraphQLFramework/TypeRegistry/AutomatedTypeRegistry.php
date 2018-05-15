@@ -4,6 +4,7 @@
 namespace Kronos\GraphQLFramework\TypeRegistry;
 
 use GraphQL\Type\Definition\Type;
+use Kronos\GraphQLFramework\Resolver\Resolver;
 use Kronos\GraphQLFramework\TypeRegistry\Exception\InternalSchemaException;
 use Kronos\GraphQLFramework\TypeRegistry\Exception\TypeNotFoundException;
 use Kronos\GraphQLFramework\Utils\DirectoryLister;
@@ -28,15 +29,22 @@ class AutomatedTypeRegistry
 	protected $discoveredTypes = [];
 
     /**
+     * @var Resolver
+     */
+	protected $resolver;
+
+    /**
      * @var TypeClassDefinition[]
      */
 	protected $typeClassesDefinitions;
 
-	/**
-	 * @param string $typesDirectory
-	 */
-	public function __construct($typesDirectory)
+    /**
+     * @param Resolver $resolver
+     * @param string $typesDirectory
+     */
+	public function __construct($resolver, $typesDirectory)
 	{
+	    $this->resolver = $resolver;
 		$this->typesDirectory = $typesDirectory;
 	}
 
@@ -98,7 +106,7 @@ class AutomatedTypeRegistry
             $typeFQN = $typeClassDefinition->getClassFQN();
 
             try {
-                $typeInstance = new $typeFQN($this, null);
+                $typeInstance = new $typeFQN($this, $this->resolver);
             } catch (\Throwable $ex) {
                 throw new InternalSchemaException($typeName, $ex->getMessage(), $ex);
             }
