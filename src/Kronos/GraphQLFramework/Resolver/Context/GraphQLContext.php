@@ -4,7 +4,9 @@
 namespace Kronos\GraphQLFramework\Resolver\Context;
 
 
+use Codeliner\ArrayReader\ArrayReader;
 use Kronos\GraphQLFramework\FrameworkConfiguration;
+use Kronos\GraphQLFramework\Relay\RelayGlobalIdentifier;
 
 /**
  * Immutable context object available to the framework user.
@@ -59,6 +61,34 @@ class GraphQLContext
 	{
 		return $this->currentArguments;
 	}
+
+    /**
+     * Returns the argument value in the specified path, or null.
+     * @param string $path
+     * @return string|null
+     */
+	public function getArgument($path)
+    {
+        $reader = new ArrayReader($this->getCurrentArguments());
+
+        return $reader->stringValue($path);
+    }
+
+    /**
+     * Returns a relay global identifier ID. Throws an exception if the identifier is invalid or was not found.
+     *
+     * @param string $path
+     * @return int
+     * @throws \Kronos\GraphQLFramework\Relay\Exception\InvalidPayloadException
+     */
+    public function getIdFromArgument($path)
+    {
+        $argument = $this->getArgument($path);
+        $relayGID = new RelayGlobalIdentifier();
+        $relayGID->deserialize($argument);
+
+        return $relayGID->getIdentifier();
+    }
 
 	/**
 	 * Defines the caller of the current point where the request is at in the resolver. This will be null if at

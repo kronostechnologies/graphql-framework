@@ -14,7 +14,8 @@
         "psr/http-message": "^1.0",
         "webonyx/graphql-php": "^0.11.5",
         "guzzlehttp/psr7": "^1.4",
-        "overblog/dataloader-php": "^0.5.2"
+        "overblog/dataloader-php": "^0.5.2",
+        "codeliner/array-reader" : "~1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7",
