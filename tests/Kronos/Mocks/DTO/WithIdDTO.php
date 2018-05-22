@@ -4,7 +4,7 @@
 namespace Kronos\Mocks\DTO;
 
 
-class DifferentSpecificIdDTO
+class WithIdDTO
 {
-
+    public $id;
 }

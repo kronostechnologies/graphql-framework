@@ -5,7 +5,9 @@ namespace Kronos\GraphQLFramework\Relay;
 
 
 use function array_key_exists;
+use function is_object;
 use Kronos\GraphQLFramework\FrameworkMiddleware;
+use ReflectionClass;
 
 class RelayMiddleware implements FrameworkMiddleware
 {
@@ -52,16 +54,29 @@ class RelayMiddleware implements FrameworkMiddleware
     /**
      * @param \stdClass|mixed $response
      * @return \stdClass|mixed
+     * @throws \ReflectionException
      */
     public function modifyResponse($response)
     {
-        // Is request object or something else?
-        // > Object:
-        //   Reflect properties contained in class
-        //   If class contains id property, set its value to RelayCursor(entityName: ClassFQN, id)
-        //   > Enumerate each property k/v:
-        //      If value contains array or object, return to execution start
-        // > Something else:
-        //   Ignore
+        if (is_object($response)) {
+            $response = clone $response;
+            $reflectionClass = new ReflectionClass($response);
+
+            foreach ($reflectionClass->getProperties() as $property) {
+                if ($property->getName() === $this->idFieldName) {
+                    $relayGID = new RelayGlobalIdentifier();
+                    $relayGID->setIdentifier($property->getValue($response));
+                    $relayGID->setEntityName(get_class($response));
+
+                    $property->setValue($response, $relayGID);
+                } else if (is_object($property->getValue($response))) {
+                    $property->setValue($response, $this->modifyResponse($property->getValue()));
+                }
+            }
+
+            return $response;
+        } else {
+            return $response;
+        }
     }
 }

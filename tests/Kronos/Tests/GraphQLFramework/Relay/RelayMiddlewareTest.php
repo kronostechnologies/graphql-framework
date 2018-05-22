@@ -7,6 +7,9 @@ namespace Kronos\Tests\GraphQLFramework\Relay;
 use Kronos\GraphQLFramework\Relay\Exception\InvalidPayloadException;
 use Kronos\GraphQLFramework\Relay\RelayGlobalIdentifier;
 use Kronos\GraphQLFramework\Relay\RelayMiddleware;
+use Kronos\Mocks\DTO\NoIdDTO;
+use Kronos\Mocks\DTO\SpecificIdDTO;
+use Kronos\Mocks\DTO\WithIdDTO;
 use PHPUnit\Framework\TestCase;
 
 class RelayMiddlewareTest extends TestCase
@@ -84,6 +87,55 @@ class RelayMiddlewareTest extends TestCase
         $input = 'abc';
 
         $output = $this->defaultMiddleware->modifyRequest($input);
+
+        $this->assertSame($input, $output);
+    }
+
+    public function test_ObjectResponseNoId_modifyResponse_DoesNotModifyInputObject()
+    {
+        $input = new NoIdDTO();
+        $input->val = 111;
+
+        $output = $this->defaultMiddleware->modifyResponse($input);
+
+        $this->assertNotSame($input, $output);
+    }
+
+    public function test_ObjectResponseNoId_modifyResponse_ReturnsEqualResponse()
+    {
+        $input = new NoIdDTO();
+        $input->val = 111;
+
+        $output = $this->defaultMiddleware->modifyResponse($input);
+
+        $this->assertEquals($input, $output);
+    }
+
+    public function test_ObjectResponseSpecificIdField_modifyResponse_ReturnsEncapsulatedIdField()
+    {
+        $input = new WithIdDTO();
+        $input->id = self::DEFAULT_ID;
+
+        $output = $this->defaultMiddleware->modifyResponse($input);
+
+        $this->assertInstanceOf(RelayGlobalIdentifier::class, $output->id);
+    }
+
+    public function test_ObjectResponseDifferentSpecificIdField_modifyResponse_ReturnsEncapsulatedIdField()
+    {
+        $input = new SpecificIdDTO();
+        $input->anotherId = self::DEFAULT_ID;
+
+        $output = $this->specificIdMiddleware->modifyResponse($input);
+
+        $this->assertInstanceOf(RelayGlobalIdentifier::class, $output->anotherId);
+    }
+
+    public function test_NonObjectResponse_modifyResponse_ReturnsSameResponse()
+    {
+        $input = 'abc';
+
+        $output = $this->defaultMiddleware->modifyResponse($input);
 
         $this->assertSame($input, $output);
     }
