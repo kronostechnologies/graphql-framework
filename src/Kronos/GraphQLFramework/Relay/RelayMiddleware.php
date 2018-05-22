@@ -4,7 +4,9 @@
 namespace Kronos\GraphQLFramework\Relay;
 
 
-class RelayRequestModifier
+use Kronos\GraphQLFramework\FrameworkMiddleware;
+
+class RelayMiddleware implements FrameworkMiddleware
 {
     /**
      * @var string
@@ -21,8 +23,9 @@ class RelayRequestModifier
 
     /**
      * @param array|\stdClass|mixed $request
+     * @return array|\stdClass|mixed
      */
-    public function getRawIdFromRequest($request)
+    public function modifyRequest($request)
     {
         // Is request array, object, or something else?
         // > Array:
@@ -40,8 +43,9 @@ class RelayRequestModifier
 
     /**
      * @param array|\stdClass|mixed $response
+     * @return array|\stdClass|mixed
      */
-    public function setRelayIdForResponse($response)
+    public function modifyResponse($response)
     {
         // Is request array, object, or something else?
         // > Array:

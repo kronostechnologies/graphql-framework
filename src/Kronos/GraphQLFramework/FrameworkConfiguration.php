@@ -61,6 +61,11 @@ class FrameworkConfiguration
      */
     protected $customContext;
 
+    /**
+     * @var FrameworkMiddleware[]
+     */
+    protected $middlewares = [];
+
     public function __construct()
 	{
 		$this->logger = new NullLogger();
@@ -334,5 +339,35 @@ class FrameworkConfiguration
     {
         $this->customContext = $customContext;
         return $this;
+    }
+
+    /**
+     * @param FrameworkMiddleware $middleware
+     * @return $this
+     */
+    public function addMiddleware(FrameworkMiddleware $middleware)
+    {
+        $this->middlewares[] = $middleware;
+        return $this;
+    }
+
+    /**
+     * @param FrameworkMiddleware $middleware
+     * @return $this
+     */
+    public function removeMiddleware(FrameworkMiddleware $middleware)
+    {
+        $this->middlewares = array_filter($this->middlewares, function(FrameworkMiddleware $registeredMiddleware) use ($middleware) {
+            return $registeredMiddleware !== $middleware;
+        });
+        return $this;
+    }
+
+    /**
+     * @return FrameworkMiddleware[]
+     */
+    public function getMiddlewares()
+    {
+        return $this->middlewares;
     }
 }
