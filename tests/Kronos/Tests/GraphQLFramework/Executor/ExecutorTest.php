@@ -72,13 +72,24 @@ class ExecutorTest extends TestCase
 		$this->assertFalse($retVal->hasError());
 	}
 
-	public function test_InvalidQueryType_executeQuery_HasEmptyResponseText()
+	public function test_InvalidQueryTypeNotDevMode_executeQuery_ContainsInternalErrorResponseText()
 	{
 		$configuration = new FrameworkConfiguration();
 		$executor = new Executor($configuration, $this->typeRegistryMock);
 
 		$result = $executor->executeQuery("", []);
 
-		$this->assertSame("", $result->getResponseText());
+		$this->assertContains("An internal error has occured", $result->getResponseText());
+	}
+
+	public function test_InvalidQueryTypeDevMode_executeQuery_ContainsInternalExceptionDetails()
+	{
+		$configuration = new FrameworkConfiguration();
+		$configuration->enableDevMode();
+		$executor = new Executor($configuration, $this->typeRegistryMock);
+
+		$result = $executor->executeQuery("", []);
+
+		$this->assertContains("\"internalException\"", $result->getResponseText());
 	}
 }

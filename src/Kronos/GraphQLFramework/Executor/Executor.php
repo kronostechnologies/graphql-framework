@@ -75,15 +75,30 @@ class Executor
 	 */
 	public function executeQuery($queryString, array $variables)
 	{
-        $this->loadSchema();
+        try {
+            $this->loadSchema();
 
-        $resolversResult = GraphQL::executeQuery(
-            $this->schema,
-            $queryString,
-            null,
-            null,
-            $variables
-        );
+            $resolversResult = GraphQL::executeQuery(
+                $this->schema,
+                $queryString,
+                null,
+                null,
+                $variables
+            );
+        } catch (\Exception $ex) {
+            if ($this->configuration->isDevModeEnabled()) {
+                return new ExecutorResult(json_encode([
+                    'internalException' => [
+                        'message' => $ex->getMessage(),
+                        'trace' => $ex->getTrace(),
+                    ]
+                ]), $ex);
+            } else {
+                return new ExecutorResult(json_encode([
+                    'error' => 'An internal error has occured'
+                ]), $ex);
+            }
+        }
 
         if ($this->configuration->isDevModeEnabled()) {
             return new ExecutorResult(json_encode($resolversResult->toArray(Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE)));
