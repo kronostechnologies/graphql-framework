@@ -4,6 +4,7 @@
 namespace Kronos\GraphQLFramework\Relay;
 
 
+use function array_key_exists;
 use Kronos\GraphQLFramework\FrameworkMiddleware;
 
 class RelayMiddleware implements FrameworkMiddleware
@@ -22,36 +23,39 @@ class RelayMiddleware implements FrameworkMiddleware
     }
 
     /**
-     * @param array|\stdClass|mixed $request
-     * @return array|\stdClass|mixed
+     * @param array|mixed $request
+     * @return array|mixed
+     * @throws Exception\InvalidPayloadException
      */
     public function modifyRequest($request)
     {
-        // Is request array, object, or something else?
-        // > Array:
-        //   If key named id is found, set field from RelayCursor(entityName: ClassFQN, id).id
-        //   > Enumerate each array k/v:
-        //      If value contains array or object, return to execution start
-        // > Object:
-        //   Reflect properties contained in class
-        //   If class contains id property, set field from RelayCursor(entityName: ClassFQN, id).id
-        //   > Enumerate each property k/v:
-        //      If value contains array or object, return to execution start
-        // > Something else:
-        //   Ignore
+        if (is_array($request)) {
+            if (array_key_exists($this->idFieldName, $request)) {
+                $relayIdentifier = new RelayGlobalIdentifier();
+                $relayIdentifier->deserialize($request[$this->idFieldName]);
+
+                $request[$this->idFieldName] = $relayIdentifier->getIdentifier();
+            }
+
+            foreach ($request as $key => $value) {
+                if (is_array($value)) {
+                    $request[$key] = $this->modifyRequest($value);
+                }
+            }
+
+            return $request;
+        } else {
+            return $request;
+        }
     }
 
     /**
-     * @param array|\stdClass|mixed $response
-     * @return array|\stdClass|mixed
+     * @param \stdClass|mixed $response
+     * @return \stdClass|mixed
      */
     public function modifyResponse($response)
     {
-        // Is request array, object, or something else?
-        // > Array:
-        //   If key named id is found, construct RelayCursor(entityName: ClassFQN, id)
-        //   > Enumerate each array k/v:
-        //      If value contains array or object, return to execution start
+        // Is request object or something else?
         // > Object:
         //   Reflect properties contained in class
         //   If class contains id property, set its value to RelayCursor(entityName: ClassFQN, id)
