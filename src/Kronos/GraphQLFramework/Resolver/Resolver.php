@@ -112,12 +112,21 @@ class Resolver
 	 */
 	public function resolveFieldOfType($root, $args, $typeName, $fieldName)
 	{
+	    foreach ($this->configuration->getMiddlewares() as $middleware) {
+	        $args = $middleware->modifyRequest($args);
+	        $root = $middleware->modifyRequest($root);
+        }
+
 		$this->contextUpdater->setCurrentResolverPath($root, $args);
 
 		$controllerInstance = $this->instanciateControllerForTypeExpectingGroup($typeName, self::BASE_CONTROLLER_GROUP);
 
 		try {
 			$result = $this->callFieldMethodForFieldName($controllerInstance, $fieldName);
+
+			foreach ($this->configuration->getMiddlewares() as $middleware) {
+			    $result = $middleware->modifyResponse($result);
+            }
 		} catch (NoClassMethodFoundException $ex) {
 			throw new MissingFieldResolverException($typeName, $fieldName);
 		}
