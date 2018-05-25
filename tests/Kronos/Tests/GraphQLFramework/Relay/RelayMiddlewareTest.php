@@ -31,8 +31,8 @@ class RelayMiddlewareTest extends TestCase
 
     public function setUp()
     {
-        $this->defaultMiddleware = new RelayMiddleware(self::DEFAULT_ID);
-        $this->specificIdMiddleware = new RelayMiddleware(self::SPECIFIC_ID);
+        $this->defaultMiddleware = new RelayMiddleware(self::DEFAULT_ID, '');
+        $this->specificIdMiddleware = new RelayMiddleware(self::SPECIFIC_ID, '');
     }
 
     public function test_ArrayRequestNoId_modifyRequest_ReturnsSameRequest()
@@ -118,7 +118,7 @@ class RelayMiddlewareTest extends TestCase
 
         $output = $this->defaultMiddleware->modifyResponse($input);
 
-        $this->assertInstanceOf(RelayGlobalIdentifier::class, $output->id);
+        $this->assertNotSame($input->id, $output->id);
     }
 
     public function test_ObjectResponseDifferentSpecificIdField_modifyResponse_ReturnsEncapsulatedIdField()
@@ -128,7 +128,7 @@ class RelayMiddlewareTest extends TestCase
 
         $output = $this->specificIdMiddleware->modifyResponse($input);
 
-        $this->assertInstanceOf(RelayGlobalIdentifier::class, $output->anotherId);
+        $this->assertNotSame($input->anotherId, $output->anotherId);
     }
 
     public function test_NonObjectResponse_modifyResponse_ReturnsSameResponse()
