@@ -1,3 +1,3 @@
 # Development Mode
 
-Enabling the development mode adds several additional exceptions that the GraphQL framework can throw, aiding you through your development. Additionally, all caches are disabled.
+For now, enabling the development mode simply allows exceptions to pass through the underlying GraphQL service to the HTTP frontend. This essentially makes debugging much easier.
