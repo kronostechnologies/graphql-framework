@@ -6,8 +6,6 @@ pages:
   - 'Getting Started': 'getting-started.md'
   - 'Configuration': 'configuration.md'
   - 'Controllers': 'controllers.md'
-  - 'Fetch Adapters': 'fetch-adapter.md'
-  - 'Filters': 'filters.md'
   - 'Entry Point': 'entry.md'
   - 'Development Mode': 'development-mode.md'
   - 'Schema Generator': 'generator.md'
