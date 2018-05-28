@@ -1,11 +1,6 @@
 # Principles & Architecture
 
-This framework is built on a few tenants:
-
-1. **Ease of use**: This section and Getting started should be good enough to start using it. Really, the only thing you'd need to know are what schema you want, and which data store you want to use. 
-2. **Reduced boilerplate code**: This framework uses heavy abstractions over the excellent [WebOnyx GraphQL PHP library](https://github.com/webonyx/graphql-php). It is, however, a very configuration-over-convenience library, which the framework aims to correct.
-3. **Assisting the developer**: By throwing helpful error messages, such as informing that a controller is missing a function to get X field, or that a translator is missing for Y type.
-4. **Optimization**: All the last 3 points should have a minimal impact on the optimization.
+This framework is built to be as **simple** as possible to use, preferring a **convenience-over-configuration** approach. Although it is aimed to be entirely modular, using its core built-in features will provide a much better experience.
 
 ## Workflow
 
@@ -14,8 +9,7 @@ When working with the library, you should follow this workflow:
 1. Create a GraphQL schema to expose.
 2. Create a GraphQL entry point.
 3. Create a Controller for each type in the GraphQL schema.
-4. Create a FetchAdapter for each type in the GraphQL schema.
-5. Test your API.
+4. Test your API.
 
 See [Getting Started](getting-started.md) for a better starting example.
 
