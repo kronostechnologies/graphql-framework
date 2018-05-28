@@ -44,7 +44,7 @@ Once the matching controller is found, a function matching the detailed field is
 
 ### Hydrators
 
-Hydrators can convert an array to any DTO object from a given definition. See [Advanced data handling](data.md) for more details.
+Hydrators can convert an array to any DTO object from a given definition. See [Advanced data handling](advanced-data-handling.md) for more details.
 
 ## Scalar type resolution
 

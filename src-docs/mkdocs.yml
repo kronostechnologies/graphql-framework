@@ -6,7 +6,6 @@ pages:
   - 'Getting Started': 'getting-started.md'
   - 'Configuration': 'configuration.md'
   - 'Controllers': 'controllers.md'
-  - 'Data / DTOs translation': 'data.md'
   - 'Fetch Adapters': 'fetch-adapter.md'
   - 'Filters': 'filters.md'
   - 'Entry Point': 'entry.md'
@@ -14,4 +13,5 @@ pages:
   - 'Schema Generator': 'generator.md'
   - 'Type Registry': 'type-registry.md'
   - 'Cache': 'cache.md'
+  - 'Advanced data handling': 'advanced-data-handling.md'
 site_dir: '../docs'

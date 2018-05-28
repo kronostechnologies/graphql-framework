@@ -1,4 +1,4 @@
-# Data / DTOs translation
+# Advanced data handling
 
 When receiving data from the underlying GraphQL library, it is received in an array format, like so:
 
@@ -22,7 +22,7 @@ Along with creating a lot of code just for the fetching logic, the latter case c
 
 Hydrators allow an array data structure to be translated into a DTO.
 
-By calling ```$this->hydrator->fromSimpleArray($dtoFQN, $data)``` in a controller, you can create a DTO instance filled with values. Undefined values by the user are set to `UndefinedValue`.
+By calling `$this->hydrator->fromSimpleArray($dtoFQN, $data)` in a controller, you can create a DTO instance filled with values. Undefined values by the user are set to `UndefinedValue`.
 
 Example:
 
