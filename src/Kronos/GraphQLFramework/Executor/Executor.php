@@ -80,43 +80,44 @@ class Executor
         try {
             $this->loadSchema();
 
+            $formatter = function ($error) {
+                if (is_null($error)) {
+                    return ['message' => 'Internal server error'];
+                } else if ($error instanceof ClientDisplayableExceptionInterface) {
+                    return [ 'clientError' => [
+                        'code' => $error->getClientErrorCode(),
+                        'description' => $error->getClientErrorDescription(),
+                        'statusCode' => $error->getClientHttpStatusCode(),
+                    ]];
+                } else {
+                    return ['message' => 'Internal server error'];
+                }
+            };
+
             $resolversResult = GraphQL::executeQuery(
                 $this->schema,
                 $queryString,
                 null,
                 null,
                 $variables
-            )->setErrorsHandler(function (array $errors) {
-                /** @var Error[] $errors */
-                foreach ($errors as $error) {
-                    $error = $error->getPrevious();
+            )
+                ->setErrorFormatter($formatter)
+                ->setErrorsHandler(function (array $errors, $formatter) {
+                    /** @var Error[] $errors */
+                    $retVal = [];
 
-                    if ($this->configuration->getExceptionHandler() !== null) {
-                        $exceptionHandler = $this->configuration->getExceptionHandler();
-                        $exceptionHandler($error);
-                    }
-                }
-            })->setErrorFormatter(function (Error $error) {
-                $error = $error->getPrevious();
+                    foreach ($errors as $error) {
+                        $error = $error->getPrevious();
 
-                if ($this->configuration->isDevModeEnabled()) {
-                   [
-                        'internalException' => [
-                            'message' => $error->getMessage(),
-                            'trace' => $error->getTrace(),
-                        ]
-                    ];
-                } else {
-                    if ($error instanceof ClientDisplayableExceptionInterface) {
-                        return [ 'error' => [
-                            'code' => $error->getClientErrorCode(),
-                            'description' => $error->getClientErrorDescription(),
-                            'statusCode' => $error->getClientHttpStatusCode(),
-                        ]];
-                    } else {
-                        return [ 'error' => 'An internal error has occured' ];
+                        if ($this->configuration->getExceptionHandler() !== null) {
+                            $exceptionHandler = $this->configuration->getExceptionHandler();
+                            $exceptionHandler($error);
+                        }
+
+                        $retVal[] = $formatter($error);
                     }
-                }
+
+                    return $retVal;
             });
         } catch (\Exception $ex) {
             // These exceptions occur before entering in the framework itself
@@ -134,7 +135,7 @@ class Executor
                 ]), $ex);
             } else {
             	if ($ex instanceof ClientDisplayableExceptionInterface) {
-					$exceptionPayload = [ 'error' => [
+					$exceptionPayload = [ 'clientError' => [
 						'code' => $ex->getClientErrorCode(),
 						'description' => $ex->getClientErrorDescription(),
 						'statusCode' => $ex->getClientHttpStatusCode(),
