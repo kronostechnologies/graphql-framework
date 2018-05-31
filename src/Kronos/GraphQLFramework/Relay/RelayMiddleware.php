@@ -8,6 +8,7 @@ use function array_key_exists;
 use function is_object;
 use Kronos\GraphQLFramework\FrameworkMiddleware;
 use ReflectionClass;
+use function str_replace;
 
 class RelayMiddleware implements FrameworkMiddleware
 {
@@ -17,11 +18,18 @@ class RelayMiddleware implements FrameworkMiddleware
     protected $idFieldName;
 
     /**
-     * @param string $idFieldName
+     * @var string
      */
-    public function __construct($idFieldName)
+    protected $strippedNamespacePath;
+
+    /**
+     * @param string $idFieldName
+     * @param string $strippedNamespacePath
+     */
+    public function __construct($idFieldName, $strippedNamespacePath)
     {
         $this->idFieldName = $idFieldName;
+        $this->strippedNamespacePath = $strippedNamespacePath;
     }
 
     /**
@@ -58,7 +66,14 @@ class RelayMiddleware implements FrameworkMiddleware
      */
     public function modifyResponse($response)
     {
-        if (is_object($response)) {
+        if (is_array($response)) {
+            // Array of DTOs
+            foreach ($response as $key => $val) {
+                $response[$key] = $this->modifyResponse($val);
+            }
+
+            return $response;
+        } else if (is_object($response)) {
             $response = clone $response;
             $reflectionClass = new ReflectionClass($response);
 
@@ -66,9 +81,16 @@ class RelayMiddleware implements FrameworkMiddleware
                 if ($property->getName() === $this->idFieldName) {
                     $relayGID = new RelayGlobalIdentifier();
                     $relayGID->setIdentifier($property->getValue($response));
-                    $relayGID->setEntityName(get_class($response));
 
-                    $property->setValue($response, $relayGID);
+                    $shortenedEntityName = str_replace(
+                        $this->strippedNamespacePath,
+                        "",
+                        get_class($response)
+                    );
+
+                    $relayGID->setEntityName($shortenedEntityName);
+
+                    $property->setValue($response, $relayGID->serialize());
                 } else if (is_object($property->getValue($response))) {
                     $property->setValue($response, $this->modifyResponse($property->getValue()));
                 }

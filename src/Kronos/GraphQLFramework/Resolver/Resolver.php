@@ -4,6 +4,8 @@
 namespace Kronos\GraphQLFramework\Resolver;
 
 
+use function is_object;
+use Kronos\CRM\Gateway\InfoPrimes\Data\Validation\Exception;
 use Kronos\GraphQLFramework\Controller\BaseController;
 use Kronos\GraphQLFramework\Controller\InterfaceController;
 use Kronos\GraphQLFramework\Controller\ScalarController;
