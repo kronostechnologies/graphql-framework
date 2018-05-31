@@ -158,4 +158,31 @@ class ExecutorTest extends TestCase
 		$this->assertNotContains("\.php", $result->getResponseText());
 		$this->assertNotContains(" line", $result->getResponseText());
 	}
+
+	public function test_ExceptionHandlerConfigured_executeQuery_ExceptionHandlerIsCalled()
+	{
+		$configuration = new FrameworkConfiguration();
+		$configuration->setExceptionHandler(function ($exception) {
+			$this->assertTrue(true);
+		});
+		$executor = new Executor($configuration, $this->typeRegistryMock);
+
+		$this->typeRegistryMock->method('getQueryType')->will($this->throwException(new DummyServerException()));
+
+		$executor->executeQuery("query { a { id } }", []);
+	}
+
+	public function test_ExceptionHandlerConfigured_executeQuery_ExceptionHandlerContainsException()
+	{
+		$configuration = new FrameworkConfiguration();
+		$thrownEx = new DummyServerException();
+		$configuration->setExceptionHandler(function ($exception) use ($thrownEx) {
+			$this->assertSame($thrownEx, $exception);
+		});
+		$executor = new Executor($configuration, $this->typeRegistryMock);
+
+		$this->typeRegistryMock->method('getQueryType')->will($this->throwException($thrownEx));
+
+		$executor->executeQuery("query { a { id } }", []);
+	}
 }

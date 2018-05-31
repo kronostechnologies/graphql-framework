@@ -104,6 +104,11 @@ class Executor
 				} else {
 					$exceptionPayload = [ 'error' => 'An internal error has occured' ];
 				}
+
+				if ($this->configuration->getExceptionHandler() !== null) {
+            		$this->configuration->getExceptionHandler()($ex);
+				}
+
                 return new ExecutorResult(json_encode($exceptionPayload), $ex);
             }
         }
