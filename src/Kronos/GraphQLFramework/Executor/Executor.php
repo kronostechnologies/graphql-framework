@@ -94,6 +94,7 @@ class Executor
                 }
             };
 
+            $handledException = null;
             $resolversResult = GraphQL::executeQuery(
                 $this->schema,
                 $queryString,
@@ -102,12 +103,13 @@ class Executor
                 $variables
             )
                 ->setErrorFormatter($formatter)
-                ->setErrorsHandler(function (array $errors, $formatter) {
+                ->setErrorsHandler(function (array $errors, $formatter) use (&$handledException) {
                     /** @var Error[] $errors */
                     $retVal = [];
 
                     foreach ($errors as $error) {
                         $error = $error->getPrevious();
+                        $handledException = $error;
 
                         if ($this->configuration->getExceptionHandler() !== null) {
                             $exceptionHandler = $this->configuration->getExceptionHandler();
@@ -149,9 +151,11 @@ class Executor
         }
 
         if ($this->configuration->isDevModeEnabled()) {
-            return new ExecutorResult(json_encode($resolversResult->toArray(Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE)));
+            $result = $resolversResult->toArray(Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE);
         } else {
-            return new ExecutorResult(json_encode($resolversResult->toArray()));
+            $result = $resolversResult->toArray();
         }
-	}
+
+        return new ExecutorResult(json_encode($result), $handledException);
+    }
 }
