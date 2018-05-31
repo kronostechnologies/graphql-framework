@@ -4,6 +4,7 @@
 namespace Kronos\GraphQLFramework;
 
 
+use Closure;
 use Kronos\GraphQLFramework\Exception\NoCacheAdapterConfiguredException;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Log\LoggerInterface;
@@ -65,6 +66,11 @@ class FrameworkConfiguration
      * @var FrameworkMiddleware[]
      */
     protected $middlewares = [];
+
+	/**
+	 * @var Closure|null
+	 */
+    protected $exceptionHandler;
 
     public function __construct()
 	{
@@ -370,4 +376,22 @@ class FrameworkConfiguration
     {
         return $this->middlewares;
     }
+
+	/**
+	 * @return Closure|null
+	 */
+	public function getExceptionHandler()
+	{
+		return $this->exceptionHandler;
+	}
+
+	/**
+	 * @param Closure|null $exceptionHandler ($exception) => void
+	 * @return FrameworkConfiguration
+	 */
+	public function setExceptionHandler(Closure $exceptionHandler)
+	{
+		$this->exceptionHandler = $exceptionHandler;
+		return $this;
+	}
 }

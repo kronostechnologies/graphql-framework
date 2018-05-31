@@ -7,6 +7,7 @@ namespace Kronos\GraphQLFramework\Executor;
 use GraphQL\Error\Debug;
 use GraphQL\GraphQL;
 use GraphQL\Type\Schema;
+use Kronos\GraphQLFramework\Exception\ClientDisplayableExceptionInterface;
 use Kronos\GraphQLFramework\FrameworkConfiguration;
 use Kronos\GraphQLFramework\Resolver\Resolver;
 use Kronos\GraphQLFramework\TypeRegistry\Automated\GeneratedSchemaDefinition;
@@ -94,9 +95,22 @@ class Executor
                     ]
                 ]), $ex);
             } else {
-                return new ExecutorResult(json_encode([
-                    'error' => 'An internal error has occured'
-                ]), $ex);
+            	if ($ex instanceof ClientDisplayableExceptionInterface) {
+					$exceptionPayload = [ 'error' => [
+						'code' => $ex->getClientErrorCode(),
+						'description' => $ex->getClientErrorDescription(),
+						'statusCode' => $ex->getClientHttpStatusCode(),
+					]];
+				} else {
+					$exceptionPayload = [ 'error' => 'An internal error has occured' ];
+				}
+
+				if ($this->configuration->getExceptionHandler() !== null) {
+            		$exceptionHandler = $this->configuration->getExceptionHandler();
+					$exceptionHandler($ex);
+				}
+
+                return new ExecutorResult(json_encode($exceptionPayload), $ex);
             }
         }
 
