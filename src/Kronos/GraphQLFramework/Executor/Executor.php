@@ -106,7 +106,8 @@ class Executor
 				}
 
 				if ($this->configuration->getExceptionHandler() !== null) {
-            		$this->configuration->getExceptionHandler()($ex);
+            		$exceptionHandler = $this->configuration->getExceptionHandler();
+					$exceptionHandler($ex);
 				}
 
                 return new ExecutorResult(json_encode($exceptionPayload), $ex);
