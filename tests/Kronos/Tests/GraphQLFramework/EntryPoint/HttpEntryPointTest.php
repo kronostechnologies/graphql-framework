@@ -4,16 +4,17 @@
 namespace Kronos\Tests\GraphQLFramework\EntryPoint;
 
 
-use GuzzleHttp\Psr7\ServerRequest;
-use function GuzzleHttp\Psr7\stream_for;
 use Kronos\GraphQLFramework\EntryPoint\Exception\HttpQueryRequiredException;
 use Kronos\GraphQLFramework\EntryPoint\HttpEntryPoint;
 use Kronos\GraphQLFramework\Executor\Executor;
 use Kronos\GraphQLFramework\Executor\ExecutorResult;
 use Kronos\GraphQLFramework\FrameworkConfiguration;
+use Kronos\Mocks\Controllers\Exception\DummyClientException;
+use Kronos\Mocks\Controllers\Exception\DummyServerException;
 use Kronos\Tests\GraphQLFramework\HttpAwareTestTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use function GuzzleHttp\Psr7\stream_for;
 
 class HttpEntryPointTest extends TestCase
 {
@@ -32,8 +33,6 @@ class HttpEntryPointTest extends TestCase
 			->disableOriginalConstructor()
 			->setMethods(['executeQuery'])
 			->getMock();
-
-		$this->mockedExecutor->method('executeQuery')->willReturn(new ExecutorResult("{}"));
 	}
 
 	/**
@@ -53,6 +52,7 @@ class HttpEntryPointTest extends TestCase
 	public function test_GetRequestWithQueryNoVars_executeRequest_PassesQueryEmptyArrayToExecutor()
 	{
 		$entryPoint = $this->getExecutorMockedEntryPoint();
+		$this->mockedExecutor->method('executeQuery')->willReturn(new ExecutorResult("{}"));
 
 		$this->mockedExecutor->expects($this->once())->method('executeQuery')->with("query {\n    id\n}", []);
 
@@ -65,6 +65,7 @@ class HttpEntryPointTest extends TestCase
 	public function test_GetRequestWithVariables_executeRequest_VariablesArePassedToExecutor()
 	{
 		$entryPoint = $this->getExecutorMockedEntryPoint();
+		$this->mockedExecutor->method('executeQuery')->willReturn(new ExecutorResult("{}"));
 
 		$this->mockedExecutor->expects($this->once())->method('executeQuery')->with(
 			"query {\n    id\n}",
@@ -83,6 +84,7 @@ class HttpEntryPointTest extends TestCase
 	public function test_PostRequestWithBodyNoVars_executeRequest_PassesQueryEmptyArrayToExecutor()
 	{
 		$entryPoint = $this->getExecutorMockedEntryPoint();
+		$this->mockedExecutor->method('executeQuery')->willReturn(new ExecutorResult("{}"));
 
 		$this->mockedExecutor->expects($this->once())->method('executeQuery')->with("query {\n    id\n}", []);
 
@@ -95,6 +97,7 @@ class HttpEntryPointTest extends TestCase
 	public function test_PostRequestWithVariables_executeRequest_VariablesArePassedToExecutor()
 	{
 		$entryPoint = $this->getExecutorMockedEntryPoint();
+		$this->mockedExecutor->method('executeQuery')->willReturn(new ExecutorResult("{}"));
 
 		$this->mockedExecutor->expects($this->once())->method('executeQuery')->with(
 			"query {\n    id\n}",
@@ -110,6 +113,7 @@ class HttpEntryPointTest extends TestCase
 	public function test_GetRequestNoQuery_executeRequest_ThrowsHttpQueryRequiredException()
 	{
 		$entryPoint = $this->getExecutorMockedEntryPoint();
+		$this->mockedExecutor->method('executeQuery')->willReturn(new ExecutorResult("{}"));
 
 		$this->expectException(HttpQueryRequiredException::class);
 		$this->expectExceptionMessage(HttpQueryRequiredException::MSG_GET);
@@ -122,6 +126,7 @@ class HttpEntryPointTest extends TestCase
 	public function test_PostRequestNoQuery_executeRequest_ThrowsHttpQueryRequiredException()
 	{
 		$entryPoint = $this->getExecutorMockedEntryPoint();
+		$this->mockedExecutor->method('executeQuery')->willReturn(new ExecutorResult("{}"));
 
 		$this->expectException(HttpQueryRequiredException::class);
 		$this->expectExceptionMessage(HttpQueryRequiredException::MSG_POST);
@@ -134,6 +139,7 @@ class HttpEntryPointTest extends TestCase
 	public function test_PostInvalidJSON_executeRequest_ThrowsHttpQueryRequiredException()
 	{
 		$entryPoint = $this->getExecutorMockedEntryPoint();
+		$this->mockedExecutor->method('executeQuery')->willReturn(new ExecutorResult("{}"));
 
 		$this->expectException(HttpQueryRequiredException::class);
 		$this->expectExceptionMessage(HttpQueryRequiredException::MSG_POST);
@@ -147,6 +153,7 @@ class HttpEntryPointTest extends TestCase
 	public function test_GetRequestWithAlreadyQueryPrefix_executeRequest_DoesNotDuplicateQueryPrefix()
 	{
 		$entryPoint = $this->getExecutorMockedEntryPoint();
+		$this->mockedExecutor->method('executeQuery')->willReturn(new ExecutorResult("{}"));
 
 		$this->mockedExecutor->expects($this->once())->method('executeQuery')->with("query {\n    id\n}", []);
 
@@ -154,5 +161,47 @@ class HttpEntryPointTest extends TestCase
 			->withQueryParams(['query' => "query {\n    id\n}"]);
 
 		$entryPoint->executeRequest($serverRequest);
+	}
+
+	public function test_RequestThrowsClientException_executeRequest_ReturnsCorrectStatusCode()
+	{
+		$entryPoint = $this->getExecutorMockedEntryPoint();
+
+		$this->mockedExecutor->method('executeQuery')->willReturn(new ExecutorResult("{}", new DummyClientException()));
+
+		$serverRequest = $this->getRequest()
+			->withQueryParams(['query' => "query {\n    id\n}"]);
+
+		$response = $entryPoint->executeRequest($serverRequest);
+
+		$this->assertSame(DummyClientException::STATUS_CODE, $response->getStatusCode());
+	}
+
+	public function test_CorrectRequest_executeRequest_Returns200StatusCode()
+	{
+		$entryPoint = $this->getExecutorMockedEntryPoint();
+
+		$this->mockedExecutor->method('executeQuery')->willReturn(new ExecutorResult("{}"));
+
+		$serverRequest = $this->getRequest()
+			->withQueryParams(['query' => "query {\n    id\n}"]);
+
+		$response = $entryPoint->executeRequest($serverRequest);
+
+		$this->assertSame(200, $response->getStatusCode());
+	}
+
+	public function test_RequestThrowsServerException_executeRequest_Returns500StatusCode()
+	{
+		$entryPoint = $this->getExecutorMockedEntryPoint();
+
+		$this->mockedExecutor->method('executeQuery')->willReturn(new ExecutorResult("{}", new DummyServerException()));
+
+		$serverRequest = $this->getRequest()
+			->withQueryParams(['query' => "query {\n    id\n}"]);
+
+		$response = $entryPoint->executeRequest($serverRequest);
+
+		$this->assertSame(500, $response->getStatusCode());
 	}
 }

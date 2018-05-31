@@ -7,6 +7,7 @@ namespace Kronos\GraphQLFramework\EntryPoint;
 use GuzzleHttp\Psr7\Response;
 use Kronos\GraphQLFramework\EntryPoint\Exception\HttpQueryRequiredException;
 use Kronos\GraphQLFramework\EntryPoint\Exception\HttpVariablesIncorrectlyDefinedException;
+use Kronos\GraphQLFramework\Exception\ClientDisplayableExceptionInterface;
 use Kronos\GraphQLFramework\Executor\Executor;
 use Kronos\GraphQLFramework\FrameworkConfiguration;
 use Psr\Http\Message\ResponseInterface;
@@ -134,7 +135,16 @@ class HttpEntryPoint
 
 		$result = $executor->executeQuery($queryString, $variables);
 
-		$statusCode = ($result->getUnderlyingException() !== null ? 500 : 200);
+		if ($result->hasError()) {
+			$underlyingException = $result->getUnderlyingException();
+			if ($underlyingException instanceof ClientDisplayableExceptionInterface) {
+				$statusCode = $underlyingException->getClientHttpStatusCode();
+			} else {
+				$statusCode = 500;
+			}
+		} else {
+			$statusCode = 200;
+		}
 		$headers = [];
 
 		return new Response($statusCode, $headers, $result->getResponseText());
