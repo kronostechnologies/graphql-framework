@@ -4,7 +4,6 @@
 namespace Kronos\GraphQLFramework\EntryPoint;
 
 
-use function array_key_exists;
 use GuzzleHttp\Psr7\Response;
 use Kronos\GraphQLFramework\EntryPoint\Exception\HttpQueryRequiredException;
 use Kronos\GraphQLFramework\EntryPoint\Exception\HttpVariablesIncorrectlyDefinedException;
@@ -12,6 +11,7 @@ use Kronos\GraphQLFramework\Executor\Executor;
 use Kronos\GraphQLFramework\FrameworkConfiguration;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use function array_key_exists;
 
 class HttpEntryPoint
 {
@@ -137,6 +137,6 @@ class HttpEntryPoint
 		$statusCode = ($result->getUnderlyingException() !== null ? 500 : 200);
 		$headers = [];
 
-            return new Response($statusCode, $headers, $result->getResponseText());
+		return new Response($statusCode, $headers, $result->getResponseText());
     }
 }
