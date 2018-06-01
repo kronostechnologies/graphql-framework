@@ -1,11 +1,11 @@
 # Getting started
 
-Beforehand, it is important to know that this library does not provide an out-of-the-box solution. As such, some amount of PHP knowledge is required, and ideally a Web framework should encapsulate the GraphQL endpoint. One such as [Laravel](https://laravel.com), [Slim](https://www.slimframework.com/) or [Symfony](https://symfony.com/). All you truly need is a way to read and write PSR-7 objects from/to the client. Afterwards, you can handle incoming HTTP requests as GraphQL requests.
+Beforehand, it is important to know that this library does not provide a standalone solution. As such, some amount of PHP knowledge is required, and ideally a Web framework should encapsulate the GraphQL endpoint (such as [Laravel](https://laravel.com), [Slim](https://www.slimframework.com/) or [Symfony](https://symfony.com/)). All you truly need is a way to read and write [PSR-7](https://www.php-fig.org/psr/psr-7/) objects from/to the client. Afterwards, you can handle incoming HTTP requests as GraphQL requests.
 
 ## Requirements
 
 * A project with an initialized composer.json
-* A project with an initialized Gruntfile and package.json
+* A project with an initialized package.json and Gruntfile.js
 * Some way to read and write PSR-7 request objects to/from the client
 * An endpoint dedicated to GraphQL
 
@@ -13,20 +13,20 @@ Beforehand, it is important to know that this library does not provide an out-of
 
 Assuming you have all three things above, the first thing to do would be to include both the GraphQL Generator and the GraphQL Framework.
 
-```
+```bash
 composer require kronostechnologies/graphql-framework
 composer require --dev kronostechnologies/graphql-generator
 ```
 
-Once this is done, your PHP dependencies are setup. Next, we need a package from npm in order to generate the GraphQL schema for us:
+Once this is done, your PHP dependencies are setup. Next thing, we need a package from npm in order to generate the GraphQL schema for us:
 
-```
+```bash
 npm install --save-dev grunt-graphql-php-generator
 ```
 
 ## Setting up a schema watcher
 
-Once this is installed, you can create your first `.graphqls` schema. Let's create it at a specific location to simplify the example, under `graphql/schema.graphqls`:
+Now that all the dependencies are installed, you can create your first `.graphqls` schema. Let's create it at a specific location to simplify the example, under `graphql/schema.graphqls`:
 
 ```
 scalar DateTime
@@ -57,7 +57,7 @@ type Query {
 }
 ```
 
-Once created, you will need to adjust your Gruntfile to tell it from which file to generate the schema from, and where to. Add this to it:
+Once created, you will need to adjust your Gruntfile to tell it from which file to generate the schema from/to. Add this to your `Gruntfile.js`:
 
 ```
     'autogen-schema': {

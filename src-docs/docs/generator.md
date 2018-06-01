@@ -6,14 +6,14 @@ An external library is used to transform a `graphqls` (GraphQL Schema) file into
 
 The schema generator does need PHP to be installed locally, along with NodeJS and Grunt. This assumes you have an initialized `package.json`. 
 
-```
+```bash
 composer install --dev graphql-generator
 npm install --save-dev grunt-graphql-php-generator
 ```
 
 Afterwards, the generator needs to be configured through the Gruntfile by adding an entry to Grunt's `initConfig` object:
 
-```
+```plaintext
     'autogen-schema': {
         options: {
             source: '{FilePathOfGraphQLSchema}',

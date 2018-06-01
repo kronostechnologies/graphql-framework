@@ -30,7 +30,7 @@ $configuration = FrameworkConfiguration::create()
 
 ## Custom context
 
-It will become quite essential to provide a custom context object to the GraphQL framework. A custom context includes element that are agnostic to the framework, but that are still needed to make your application work correctly. For example:
+Needs arise to pass information through the framework back to your business logic. A custom context includes elements that are agnostic to the framework, but that are still needed to make your application work correctly. For example:
 
 * The authentication context
 * Core services context (database, logging)
@@ -56,12 +56,13 @@ $config->setCustomContext($context);
 
 // Initialize framework from config
 // ...
-];
 ```
+
+You can define any class you want as your custom context. Just be aware that it can only be set in the initial configuration (but the internals of it can be modified later down the road).
 
 ### Accessing the custom context
 
-The custom context can be accessed from the controller.
+The custom context can then be accessed from the controller.
 
 ```
 <?php
@@ -81,7 +82,7 @@ class Controller extends BaseController
 
 ## Middlewares
 
-Middlewares can alter GraphQL requests and response processed through the framework. Refer to the relevant [Middleware documentation](middleware.md) for more details on how to define them.
+Middlewares can alter GraphQL requests and response processed through the framework.
 
 They can be set globally through the configuration object:
 ```
