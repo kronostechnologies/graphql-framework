@@ -64,27 +64,17 @@
           
             <li class="toctree-l1">
 		
+    <a class="" href="../generator/">Schema generator</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <a class="" href="../configuration/">Configuration</a>
 	    </li>
           
             <li class="toctree-l1">
 		
     <a class="" href="../controllers/">Controllers</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../data/">Data / DTOs translation</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../fetch-adapter/">Fetch Adapters</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../filters/">Filters</a>
 	    </li>
           
             <li class="toctree-l1 current">
@@ -97,8 +87,6 @@
         <ul>
         
             <li><a class="toctree-l3" href="#httpentrypoint">HttpEntryPoint</a></li>
-        
-            <li><a class="toctree-l3" href="#rawqueryentrypoint">RawQueryEntryPoint</a></li>
         
         </ul>
     
@@ -113,17 +101,7 @@
           
             <li class="toctree-l1">
 		
-    <a class="" href="../generator/">Schema Generator</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../type-registry/">Type Registry</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../cache/">Cache</a>
+    <a class="" href="../advanced-data-handling/">Advanced data handling</a>
 	    </li>
           
         </ul>
@@ -159,11 +137,11 @@
             <div class="section">
               
                 <h1 id="entry-point">Entry Point</h1>
-<p>The entry points are used for initializing a call to the GraphQL framework. Queries can come from multiple sources, such as an HTTP request or an inner service call. Entry points provide a way of calling the inner GraphQL framework services without having to deal with trivial initialization procedures. They can also provide helpful exception-wrapping.</p>
+<p>The entry points are used for initializing a call to the GraphQL framework. Queries can come from multiple sources, such as an HTTP request or an inner service call. Entry points provide a way of calling the inner GraphQL framework logic through standard ways.</p>
 <h2 id="httpentrypoint">HttpEntryPoint</h2>
 <p>This entry point takes a standardized HTTP request (PSR-7) as its initial values, and returns a PSR-7 HTTP response. The configuration object must also be passed here.</p>
 <pre><code class="php">// Setup configuration
-$configuration = new GraphQLConfiguration();
+$configuration = FrameworkConfiguration::create();
 // ...
 
 // Fetch PSR-7 Request
@@ -171,18 +149,9 @@ $request = Request::fromGlobals();
 
 // Execute from EntryPoint
 $entryPoint = new HttpEntryPoint($configuration);
-$response = $entryPoint-&gt;executeQuery($request);
-</code></pre>
+$response = $entryPoint-&gt;executeRequest($request);
 
-<p>Or with the short-hand function:</p>
-<pre><code class="php">// Set $configuration and $request...
-$response = HttpEntryPoint::executeQueryWithConfig($request, $configuration);
-</code></pre>
-
-<h2 id="rawqueryentrypoint">RawQueryEntryPoint</h2>
-<p>Useful if you need to call the GraphQL service from your inner services. This entry point takes as input the query itself and the parameters, returning the raw response string as a result.</p>
-<pre><code class="php">// Set $configuration, $query and $arguments...
-$response = RawQueryEntryPoint::executeQueryWithConfig($query, $arguments, $configuration);
+// Further handle PSR-7 response here
 </code></pre>
               
             </div>
@@ -194,7 +163,7 @@ $response = RawQueryEntryPoint::executeQueryWithConfig($query, $arguments, $conf
         <a href="../development-mode/" class="btn btn-neutral float-right" title="Development Mode">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../filters/" class="btn btn-neutral" title="Filters"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../controllers/" class="btn btn-neutral" title="Controllers"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -220,7 +189,7 @@ $response = RawQueryEntryPoint::executeQueryWithConfig($query, $arguments, $conf
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../filters/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../controllers/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
         <span style="margin-left: 15px"><a href="../development-mode/" style="color: #fcfcfc">Next &raquo;</a></span>

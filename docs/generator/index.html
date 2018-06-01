@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Schema Generator - GraphQL Framework</title>
+  <title>Schema generator - GraphQL Framework</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Schema Generator";
+    var mkdocs_page_name = "Schema generator";
     var mkdocs_page_input_path = "generator.md";
     var mkdocs_page_url = "/generator/";
   </script>
@@ -62,6 +62,23 @@
     <a class="" href="../getting-started/">Getting Started</a>
 	    </li>
           
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Schema generator</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#schema-generator">Schema generator</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#grunt-tooling">Grunt tooling</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
             <li class="toctree-l1">
 		
     <a class="" href="../configuration/">Configuration</a>
@@ -74,21 +91,6 @@
           
             <li class="toctree-l1">
 		
-    <a class="" href="../data/">Data / DTOs translation</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../fetch-adapter/">Fetch Adapters</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../filters/">Filters</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
     <a class="" href="../entry/">Entry Point</a>
 	    </li>
           
@@ -97,25 +99,9 @@
     <a class="" href="../development-mode/">Development Mode</a>
 	    </li>
           
-            <li class="toctree-l1 current">
-		
-    <a class="current" href="./">Schema Generator</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l2"><a href="#schema-generator">Schema generator</a></li>
-    
-
-    </ul>
-	    </li>
-          
             <li class="toctree-l1">
 		
-    <a class="" href="../type-registry/">Type Registry</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../cache/">Cache</a>
+    <a class="" href="../advanced-data-handling/">Advanced data handling</a>
 	    </li>
           
         </ul>
@@ -140,7 +126,7 @@
     
       
     
-    <li>Schema Generator</li>
+    <li>Schema generator</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -151,6 +137,29 @@
             <div class="section">
               
                 <h1 id="schema-generator">Schema generator</h1>
+<p>An external library is used to transform a <code>graphqls</code> (GraphQL Schema) file into its relevant parts which is essential to get this library to work by itself.</p>
+<h2 id="grunt-tooling">Grunt tooling</h2>
+<p>The schema generator does need PHP to be installed locally, along with NodeJS and Grunt. This assumes you have an initialized <code>package.json</code>. </p>
+<pre><code class="bash">composer install --dev graphql-generator
+npm install --save-dev grunt-graphql-php-generator
+</code></pre>
+
+<p>Afterwards, the generator needs to be configured through the Gruntfile by adding an entry to Grunt's <code>initConfig</code> object:</p>
+<pre><code class="plaintext">    'autogen-schema': {
+        options: {
+            source: '{FilePathOfGraphQLSchema}',
+            destination: '{GeneratedSchemaDirectory}',
+            generatorCmdPath: './vendor/bin/graphqlgen',
+            namespace: '{NamespaceOfGraphQLSchema}',
+            deleteAndRecreate: {true:if you want to delete and recreate GraphQL files everytime},
+            runPHPCSFixer: {true:to code format in PSR-1/2}
+        }
+    }
+</code></pre>
+
+<p>The generator can then be ran with </p>
+<pre><code>grunt autogen-schema
+</code></pre>
               
             </div>
           </div>
@@ -158,10 +167,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../type-registry/" class="btn btn-neutral float-right" title="Type Registry">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../configuration/" class="btn btn-neutral float-right" title="Configuration">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../development-mode/" class="btn btn-neutral" title="Development Mode"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../getting-started/" class="btn btn-neutral" title="Getting Started"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -187,10 +196,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../development-mode/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../getting-started/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../type-registry/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../configuration/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

@@ -54,6 +54,12 @@
             
     <li class="toctree-l2"><a href="#graphql-framework">GraphQL Framework</a></li>
     
+        <ul>
+        
+            <li><a class="toctree-l3" href="#overview">Overview</a></li>
+        
+        </ul>
+    
 
     </ul>
 	    </li>
@@ -70,27 +76,17 @@
           
             <li class="toctree-l1">
 		
+    <a class="" href="generator/">Schema generator</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
     <a class="" href="configuration/">Configuration</a>
 	    </li>
           
             <li class="toctree-l1">
 		
     <a class="" href="controllers/">Controllers</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="data/">Data / DTOs translation</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="fetch-adapter/">Fetch Adapters</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="filters/">Filters</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -105,17 +101,7 @@
           
             <li class="toctree-l1">
 		
-    <a class="" href="generator/">Schema Generator</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="type-registry/">Type Registry</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="cache/">Cache</a>
+    <a class="" href="advanced-data-handling/">Advanced data handling</a>
 	    </li>
           
         </ul>
@@ -151,6 +137,13 @@
             <div class="section">
               
                 <h1 id="graphql-framework">GraphQL Framework</h1>
+<h2 id="overview">Overview</h2>
+<ul>
+<li><a href="generator/">Schema Generator</a>: to generate files to be consumed by the <a href="https://github.com/webonyx/graphql-php">Webonyx GraphQL library</a>.</li>
+<li><a href="controllers/">Controllers</a>: Classes which are consumed by the framework to resolve GraphQL queries.</li>
+<li><a href="entry/">Entry Point</a>: Translates entry data to be consumed by the underlying library, and return the underlying library result as properly formatted data according to the input source.</li>
+</ul>
+<p>See <a href="getting-started/">Getting Started</a> for a guide on how to set it up.</p>
               
             </div>
           </div>
@@ -199,6 +192,6 @@
 </html>
 
 <!--
-MkDocs version : 0.17.2
-Build Date UTC : 2018-05-01 13:20:58
+MkDocs version : 0.17.3
+Build Date UTC : 2018-06-01 17:57:21
 -->
