@@ -4,14 +4,12 @@
 
 A PHP package which provides helpful facilities around the various PHP GraphQL libraries available. Its core library is Webonyx's GraphQL implementation and adds several layers of abstraction to it in order to simplify the development of a GraphQL application or endpoint.
 
-**DISCLAIMER: Although this uses a solid set of packages and the core architecture is decided, this is not considered production-ready yet. Some important features are missing, such as the fetch adapters described in the documentation.**
+**DISCLAIMER: Although this uses a solid set of packages and the core architecture is decided, this is not considered production-ready yet.**
 
-## Features
+## Getting started
 
-* Automatically transforms one graphqls file to DTOs and type definitions
-* Provides a PSR-7 HTTP entry point to the GraphQL framework
-* Types & Controllers (Resolvers) are automatically detected through Reflection
+Check out the documentation available here: http://kronostechnologies.github.io/graphql-framework/getting-started/
 
 ## Documentation
 
-Extensive documentation is available at https://kronostechnologies.github.io/graphql-framework/
+Documentation is available at  https://kronostechnologies.github.io/graphql-framework/
