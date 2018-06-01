@@ -22,7 +22,7 @@ Along with creating a lot of code just for the fetching logic, the latter case c
 
 Hydrators allow an array data structure to be translated into a DTO.
 
-By calling `$this->hydrator->fromSimpleArray($dtoFQN, $data)` in a controller, you can create a DTO instance filled with values. Undefined values by the user are set to `UndefinedValue`.
+By calling `$this->hydrator->fromSimpleArray($dtoFQN, $data)` in a controller, you can create a DTO instance filled with values. Undefined values by the user are set to an instance of `UndefinedValue`.
 
 Example:
 
@@ -67,8 +67,8 @@ class DTODefinitionName
     {
 		$this->dtoDefinition = [
 			'fqn' => RootDTO::class, // ClassName of the root DTO
-			'fields' => [ // Only put fields with a depth in here
-				'subField' => DepthSubDTO::class, // 'fieldNameInRootDTO' => dtoContainedInFieldClassName
+			'fields' => [ // Optional: in this case, subField & subField2 nest DTOs
+				'subField' => DepthSubDTO::class, // Shorthand: 'fieldNameInRootDTO' => dtoContainedInFieldClassName (this shorthand is usable since subField doesn't nest any deeper)
 				'subField2' => [ // Deep nesting
 				    'fqn' => DeepNestedDTO::class, // Same as root definition
 				    'fields' => [ // Once again, only put fields with a depth in here
@@ -84,7 +84,7 @@ class DTODefinitionName
 
 Afterwards, you can pass the DTO definition class name in a controller:
 
-```
+```php
 // $data being the input array
 $dto = $this->hydrator->fromDTODefinition(DTODefinitionName::class, $data);
 ```
