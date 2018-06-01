@@ -57,281 +57,69 @@ type Query {
 }
 ```
 
-## Requirements
-
-* A GraphQL schema (.graphqls) containing the definition of your types. To learn how to make one, see the official site: [https://graphql.org/learn/schema/](https://graphql.org/learn/schema/)
-* A directory and PHP namespace in which to generate the schema types and DTOs (for the underlying GraphQL library).
-
-## Basic project structure
-
-A basic GraphQL project should have the following structure.
-
-```text
-\GraphQL
-    \Controllers            <-- Controllers
-    \FetchAdapters          <-- FetchAdapters
-        \Filters            <-- Custom Filters
-    \GeneratedSchema        <-- The generated schema PHP files
-        \DTOs               <-- (Auto-generated)
-        \Types              <-- (Auto-generated)
-    \Schema                 <-- Your graphqls file(s)
-        main.graphqls       <-- (Sample file name)
-    \Translators            <-- Translators for creating GraphQL & Service DTOs
-```
-
-## Generating the Schema files
-
-First off, let's use a basic schema to ensure everything is working correctly. We will use one directly from the GraphQL generator repository. Put this in the `Schema/main.graphqls` file:
+Once created, you will need to adjust your Gruntfile to tell it from which file to generate the schema from, and where to. Add this to it:
 
 ```
-scalar DateTime
-scalar Cursor
-
-interface Identifiable {
-	id: ID
-}
-
-enum Color {
-	BLUE,
-	RED,
-	YELLOW,
-	GREEN,
-	PURPLE,
-	CYAN
-}
-
-type Item implements Identifiable {
-	id: ID,
-	name: String,
-	color: Color
-}
-
-type Query {
-	item(id: ID): Item!
-	items(page: Int, perPage: Int): [Item!]!
-}
+    'autogen-schema': {
+        options: {
+            source: './graphql/schema.graphqls',
+            destination: './[BaseFolder]/GraphQL/Schema/',
+            generatorCmdPath: './vendor/bin/graphqlgen',
+            namespace: '[BaseNamespace]',
+            deleteAndRecreate: true,
+            runPHPCSFixer: true
+        }
+    }
 ```
 
-The generator should be ran each time a graphqls file is modified under the `Schema` directory, on all files in that directory. A grunt hook is available to do just that.
+Now, you can run a Grunt command to generate the files required by the framework for you:
 
 ```
-TODO: Grunt hook
+grunt autogen-schema
 ```
 
-Once it is setup, you can install `grunt` [https://gruntjs.com/getting-started](https://gruntjs.com/getting-started). Running `grunt watch:generate-schema` will auto-regenerate the schema PHP files everytime a graphqls file is modified, while also announcing errors to the user.
+## Entry point
 
-You can run `grunt generate-schema` to generate it without needing to change a graphqls file.
-
-## Setting up a FetchAdapter for Item
-
-Fetch adapters bridge the database or service layer to GraphQL. In our case, we don't have a database, so we will use the `ArrayFetchAdapter` to make a mock database. This adapter uses a flat array as its data source.
-
-We do not need a `FetchAdapter` for the `Query` type, as it holds no data by itself. Instead, we will make one for the `Item` type which has 3 fields: `id`, `name`, and `color` (an enumeration). Create it under `FetchAdapters\ItemFetchAdapter.php`.
+The entry point requires access to a PSR-7 request object, and it will respond in a PSR-7 response. The core requirement to handle a GraphQL is the following:
 
 ```
-TODO: Namespace
-TODO: Validate generated ColorEnumType
+$configuration = GraphQLConfiguration::create()
+    ->setControllersDirectory(__DIR__ . '\\[BaseNamespace]\\GraphQL\\Controllers')
+    ->setGeneratedSchemaDirectory(__DIR__ . '\\[BaseNamespace]\\GraphQL\\GeneratedSchema');
 
-class ItemFetchAdapter extends ArrayFetchAdapter
-{
-    public function __construct()
-    {
-        // Dummy data source
-        $this->dataSource = [
-            [
-                'id' => 1,
-                'name' => 'Hello world',
-                'color' => 'Red',
-            ],
-            
-            [
-                'id' => 2,
-                'name' => 'Second entry',
-                'color' => 'Yellow',
-            ],
-            
-            [
-                'id' => 3,
-                'name' => 'Third entry',
-                'color' => 'Cyan',
-            ],
-            
-            [
-                'id' => 4,
-                'name' => 'Last entry',
-                'color' => 'Purple',
-            ]
+// Assume $request contains the PSR-7 request.
+$entryPoint = new HttpEntryPoint($configuration);
+$response = $entryPoint->executeRequest($request);
+
+// $response contains the PSR-7 response
+```
+
+You should now be able to query the GraphQL entry point. It will give out its introspection result, but it won't execute any query successfully since we have defined no controller yet.
+
+## Query controller
+
+Let's define a sample query controller to get a single item. It should be located under `[BaseDirectory]\GraphQL\Controllers`. Since we want to get the `item` field in the `Query` type defined in the schema higher up, we need a `QueryController`:
+
+```
+<?php
+
+class QueryController extends BaseController {
+    public function getItem() {
+        return $this->hydrator->fromSimpleArray(ItemDTO::class, [
+            'id' => $this->context->getArgument('id'),
         ];
     }
 }
 ```
 
-## Filtering by ID & pagination
+Here, we simply return an `ItemDTO`, which is the representation of what querying `Item` in an object. These DTOs are made by the generator to aid in development mostly.
 
-Before continuing, we have to take care of a few issues. Our `getField` function filters by ID and return a single result, whereas the `getFields` function takes some pagination arguments. We need to handle filtering on our specific dataset. Let's start with the IDs.
-
-### IdentifierInFilter
+Now, the following query should work:
 
 ```
-ToDo: Namespace
-
-class IdentifierInFilter implements ArrayFetchFilterInterface
-{
-    protected $ids;
-
-    public function __construct(array $ids)
-    {
-        $this->ids = $ids;
-    }
-
-    public function filterArrayResults(array $value)
-    {
-        return array_filter($value, function ($entry) {
-            return in_array($entry['id'], $this->ids);
-        });
+query {
+    item(id: 1) {
+        id
     }
 }
 ```
-
-We specify it is an `ArrayFetchFilterInterface` so the `FetchAdapter` we created earlier can apply the filter to the query correctly.
-
-This one simply uses `array_filter` to check if the entry's id matches one of the ids given to the given.
-
-### PageFilter
-
-```
-ToDo: Namespace
-
-class PageFilter implements ArrayFetchFilterInterface
-{
-    protected $perPage;
-    
-    protected $page;
-
-    public function __construct($perPage, $page)
-    {
-        $this->perPage = $perPage;
-        $this->page = $page;
-    }
-
-    public function filterArrayResults(array $value)
-    {
-        $pages = array_chunk($value, $this->perPage);
-        
-        return $pages[$this->page - 1];       
-    }
-}
-```
-
-This filter uses `array_chunk` to separate the values array by pagesize and returns the corresponding index of the page.
-
-## Setting up the QueryController
-
-A controller is directly bound to its type field automatically. For the query controller, we need to resolve two fields: `item` and `items`. By default, the framework expects controller methods to have a function named `getFieldNameInCamelCase` per complex field. For resolving `item`, we will have a function named `getItem`, and for resolving `items`, we will have another one named `getItems`. If you forget to create a controller or field in the controller, the framework will inform you through its logger of what actions you should take.
-
-Now for the QueryController itself (`Controllers\QueryController.php`):
-
-```
-TODO: Namespace
-TODO: IdentifierInFilter, PageFilter
-
-class QueryController extends BaseController
-{
-    protected $itemFetchAdapter;
-
-    public function __construct(ItemFetchAdapter $itemFetchAdapter)
-    {
-        $this->itemFetchAdapter = $itemFetchAdapter;
-    }
-    
-    public function getItem($id)
-    {
-        return $this->itemFetchAdapter
-            ->applyFilter(new IdentifierInFilter([$id]))
-            ->fetchOne();
-    }
-    
-    public function getItems($page, $perPage)
-    {
-        return $this->itemFetchAdapter
-            ->applyFilter(new PageFilter($page, $perPage))
-            ->fetch();
-    }
-}
-```
-
-For `getItem`, we use the `IdentifierInFilter` we created earlier, passing a single ID to it, and fetch the first result from the dataset.
-
-For `getItems`, we use the `PageFilter`, passing our arguments to it, and fetch all the dataset available.
-
-The `ItemFetchAdapter` is reset each time a field is resolved, so don't worry about data integrity here.
-
-## ItemController
-
-Normally, we'd need a controller for every types. However, if you check the definition for `Item`:
-
-```
-type Item implements Identifiable {
-	id: ID,
-	name: String,
-	color: Color
-}
-```
-
-There are no complex fields present. That is, no field need to be fetched from an external source with a `FetchAdapter`.
-
-**For this reason, there is no need to create an ItemController.**
-
-## Current structure
-
-As of now, the structure for the GraphQL project should look as is:
-
-```text
-\GraphQL
-    \Controllers
-        QueryController.php
-    \FetchAdapters
-        ItemFetchAdapter.php
-        \Filters
-            IdentifierInFilter.php
-            PageFilter.php
-    \GeneratedSchema
-        ...
-    \Schema
-        main.graphqls
-    \Translators
-```
-
-## Entry point
-
-For our project entry point, let's use a simple HTTP endpoint, under index.php.
-
-```
-// ToDo: Composer autoload
-// ToDo: Namespace include
-
-$configuration = GraphQLConfiguration::create()
-    ->setControllersDirectory(__DIR__ . '\\GraphQL\\Controllers')
-    ->setControllersNamespace('\\GraphQL\\Controllers')
-    ->setGeneratedSchemaDirectory(__DIR__ . '\\GraphQL\\GeneratedSchema')
-    ->setGeneratedSchemaNamespace('\\GraphQL\\GeneratedSchema');
-
-// Get the HTTP request
-$request = Request::fromGlobals();
-
-// Execute HTTP request
-$response = HttpEntryPoint::executeQueryWithConfig($request, $configuration);
-
-// ToDo: Headers + status code
-echo $response->getBody();
-```
-
-## Running and testing
-
-Finally, let's run and test our project.
-
-```
-php -S localhost:8000
-```
-
-Now, access [http://localhost:8000/](http://localhost:8000/) and you should be able to use it as a compatible GraphQL endpoint.
