@@ -63,8 +63,6 @@
         
             <li><a class="toctree-l3" href="#workflow">Workflow</a></li>
         
-            <li><a class="toctree-l3" href="#architecture">Architecture</a></li>
-        
         </ul>
     
 
@@ -74,6 +72,11 @@
             <li class="toctree-l1">
 		
     <a class="" href="../getting-started/">Getting Started</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../generator/">Schema generator</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -88,21 +91,6 @@
           
             <li class="toctree-l1">
 		
-    <a class="" href="../data/">Data / DTOs translation</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../fetch-adapter/">Fetch Adapters</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../filters/">Filters</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
     <a class="" href="../entry/">Entry Point</a>
 	    </li>
           
@@ -113,17 +101,7 @@
           
             <li class="toctree-l1">
 		
-    <a class="" href="../generator/">Schema Generator</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../type-registry/">Type Registry</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../cache/">Cache</a>
+    <a class="" href="../advanced-data-handling/">Advanced data handling</a>
 	    </li>
           
         </ul>
@@ -159,39 +137,17 @@
             <div class="section">
               
                 <h1 id="principles-architecture">Principles &amp; Architecture</h1>
-<p>This framework is built on a few tenants:</p>
-<ol>
-<li><strong>Ease of use</strong>: This section and Getting started should be good enough to start using it. Really, the only thing you'd need to know are what schema you want, and which data store you want to use. </li>
-<li><strong>Reduced boilerplate code</strong>: This framework uses heavy abstractions over the excellent <a href="https://github.com/webonyx/graphql-php">WebOnyx GraphQL PHP library</a>. It is, however, a very configuration-over-convenience library, which the framework aims to correct.</li>
-<li><strong>Assisting the developer</strong>: By throwing helpful error messages, such as informing that a controller is missing a function to get X field, or that a translator is missing for Y type.</li>
-<li><strong>Optimization</strong>: All the last 3 points should have a minimal impact on the optimization.</li>
-</ol>
+<p>This framework is built to be as <strong>simple</strong> as possible to use, preferring a <strong>convenience-over-configuration</strong> approach. Although it is aimed to be entirely modular, using its core built-in features will provide a much better experience.</p>
 <h2 id="workflow">Workflow</h2>
 <p>When working with the library, you should follow this workflow:</p>
 <ol>
 <li>Create a GraphQL schema to expose.</li>
+<li>Setup the <a href="../generator/">Schema generator</a></li>
 <li>Create a GraphQL entry point.</li>
 <li>Create a Controller for each type in the GraphQL schema.</li>
-<li>Create a FetchAdapter for each type in the GraphQL schema.</li>
 <li>Test your API.</li>
 </ol>
 <p>See <a href="../getting-started/">Getting Started</a> for a better starting example.</p>
-<h2 id="architecture">Architecture</h2>
-<p><img alt="Full Request Flow" src="../images/request-global.png" /></p>
-<p>Here is the flow of a query in the framework, cut piece-by-piece.</p>
-<p><img alt="Step 1 Request Flow" src="../images/request-step-1.png" /></p>
-<p>We have received a GraphQL request from a client. The <code>GraphQLConfiguration</code> object is built and used throughout the entire framework.</p>
-<p><img alt="Step 2 Request Flow" src="../images/request-step-2.png" /></p>
-<p>The HTTP entry point the takes the configuration and begin executing the query as any other by passing the arguments and query text to the <code>QueryExecutor</code>, which acts as the core object of the framework.</p>
-<p><img alt="Step 3 Request Flow" src="../images/request-step-3.png" /></p>
-<p>The <code>QueryExecutor</code> executes the query on the auto-generated schema. The Generated Schema then reaches the Query Resolver, which is used to determine the correct controller and controller function to execute.</p>
-<p><img alt="Step 4 Request Flow" src="../images/request-step-4.png" /></p>
-<p>Once the correct controller is determined, its resolve function is executed.</p>
-<p><img alt="Step 5 Request Flow" src="../images/request-step-5.png" /></p>
-<p>The Fetch Adapter is used by the controller to get a specific query result.</p>
-<p><img alt="Step 6 Request Flow" src="../images/request-step-6.png" /></p>
-<p>The Fetch Adapter communicates with a translator to convert the given entities to their target GraphQL DTO correctly.</p>
-<p>Finally, the result is returned to the client.</p>
               
             </div>
           </div>

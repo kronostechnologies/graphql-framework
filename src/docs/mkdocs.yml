@@ -1,0 +1,13 @@
+site_name: GraphQL Framework
+theme: readthedocs
+pages:
+  - 'GraphQL Framework': 'index.md'
+  - 'Principles & Architecture': 'principles.md'
+  - 'Getting Started': 'getting-started.md'
+  - 'Schema generator': 'generator.md'
+  - 'Configuration': 'configuration.md'
+  - 'Controllers': 'controllers.md'
+  - 'Entry Point': 'entry.md'
+  - 'Development Mode': 'development-mode.md'
+  - 'Advanced data handling': 'advanced-data-handling.md'
+site_dir: '../../docs'

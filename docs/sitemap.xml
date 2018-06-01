@@ -4,7 +4,7 @@
     
     <url>
      <loc>/</loc>
-     <lastmod>2018-05-01</lastmod>
+     <lastmod>2018-06-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -12,7 +12,7 @@
     
     <url>
      <loc>/principles/</loc>
-     <lastmod>2018-05-01</lastmod>
+     <lastmod>2018-06-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -20,63 +20,7 @@
     
     <url>
      <loc>/getting-started/</loc>
-     <lastmod>2018-05-01</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-    
-
-    
-    <url>
-     <loc>/configuration/</loc>
-     <lastmod>2018-05-01</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-    
-
-    
-    <url>
-     <loc>/controllers/</loc>
-     <lastmod>2018-05-01</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-    
-
-    
-    <url>
-     <loc>/data/</loc>
-     <lastmod>2018-05-01</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-    
-
-    
-    <url>
-     <loc>/fetch-adapter/</loc>
-     <lastmod>2018-05-01</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-    
-
-    
-    <url>
-     <loc>/filters/</loc>
-     <lastmod>2018-05-01</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-    
-
-    
-    <url>
-     <loc>/entry/</loc>
-     <lastmod>2018-05-01</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-    
-
-    
-    <url>
-     <loc>/development-mode/</loc>
-     <lastmod>2018-05-01</lastmod>
+     <lastmod>2018-06-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -84,23 +28,47 @@
     
     <url>
      <loc>/generator/</loc>
-     <lastmod>2018-05-01</lastmod>
+     <lastmod>2018-06-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
 
     
     <url>
-     <loc>/type-registry/</loc>
-     <lastmod>2018-05-01</lastmod>
+     <loc>/configuration/</loc>
+     <lastmod>2018-06-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
 
     
     <url>
-     <loc>/cache/</loc>
-     <lastmod>2018-05-01</lastmod>
+     <loc>/controllers/</loc>
+     <lastmod>2018-06-01</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>/entry/</loc>
+     <lastmod>2018-06-01</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>/development-mode/</loc>
+     <lastmod>2018-06-01</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>/advanced-data-handling/</loc>
+     <lastmod>2018-06-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
