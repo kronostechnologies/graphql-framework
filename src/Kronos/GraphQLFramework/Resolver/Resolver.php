@@ -15,6 +15,7 @@ use Kronos\GraphQLFramework\Resolver\Controller\ControllerStore;
 use Kronos\GraphQLFramework\Resolver\Controller\Exception\InvalidControllerTypeException;
 use Kronos\GraphQLFramework\Resolver\Controller\Exception\NoMatchingControllerFoundException;
 use Kronos\GraphQLFramework\Resolver\Exception\MissingFieldResolverException;
+use Kronos\GraphQLFramework\TypeRegistry\AutomatedTypeRegistry;
 use Kronos\GraphQLFramework\Utils\Reflection\ClassMethodsReader;
 use Kronos\GraphQLFramework\Utils\Reflection\Exception\NoClassMethodFoundException;
 
@@ -53,6 +54,14 @@ class Resolver
 		$this->contextUpdater->setConfiguration($configuration);
 		$this->controllerStore = new ControllerStore($configuration);
 	}
+
+    /**
+     * @param AutomatedTypeRegistry $typeRegistry
+     */
+	public function setTypeRegistryInContext(AutomatedTypeRegistry $typeRegistry)
+    {
+        $this->contextUpdater->setTypeRegistry($typeRegistry);
+    }
 
 	/**
 	 * @param string $typeName

@@ -56,6 +56,8 @@ class Executor
 		$resolver = new Resolver($this->configuration);
 
 		$this->typeRegistry = new AutomatedTypeRegistry($resolver, $typesDirectory);
+
+		$resolver->setTypeRegistryInContext($this->typeRegistry);
 	}
 
 	protected function loadSchema()

@@ -7,6 +7,7 @@ namespace Kronos\GraphQLFramework\Resolver\Context;
 use Kronos\GraphQLFramework\FrameworkConfiguration;
 use Kronos\GraphQLFramework\Resolver\Context\Exception\ArgumentsMustBeArrayException;
 use Kronos\GraphQLFramework\Resolver\Context\Exception\VariablesMustBeArrayException;
+use Kronos\GraphQLFramework\TypeRegistry\AutomatedTypeRegistry;
 
 class ContextUpdater
 {
@@ -67,6 +68,15 @@ class ContextUpdater
 			->withFullQueryString($fullQueryString ?: "")
 			->withVariables($variablesToSet);
 	}
+
+    /**
+     * @param AutomatedTypeRegistry $typeRegistry
+     */
+	public function setTypeRegistry(AutomatedTypeRegistry $typeRegistry)
+    {
+        $this->activeContext = $this->getOrCreateContext()
+            ->withTypeRegistry($typeRegistry);
+    }
 
 	/**
 	 * @return GraphQLContext

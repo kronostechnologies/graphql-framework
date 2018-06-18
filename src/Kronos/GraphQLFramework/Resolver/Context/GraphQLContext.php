@@ -7,6 +7,7 @@ namespace Kronos\GraphQLFramework\Resolver\Context;
 use Codeliner\ArrayReader\ArrayReader;
 use Kronos\GraphQLFramework\FrameworkConfiguration;
 use Kronos\GraphQLFramework\Relay\RelayGlobalIdentifier;
+use Kronos\GraphQLFramework\TypeRegistry\AutomatedTypeRegistry;
 
 /**
  * Immutable context object available to the framework user.
@@ -34,6 +35,11 @@ class GraphQLContext
 	 * @var string
 	 */
 	protected $fullQueryString;
+
+    /**
+     * @var AutomatedTypeRegistry
+     */
+	protected $typeRegistry;
 
 	/**
 	 * @var array
@@ -121,6 +127,16 @@ class GraphQLContext
 		return $this->variables;
 	}
 
+    /**
+     * Returns an instanced type in the TypeRegistry. This is necessary for interfaces to work correctly.
+     *
+     * @param string $typeName
+     */
+	public function getInstancedType($typeName)
+    {
+        return $this->typeRegistry->getTypeByName($typeName);
+    }
+
 	/**
 	 * Returns a NEW instance of the GraphQL Context with the given configuration. This will not overwrite the
 	 * existing GraphQLContext by itself.
@@ -195,4 +211,19 @@ class GraphQLContext
 
 		return $inst;
 	}
+
+    /**
+     * Returns a new instance of the GraphQL context with the given type registry. This will not overwrite the
+     * existing GraphQLContext by itself.
+     *
+     * @param AutomatedTypeRegistry $typeRegistry
+     * @return GraphQLContext
+     */
+	public function withTypeRegistry(AutomatedTypeRegistry $typeRegistry)
+    {
+        $inst = clone $this;
+        $inst->typeRegistry = $typeRegistry;
+
+        return $inst;
+    }
 }
