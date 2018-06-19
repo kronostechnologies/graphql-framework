@@ -15,7 +15,9 @@ use PHPUnit\Framework\TestCase;
 class RelayMiddlewareTest extends TestCase
 {
     const DEFAULT_ID = 'id';
+    const DEFAULT_ID_ENTITY_SUFFIX = self::DEFAULT_ID . RelayMiddleware::RELAY_ENTITY_SUFFIX;
     const SPECIFIC_ID = 'anotherId';
+    const SPECIFIC_ID_ENTITY_SUFFIX = self::SPECIFIC_ID . RelayMiddleware::RELAY_ENTITY_SUFFIX;
 
     const RELAY_ID_ROOT = 1;
 
@@ -59,8 +61,16 @@ class RelayMiddlewareTest extends TestCase
 
         $output = $this->defaultMiddleware->modifyRequest($input);
 
-        $expected = [self::DEFAULT_ID => self::RELAY_ID_ROOT];
-        $this->assertEquals($expected, $output);
+        $this->assertEquals(self::RELAY_ID_ROOT, $output[self::DEFAULT_ID]);
+    }
+
+    public function test_ArrayRequestSpecificIdField_modifyRequest_ReturnsRequestWithEntityName()
+    {
+        $input = [self::DEFAULT_ID => $this->getRelayGID(self::RELAY_ID_ROOT, 'RootDTO')->serialize()];
+
+        $output = $this->defaultMiddleware->modifyRequest($input);
+
+        $this->assertEquals('RootDTO', $output[self::DEFAULT_ID_ENTITY_SUFFIX]);
     }
 
     public function test_ArrayRequestDifferentSpecificIdField_modifyRequest_ReturnsRequestWithFlatId()
@@ -69,8 +79,16 @@ class RelayMiddlewareTest extends TestCase
 
         $output = $this->specificIdMiddleware->modifyRequest($input);
 
-        $expected = [self::SPECIFIC_ID => self::RELAY_ID_ROOT];
-        $this->assertEquals($expected, $output);
+        $this->assertEquals(self::RELAY_ID_ROOT, $output[self::SPECIFIC_ID]);
+    }
+
+    public function test_ArrayRequestDifferentSpecificIdField_modifyRequest_ReturnsRequestWithEntityName()
+    {
+        $input = [self::SPECIFIC_ID => $this->getRelayGID(self::RELAY_ID_ROOT, 'RootDTO')->serialize()];
+
+        $output = $this->specificIdMiddleware->modifyRequest($input);
+
+        $this->assertEquals('RootDTO', $output[self::SPECIFIC_ID_ENTITY_SUFFIX]);
     }
 
     public function test_ArrayRequestMalformedRelayGID_modifyRequest_ThrowsInvalidPayloadException()

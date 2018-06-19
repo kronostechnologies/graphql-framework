@@ -12,6 +12,8 @@ use function str_replace;
 
 class RelayMiddleware implements FrameworkMiddleware
 {
+    const RELAY_ENTITY_SUFFIX = '.entityName';
+
     /**
      * @var string
      */
@@ -45,6 +47,7 @@ class RelayMiddleware implements FrameworkMiddleware
                 $relayIdentifier->deserialize($request[$this->idFieldName]);
 
                 $request[$this->idFieldName] = $relayIdentifier->getIdentifier();
+                $request[$this->idFieldName . self::RELAY_ENTITY_SUFFIX] = $relayIdentifier->getEntityName();
             }
 
             foreach ($request as $key => $value) {
