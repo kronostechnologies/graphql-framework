@@ -28,57 +28,9 @@ $configuration = FrameworkConfiguration::create()
     ->setLogger($logger);
 ```
 
-## Custom context
+## Dependency injection
 
-Needs arise to pass information through the framework back to your business logic. A custom context includes elements that are agnostic to the framework, but that are still needed to make your application work correctly. For example:
-
-* The authentication context
-* Core services context (database, logging)
-* Service locators
-
-```
-<?php
-$config = new FrameworkConfiguration();
-
-// Custom context definition
-class CustomContext {
-    public $username;
-    public $userId;
-}
-
-// Initialize custom context
-$context = new CustomContext();
-$context->username = 'test';
-$context->userId = 1;
-
-// Set it in framework configuration
-$config->setCustomContext($context);
-
-// Initialize framework from config
-// ...
-```
-
-You can define any class you want as your custom context. Just be aware that it can only be set in the initial configuration (but the internals of it can be modified later down the road).
-
-### Accessing the custom context
-
-The custom context can then be accessed from the controller.
-
-```
-<?php
-class Controller extends BaseController
-{
-    public function getField() 
-    {
-        // Fetch custom context. Also, set doccomment to provide autocompletion of it.
-        /** @var CustomContext $context */
-        $context = $this->context->getConfiguration()->getCustomContext();
-        
-        // User ID: 1, Username: test
-        echo "User ID: {$context->userId}, Username: {$context->username}";
-    }
-}
-```
+Dependency injection is available for the controllers created through the framework. Refer to the [Dependency Injection](dependency-injection.md) to know more.
 
 ## Middlewares
 

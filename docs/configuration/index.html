@@ -80,7 +80,7 @@
         
             <li><a class="toctree-l3" href="#additional-configuration">Additional configuration</a></li>
         
-            <li><a class="toctree-l3" href="#custom-context">Custom context</a></li>
+            <li><a class="toctree-l3" href="#dependency-injection">Dependency injection</a></li>
         
             <li><a class="toctree-l3" href="#middlewares">Middlewares</a></li>
         
@@ -108,6 +108,11 @@
             <li class="toctree-l1">
 		
     <a class="" href="../advanced-data-handling/">Advanced data handling</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../dependency-injection/">Dependency Injection</a>
 	    </li>
           
         </ul>
@@ -165,52 +170,8 @@ $configuration = FrameworkConfiguration::create()
     -&gt;setLogger($logger);
 </code></pre>
 
-<h2 id="custom-context">Custom context</h2>
-<p>Needs arise to pass information through the framework back to your business logic. A custom context includes elements that are agnostic to the framework, but that are still needed to make your application work correctly. For example:</p>
-<ul>
-<li>The authentication context</li>
-<li>Core services context (database, logging)</li>
-<li>Service locators</li>
-</ul>
-<pre><code>&lt;?php
-$config = new FrameworkConfiguration();
-
-// Custom context definition
-class CustomContext {
-    public $username;
-    public $userId;
-}
-
-// Initialize custom context
-$context = new CustomContext();
-$context-&gt;username = 'test';
-$context-&gt;userId = 1;
-
-// Set it in framework configuration
-$config-&gt;setCustomContext($context);
-
-// Initialize framework from config
-// ...
-</code></pre>
-
-<p>You can define any class you want as your custom context. Just be aware that it can only be set in the initial configuration (but the internals of it can be modified later down the road).</p>
-<h3 id="accessing-the-custom-context">Accessing the custom context</h3>
-<p>The custom context can then be accessed from the controller.</p>
-<pre><code>&lt;?php
-class Controller extends BaseController
-{
-    public function getField() 
-    {
-        // Fetch custom context. Also, set doccomment to provide autocompletion of it.
-        /** @var CustomContext $context */
-        $context = $this-&gt;context-&gt;getConfiguration()-&gt;getCustomContext();
-
-        // User ID: 1, Username: test
-        echo &quot;User ID: {$context-&gt;userId}, Username: {$context-&gt;username}&quot;;
-    }
-}
-</code></pre>
-
+<h2 id="dependency-injection">Dependency injection</h2>
+<p>Dependency injection is available for the controllers created through the framework. Refer to the <a href="../dependency-injection/">Dependency Injection</a> to know more.</p>
 <h2 id="middlewares">Middlewares</h2>
 <p>Middlewares can alter GraphQL requests and response processed through the framework.</p>
 <p>They can be set globally through the configuration object:</p>
