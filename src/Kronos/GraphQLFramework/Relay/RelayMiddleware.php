@@ -45,6 +45,7 @@ class RelayMiddleware implements FrameworkMiddleware
                 $relayIdentifier->deserialize($request[$this->idFieldName]);
 
                 $request[$this->idFieldName] = $relayIdentifier->getIdentifier();
+                $request[$this->idFieldName . '.entity'] = $relayIdentifier->getEntityName();
             }
 
             foreach ($request as $key => $value) {
