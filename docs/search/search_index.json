@@ -1,334 +1,204 @@
 {
     "docs": [
         {
-            "location": "/", 
-            "text": "GraphQL Framework", 
+            "location": "/",
+            "text": "GraphQL Framework\n\n\nOverview\n\n\n\n\nSchema Generator\n: to generate files to be consumed by the \nWebonyx GraphQL library\n.\n\n\nControllers\n: Classes which are consumed by the framework to resolve GraphQL queries.\n\n\nEntry Point\n: Translates entry data to be consumed by the underlying library, and return the underlying library result as properly formatted data according to the input source.\n\n\n\n\nSee \nGetting Started\n for a guide on how to set it up.",
             "title": "GraphQL Framework"
-        }, 
+        },
         {
-            "location": "/#graphql-framework", 
-            "text": "", 
+            "location": "/#graphql-framework",
+            "text": "",
             "title": "GraphQL Framework"
-        }, 
+        },
         {
-            "location": "/principles/", 
-            "text": "Principles \n Architecture\n\n\nThis framework is built on a few tenants:\n\n\n\n\nEase of use\n: This section and Getting started should be good enough to start using it. Really, the only thing you'd need to know are what schema you want, and which data store you want to use. \n\n\nReduced boilerplate code\n: This framework uses heavy abstractions over the excellent \nWebOnyx GraphQL PHP library\n. It is, however, a very configuration-over-convenience library, which the framework aims to correct.\n\n\nAssisting the developer\n: By throwing helpful error messages, such as informing that a controller is missing a function to get X field, or that a translator is missing for Y type.\n\n\nOptimization\n: All the last 3 points should have a minimal impact on the optimization.\n\n\n\n\nWorkflow\n\n\nWhen working with the library, you should follow this workflow:\n\n\n\n\nCreate a GraphQL schema to expose.\n\n\nCreate a GraphQL entry point.\n\n\nCreate a Controller for each type in the GraphQL schema.\n\n\nCreate a FetchAdapter for each type in the GraphQL schema.\n\n\nTest your API.\n\n\n\n\nSee \nGetting Started\n for a better starting example.\n\n\nArchitecture\n\n\n\n\nHere is the flow of a query in the framework, cut piece-by-piece.\n\n\n\n\nWe have received a GraphQL request from a client. The \nGraphQLConfiguration\n object is built and used throughout the entire framework.\n\n\n\n\nThe HTTP entry point the takes the configuration and begin executing the query as any other by passing the arguments and query text to the \nQueryExecutor\n, which acts as the core object of the framework.\n\n\n\n\nThe \nQueryExecutor\n executes the query on the auto-generated schema. The Generated Schema then reaches the Query Resolver, which is used to determine the correct controller and controller function to execute.\n\n\n\n\nOnce the correct controller is determined, its resolve function is executed.\n\n\n\n\nThe Fetch Adapter is used by the controller to get a specific query result.\n\n\n\n\nThe Fetch Adapter communicates with a translator to convert the given entities to their target GraphQL DTO correctly.\n\n\nFinally, the result is returned to the client.", 
+            "location": "/#overview",
+            "text": "Schema Generator : to generate files to be consumed by the  Webonyx GraphQL library .  Controllers : Classes which are consumed by the framework to resolve GraphQL queries.  Entry Point : Translates entry data to be consumed by the underlying library, and return the underlying library result as properly formatted data according to the input source.   See  Getting Started  for a guide on how to set it up.",
+            "title": "Overview"
+        },
+        {
+            "location": "/principles/",
+            "text": "Principles & Architecture\n\n\nThis framework is built to be as \nsimple\n as possible to use, preferring a \nconvenience-over-configuration\n approach. Although it is aimed to be entirely modular, using its core built-in features will provide a much better experience.\n\n\nWorkflow\n\n\nWhen working with the library, you should follow this workflow:\n\n\n\n\nCreate a GraphQL schema to expose.\n\n\nSetup the \nSchema generator\n\n\nCreate a GraphQL entry point.\n\n\nCreate a Controller for each type in the GraphQL schema.\n\n\nTest your API.\n\n\n\n\nSee \nGetting Started\n for a better starting example.",
             "title": "Principles & Architecture"
-        }, 
+        },
         {
-            "location": "/principles/#principles-architecture", 
-            "text": "This framework is built on a few tenants:   Ease of use : This section and Getting started should be good enough to start using it. Really, the only thing you'd need to know are what schema you want, and which data store you want to use.   Reduced boilerplate code : This framework uses heavy abstractions over the excellent  WebOnyx GraphQL PHP library . It is, however, a very configuration-over-convenience library, which the framework aims to correct.  Assisting the developer : By throwing helpful error messages, such as informing that a controller is missing a function to get X field, or that a translator is missing for Y type.  Optimization : All the last 3 points should have a minimal impact on the optimization.", 
+            "location": "/principles/#principles-architecture",
+            "text": "This framework is built to be as  simple  as possible to use, preferring a  convenience-over-configuration  approach. Although it is aimed to be entirely modular, using its core built-in features will provide a much better experience.",
             "title": "Principles &amp; Architecture"
-        }, 
+        },
         {
-            "location": "/principles/#workflow", 
-            "text": "When working with the library, you should follow this workflow:   Create a GraphQL schema to expose.  Create a GraphQL entry point.  Create a Controller for each type in the GraphQL schema.  Create a FetchAdapter for each type in the GraphQL schema.  Test your API.   See  Getting Started  for a better starting example.", 
+            "location": "/principles/#workflow",
+            "text": "When working with the library, you should follow this workflow:   Create a GraphQL schema to expose.  Setup the  Schema generator  Create a GraphQL entry point.  Create a Controller for each type in the GraphQL schema.  Test your API.   See  Getting Started  for a better starting example.",
             "title": "Workflow"
-        }, 
+        },
         {
-            "location": "/principles/#architecture", 
-            "text": "Here is the flow of a query in the framework, cut piece-by-piece.   We have received a GraphQL request from a client. The  GraphQLConfiguration  object is built and used throughout the entire framework.   The HTTP entry point the takes the configuration and begin executing the query as any other by passing the arguments and query text to the  QueryExecutor , which acts as the core object of the framework.   The  QueryExecutor  executes the query on the auto-generated schema. The Generated Schema then reaches the Query Resolver, which is used to determine the correct controller and controller function to execute.   Once the correct controller is determined, its resolve function is executed.   The Fetch Adapter is used by the controller to get a specific query result.   The Fetch Adapter communicates with a translator to convert the given entities to their target GraphQL DTO correctly.  Finally, the result is returned to the client.", 
-            "title": "Architecture"
-        }, 
-        {
-            "location": "/getting-started/", 
-            "text": "Before setting things up, we must make sure all the necessary requirements are setup correctly.\n\n\nRequirements\n\n\n\n\nA GraphQL schema (.graphqls) containing the definition of your types. To learn how to make one, see the official site: \nhttps://graphql.org/learn/schema/\n\n\nA directory and PHP namespace in which to generate the schema types and DTOs (for the underlying GraphQL library).\n\n\n\n\nBasic project structure\n\n\nA basic GraphQL project should have the following structure.\n\n\n\\GraphQL\n    \\Controllers            \n-- Controllers\n    \\FetchAdapters          \n-- FetchAdapters\n        \\Filters            \n-- Custom Filters\n    \\GeneratedSchema        \n-- The generated schema PHP files\n        \\DTOs               \n-- (Auto-generated)\n        \\Types              \n-- (Auto-generated)\n    \\Schema                 \n-- Your graphqls file(s)\n        main.graphqls       \n-- (Sample file name)\n    \\Translators            \n-- Translators for creating GraphQL \n Service DTOs\n\n\n\n\nGenerating the Schema files\n\n\nFirst off, let's use a basic schema to ensure everything is working correctly. We will use one directly from the GraphQL generator repository. Put this in the \nSchema/main.graphqls\n file:\n\n\nscalar DateTime\nscalar Cursor\n\ninterface Identifiable {\n    id: ID\n}\n\nenum Color {\n    BLUE,\n    RED,\n    YELLOW,\n    GREEN,\n    PURPLE,\n    CYAN\n}\n\ntype Item implements Identifiable {\n    id: ID,\n    name: String,\n    color: Color\n}\n\ntype Query {\n    item(id: ID): Item!\n    items(page: Int, perPage: Int): [Item!]!\n}\n\n\n\n\nThe generator should be ran each time a graphqls file is modified under the \nSchema\n directory, on all files in that directory. A grunt hook is available to do just that.\n\n\nTODO: Grunt hook\n\n\n\n\nOnce it is setup, you can install \ngrunt\n \nhttps://gruntjs.com/getting-started\n. Running \ngrunt watch:generate-schema\n will auto-regenerate the schema PHP files everytime a graphqls file is modified, while also announcing errors to the user.\n\n\nYou can run \ngrunt generate-schema\n to generate it without needing to change a graphqls file.\n\n\nSetting up a FetchAdapter for Item\n\n\nFetch adapters bridge the database or service layer to GraphQL. In our case, we don't have a database, so we will use the \nArrayFetchAdapter\n to make a mock database. This adapter uses a flat array as its data source.\n\n\nWe do not need a \nFetchAdapter\n for the \nQuery\n type, as it holds no data by itself. Instead, we will make one for the \nItem\n type which has 3 fields: \nid\n, \nname\n, and \ncolor\n (an enumeration). Create it under \nFetchAdapters\\ItemFetchAdapter.php\n.\n\n\nTODO: Namespace\nTODO: Validate generated ColorEnumType\n\nclass ItemFetchAdapter extends ArrayFetchAdapter\n{\n    public function __construct()\n    {\n        // Dummy data source\n        $this-\ndataSource = [\n            [\n                'id' =\n 1,\n                'name' =\n 'Hello world',\n                'color' =\n 'Red',\n            ],\n\n            [\n                'id' =\n 2,\n                'name' =\n 'Second entry',\n                'color' =\n 'Yellow',\n            ],\n\n            [\n                'id' =\n 3,\n                'name' =\n 'Third entry',\n                'color' =\n 'Cyan',\n            ],\n\n            [\n                'id' =\n 4,\n                'name' =\n 'Last entry',\n                'color' =\n 'Purple',\n            ]\n        ];\n    }\n}\n\n\n\n\nFiltering by ID \n pagination\n\n\nBefore continuing, we have to take care of a few issues. Our \ngetField\n function filters by ID and return a single result, whereas the \ngetFields\n function takes some pagination arguments. We need to handle filtering on our specific dataset. Let's start with the IDs.\n\n\nIdentifierInFilter\n\n\nToDo: Namespace\n\nclass IdentifierInFilter implements ArrayFetchFilterInterface\n{\n    protected $ids;\n\n    public function __construct(array $ids)\n    {\n        $this-\nids = $ids;\n    }\n\n    public function filterArrayResults(array $value)\n    {\n        return array_filter($value, function ($entry) {\n            return in_array($entry['id'], $this-\nids);\n        });\n    }\n}\n\n\n\n\nWe specify it is an \nArrayFetchFilterInterface\n so the \nFetchAdapter\n we created earlier can apply the filter to the query correctly.\n\n\nThis one simply uses \narray_filter\n to check if the entry's id matches one of the ids given to the given.\n\n\nPageFilter\n\n\nToDo: Namespace\n\nclass PageFilter implements ArrayFetchFilterInterface\n{\n    protected $perPage;\n\n    protected $page;\n\n    public function __construct($perPage, $page)\n    {\n        $this-\nperPage = $perPage;\n        $this-\npage = $page;\n    }\n\n    public function filterArrayResults(array $value)\n    {\n        $pages = array_chunk($value, $this-\nperPage);\n\n        return $pages[$this-\npage - 1];       \n    }\n}\n\n\n\n\nThis filter uses \narray_chunk\n to separate the values array by pagesize and returns the corresponding index of the page.\n\n\nSetting up the QueryController\n\n\nA controller is directly bound to its type field automatically. For the query controller, we need to resolve two fields: \nitem\n and \nitems\n. By default, the framework expects controller methods to have a function named \ngetFieldNameInCamelCase\n per complex field. For resolving \nitem\n, we will have a function named \ngetItem\n, and for resolving \nitems\n, we will have another one named \ngetItems\n. If you forget to create a controller or field in the controller, the framework will inform you through its logger of what actions you should take.\n\n\nNow for the QueryController itself (\nControllers\\QueryController.php\n):\n\n\nTODO: Namespace\nTODO: IdentifierInFilter, PageFilter\n\nclass QueryController extends BaseController\n{\n    protected $itemFetchAdapter;\n\n    public function __construct(ItemFetchAdapter $itemFetchAdapter)\n    {\n        $this-\nitemFetchAdapter = $itemFetchAdapter;\n    }\n\n    public function getItem($id)\n    {\n        return $this-\nitemFetchAdapter\n            -\napplyFilter(new IdentifierInFilter([$id]))\n            -\nfetchOne();\n    }\n\n    public function getItems($page, $perPage)\n    {\n        return $this-\nitemFetchAdapter\n            -\napplyFilter(new PageFilter($page, $perPage))\n            -\nfetch();\n    }\n}\n\n\n\n\nFor \ngetItem\n, we use the \nIdentifierInFilter\n we created earlier, passing a single ID to it, and fetch the first result from the dataset.\n\n\nFor \ngetItems\n, we use the \nPageFilter\n, passing our arguments to it, and fetch all the dataset available.\n\n\nThe \nItemFetchAdapter\n is reset each time a field is resolved, so don't worry about data integrity here.\n\n\nItemController\n\n\nNormally, we'd need a controller for every types. However, if you check the definition for \nItem\n:\n\n\ntype Item implements Identifiable {\n    id: ID,\n    name: String,\n    color: Color\n}\n\n\n\n\nThere are no complex fields present. That is, no field need to be fetched from an external source with a \nFetchAdapter\n.\n\n\nFor this reason, there is no need to create an ItemController.\n\n\nCurrent structure\n\n\nAs of now, the structure for the GraphQL project should look as is:\n\n\n\\GraphQL\n    \\Controllers\n        QueryController.php\n    \\FetchAdapters\n        ItemFetchAdapter.php\n        \\Filters\n            IdentifierInFilter.php\n            PageFilter.php\n    \\GeneratedSchema\n        ...\n    \\Schema\n        main.graphqls\n    \\Translators\n\n\n\n\nEntry point\n\n\nFor our project entry point, let's use a simple HTTP endpoint, under index.php.\n\n\n// ToDo: Composer autoload\n// ToDo: Namespace include\n\n$configuration = GraphQLConfiguration::create()\n    -\nsetControllersDirectory(__DIR__ . '\\\\GraphQL\\\\Controllers')\n    -\nsetControllersNamespace('\\\\GraphQL\\\\Controllers')\n    -\nsetGeneratedSchemaDirectory(__DIR__ . '\\\\GraphQL\\\\GeneratedSchema')\n    -\nsetGeneratedSchemaNamespace('\\\\GraphQL\\\\GeneratedSchema');\n\n// Get the HTTP request\n$request = Request::fromGlobals();\n\n// Execute HTTP request\n$response = HttpEntryPoint::executeQueryWithConfig($request, $configuration);\n\n// ToDo: Headers + status code\necho $response-\ngetBody();\n\n\n\n\nRunning and testing\n\n\nFinally, let's run and test our project.\n\n\nphp -S localhost:8000\n\n\n\n\nNow, access \nhttp://localhost:8000/\n and you should be able to use it as a compatible GraphQL endpoint.", 
+            "location": "/getting-started/",
+            "text": "Getting started\n\n\nBeforehand, it is important to know that this library does not provide a standalone solution. As such, some amount of PHP knowledge is required, and ideally a Web framework should encapsulate the GraphQL endpoint (such as \nLaravel\n, \nSlim\n or \nSymfony\n). All you truly need is a way to read and write \nPSR-7\n objects from/to the client. Afterwards, you can handle incoming HTTP requests as GraphQL requests.\n\n\nRequirements\n\n\n\n\nA project with an initialized composer.json\n\n\nA project with an initialized package.json and Gruntfile.js\n\n\nSome way to read and write PSR-7 request objects to/from the client\n\n\nAn endpoint dedicated to GraphQL\n\n\n\n\nImplementation\n\n\nAssuming you have all three things above, the first thing to do would be to include both the GraphQL Generator and the GraphQL Framework.\n\n\ncomposer require kronostechnologies/graphql-framework\ncomposer require --dev kronostechnologies/graphql-generator\n\n\n\n\nOnce this is done, your PHP dependencies are setup. Next thing, we need a package from npm in order to generate the GraphQL schema for us:\n\n\nnpm install --save-dev grunt-graphql-php-generator\n\n\n\n\nSetting up a schema watcher\n\n\nNow that all the dependencies are installed, you can create your first \n.graphqls\n schema. Let's create it at a specific location to simplify the example, under \ngraphql/schema.graphqls\n:\n\n\nscalar DateTime\nscalar Cursor\n\ninterface Identifiable {\n    id: ID\n}\n\nenum Color {\n    BLUE,\n    RED,\n    YELLOW,\n    GREEN,\n    PURPLE,\n    CYAN\n}\n\ntype Item implements Identifiable {\n    id: ID,\n    name: String,\n    color: Color\n}\n\ntype Query {\n    item(id: ID): Item!\n    items(page: Int, perPage: Int): [Item!]!\n}\n\n\n\n\nOnce created, you will need to adjust your Gruntfile to tell it from which file to generate the schema from/to. Add this to your \nGruntfile.js\n:\n\n\n    'autogen-schema': {\n        options: {\n            source: './graphql/schema.graphqls',\n            destination: './[BaseFolder]/GraphQL/Schema/',\n            generatorCmdPath: './vendor/bin/graphqlgen',\n            namespace: '[BaseNamespace]',\n            deleteAndRecreate: true,\n            runPHPCSFixer: true\n        }\n    }\n\n\n\n\nNow, you can run a Grunt command to generate the files required by the framework for you:\n\n\ngrunt autogen-schema\n\n\n\n\nEntry point\n\n\nThe entry point requires access to a PSR-7 request object, and it will respond in a PSR-7 response. The core requirement to handle a GraphQL is the following:\n\n\n$configuration = GraphQLConfiguration::create()\n    ->setControllersDirectory(__DIR__ . '\\\\[BaseNamespace]\\\\GraphQL\\\\Controllers')\n    ->setGeneratedSchemaDirectory(__DIR__ . '\\\\[BaseNamespace]\\\\GraphQL\\\\GeneratedSchema');\n\n// Assume $request contains the PSR-7 request.\n$entryPoint = new HttpEntryPoint($configuration);\n$response = $entryPoint->executeRequest($request);\n\n// $response contains the PSR-7 response\n\n\n\n\nYou should now be able to query the GraphQL entry point. It will give out its introspection result, but it won't execute any query successfully since we have defined no controller yet.\n\n\nQuery controller\n\n\nLet's define a sample query controller to get a single item. It should be located under \n[BaseDirectory]\\GraphQL\\Controllers\n. Since we want to get the \nitem\n field in the \nQuery\n type defined in the schema higher up, we need a \nQueryController\n:\n\n\n<?php\n\nclass QueryController extends BaseController {\n    public function getItem() {\n        return $this->hydrator->fromSimpleArray(ItemDTO::class, [\n            'id' => $this->context->getArgument('id'),\n        ];\n    }\n}\n\n\n\n\nHere, we simply return an \nItemDTO\n, which is the representation of what querying \nItem\n in an object. These DTOs are made by the generator to aid in development mostly.\n\n\nNow, the following query should work:\n\n\nquery {\n    item(id: 1) {\n        id\n    }\n}",
             "title": "Getting Started"
-        }, 
+        },
         {
-            "location": "/getting-started/#requirements", 
-            "text": "A GraphQL schema (.graphqls) containing the definition of your types. To learn how to make one, see the official site:  https://graphql.org/learn/schema/  A directory and PHP namespace in which to generate the schema types and DTOs (for the underlying GraphQL library).", 
+            "location": "/getting-started/#getting-started",
+            "text": "Beforehand, it is important to know that this library does not provide a standalone solution. As such, some amount of PHP knowledge is required, and ideally a Web framework should encapsulate the GraphQL endpoint (such as  Laravel ,  Slim  or  Symfony ). All you truly need is a way to read and write  PSR-7  objects from/to the client. Afterwards, you can handle incoming HTTP requests as GraphQL requests.",
+            "title": "Getting started"
+        },
+        {
+            "location": "/getting-started/#requirements",
+            "text": "A project with an initialized composer.json  A project with an initialized package.json and Gruntfile.js  Some way to read and write PSR-7 request objects to/from the client  An endpoint dedicated to GraphQL",
             "title": "Requirements"
-        }, 
+        },
         {
-            "location": "/getting-started/#basic-project-structure", 
-            "text": "A basic GraphQL project should have the following structure.  \\GraphQL\n    \\Controllers             -- Controllers\n    \\FetchAdapters           -- FetchAdapters\n        \\Filters             -- Custom Filters\n    \\GeneratedSchema         -- The generated schema PHP files\n        \\DTOs                -- (Auto-generated)\n        \\Types               -- (Auto-generated)\n    \\Schema                  -- Your graphqls file(s)\n        main.graphqls        -- (Sample file name)\n    \\Translators             -- Translators for creating GraphQL   Service DTOs", 
-            "title": "Basic project structure"
-        }, 
+            "location": "/getting-started/#implementation",
+            "text": "Assuming you have all three things above, the first thing to do would be to include both the GraphQL Generator and the GraphQL Framework.  composer require kronostechnologies/graphql-framework\ncomposer require --dev kronostechnologies/graphql-generator  Once this is done, your PHP dependencies are setup. Next thing, we need a package from npm in order to generate the GraphQL schema for us:  npm install --save-dev grunt-graphql-php-generator",
+            "title": "Implementation"
+        },
         {
-            "location": "/getting-started/#generating-the-schema-files", 
-            "text": "First off, let's use a basic schema to ensure everything is working correctly. We will use one directly from the GraphQL generator repository. Put this in the  Schema/main.graphqls  file:  scalar DateTime\nscalar Cursor\n\ninterface Identifiable {\n    id: ID\n}\n\nenum Color {\n    BLUE,\n    RED,\n    YELLOW,\n    GREEN,\n    PURPLE,\n    CYAN\n}\n\ntype Item implements Identifiable {\n    id: ID,\n    name: String,\n    color: Color\n}\n\ntype Query {\n    item(id: ID): Item!\n    items(page: Int, perPage: Int): [Item!]!\n}  The generator should be ran each time a graphqls file is modified under the  Schema  directory, on all files in that directory. A grunt hook is available to do just that.  TODO: Grunt hook  Once it is setup, you can install  grunt   https://gruntjs.com/getting-started . Running  grunt watch:generate-schema  will auto-regenerate the schema PHP files everytime a graphqls file is modified, while also announcing errors to the user.  You can run  grunt generate-schema  to generate it without needing to change a graphqls file.", 
-            "title": "Generating the Schema files"
-        }, 
+            "location": "/getting-started/#setting-up-a-schema-watcher",
+            "text": "Now that all the dependencies are installed, you can create your first  .graphqls  schema. Let's create it at a specific location to simplify the example, under  graphql/schema.graphqls :  scalar DateTime\nscalar Cursor\n\ninterface Identifiable {\n    id: ID\n}\n\nenum Color {\n    BLUE,\n    RED,\n    YELLOW,\n    GREEN,\n    PURPLE,\n    CYAN\n}\n\ntype Item implements Identifiable {\n    id: ID,\n    name: String,\n    color: Color\n}\n\ntype Query {\n    item(id: ID): Item!\n    items(page: Int, perPage: Int): [Item!]!\n}  Once created, you will need to adjust your Gruntfile to tell it from which file to generate the schema from/to. Add this to your  Gruntfile.js :      'autogen-schema': {\n        options: {\n            source: './graphql/schema.graphqls',\n            destination: './[BaseFolder]/GraphQL/Schema/',\n            generatorCmdPath: './vendor/bin/graphqlgen',\n            namespace: '[BaseNamespace]',\n            deleteAndRecreate: true,\n            runPHPCSFixer: true\n        }\n    }  Now, you can run a Grunt command to generate the files required by the framework for you:  grunt autogen-schema",
+            "title": "Setting up a schema watcher"
+        },
         {
-            "location": "/getting-started/#setting-up-a-fetchadapter-for-item", 
-            "text": "Fetch adapters bridge the database or service layer to GraphQL. In our case, we don't have a database, so we will use the  ArrayFetchAdapter  to make a mock database. This adapter uses a flat array as its data source.  We do not need a  FetchAdapter  for the  Query  type, as it holds no data by itself. Instead, we will make one for the  Item  type which has 3 fields:  id ,  name , and  color  (an enumeration). Create it under  FetchAdapters\\ItemFetchAdapter.php .  TODO: Namespace\nTODO: Validate generated ColorEnumType\n\nclass ItemFetchAdapter extends ArrayFetchAdapter\n{\n    public function __construct()\n    {\n        // Dummy data source\n        $this- dataSource = [\n            [\n                'id' =  1,\n                'name' =  'Hello world',\n                'color' =  'Red',\n            ],\n\n            [\n                'id' =  2,\n                'name' =  'Second entry',\n                'color' =  'Yellow',\n            ],\n\n            [\n                'id' =  3,\n                'name' =  'Third entry',\n                'color' =  'Cyan',\n            ],\n\n            [\n                'id' =  4,\n                'name' =  'Last entry',\n                'color' =  'Purple',\n            ]\n        ];\n    }\n}", 
-            "title": "Setting up a FetchAdapter for Item"
-        }, 
-        {
-            "location": "/getting-started/#filtering-by-id-pagination", 
-            "text": "Before continuing, we have to take care of a few issues. Our  getField  function filters by ID and return a single result, whereas the  getFields  function takes some pagination arguments. We need to handle filtering on our specific dataset. Let's start with the IDs.", 
-            "title": "Filtering by ID &amp; pagination"
-        }, 
-        {
-            "location": "/getting-started/#identifierinfilter", 
-            "text": "ToDo: Namespace\n\nclass IdentifierInFilter implements ArrayFetchFilterInterface\n{\n    protected $ids;\n\n    public function __construct(array $ids)\n    {\n        $this- ids = $ids;\n    }\n\n    public function filterArrayResults(array $value)\n    {\n        return array_filter($value, function ($entry) {\n            return in_array($entry['id'], $this- ids);\n        });\n    }\n}  We specify it is an  ArrayFetchFilterInterface  so the  FetchAdapter  we created earlier can apply the filter to the query correctly.  This one simply uses  array_filter  to check if the entry's id matches one of the ids given to the given.", 
-            "title": "IdentifierInFilter"
-        }, 
-        {
-            "location": "/getting-started/#pagefilter", 
-            "text": "ToDo: Namespace\n\nclass PageFilter implements ArrayFetchFilterInterface\n{\n    protected $perPage;\n\n    protected $page;\n\n    public function __construct($perPage, $page)\n    {\n        $this- perPage = $perPage;\n        $this- page = $page;\n    }\n\n    public function filterArrayResults(array $value)\n    {\n        $pages = array_chunk($value, $this- perPage);\n\n        return $pages[$this- page - 1];       \n    }\n}  This filter uses  array_chunk  to separate the values array by pagesize and returns the corresponding index of the page.", 
-            "title": "PageFilter"
-        }, 
-        {
-            "location": "/getting-started/#setting-up-the-querycontroller", 
-            "text": "A controller is directly bound to its type field automatically. For the query controller, we need to resolve two fields:  item  and  items . By default, the framework expects controller methods to have a function named  getFieldNameInCamelCase  per complex field. For resolving  item , we will have a function named  getItem , and for resolving  items , we will have another one named  getItems . If you forget to create a controller or field in the controller, the framework will inform you through its logger of what actions you should take.  Now for the QueryController itself ( Controllers\\QueryController.php ):  TODO: Namespace\nTODO: IdentifierInFilter, PageFilter\n\nclass QueryController extends BaseController\n{\n    protected $itemFetchAdapter;\n\n    public function __construct(ItemFetchAdapter $itemFetchAdapter)\n    {\n        $this- itemFetchAdapter = $itemFetchAdapter;\n    }\n\n    public function getItem($id)\n    {\n        return $this- itemFetchAdapter\n            - applyFilter(new IdentifierInFilter([$id]))\n            - fetchOne();\n    }\n\n    public function getItems($page, $perPage)\n    {\n        return $this- itemFetchAdapter\n            - applyFilter(new PageFilter($page, $perPage))\n            - fetch();\n    }\n}  For  getItem , we use the  IdentifierInFilter  we created earlier, passing a single ID to it, and fetch the first result from the dataset.  For  getItems , we use the  PageFilter , passing our arguments to it, and fetch all the dataset available.  The  ItemFetchAdapter  is reset each time a field is resolved, so don't worry about data integrity here.", 
-            "title": "Setting up the QueryController"
-        }, 
-        {
-            "location": "/getting-started/#itemcontroller", 
-            "text": "Normally, we'd need a controller for every types. However, if you check the definition for  Item :  type Item implements Identifiable {\n    id: ID,\n    name: String,\n    color: Color\n}  There are no complex fields present. That is, no field need to be fetched from an external source with a  FetchAdapter .  For this reason, there is no need to create an ItemController.", 
-            "title": "ItemController"
-        }, 
-        {
-            "location": "/getting-started/#current-structure", 
-            "text": "As of now, the structure for the GraphQL project should look as is:  \\GraphQL\n    \\Controllers\n        QueryController.php\n    \\FetchAdapters\n        ItemFetchAdapter.php\n        \\Filters\n            IdentifierInFilter.php\n            PageFilter.php\n    \\GeneratedSchema\n        ...\n    \\Schema\n        main.graphqls\n    \\Translators", 
-            "title": "Current structure"
-        }, 
-        {
-            "location": "/getting-started/#entry-point", 
-            "text": "For our project entry point, let's use a simple HTTP endpoint, under index.php.  // ToDo: Composer autoload\n// ToDo: Namespace include\n\n$configuration = GraphQLConfiguration::create()\n    - setControllersDirectory(__DIR__ . '\\\\GraphQL\\\\Controllers')\n    - setControllersNamespace('\\\\GraphQL\\\\Controllers')\n    - setGeneratedSchemaDirectory(__DIR__ . '\\\\GraphQL\\\\GeneratedSchema')\n    - setGeneratedSchemaNamespace('\\\\GraphQL\\\\GeneratedSchema');\n\n// Get the HTTP request\n$request = Request::fromGlobals();\n\n// Execute HTTP request\n$response = HttpEntryPoint::executeQueryWithConfig($request, $configuration);\n\n// ToDo: Headers + status code\necho $response- getBody();", 
+            "location": "/getting-started/#entry-point",
+            "text": "The entry point requires access to a PSR-7 request object, and it will respond in a PSR-7 response. The core requirement to handle a GraphQL is the following:  $configuration = GraphQLConfiguration::create()\n    ->setControllersDirectory(__DIR__ . '\\\\[BaseNamespace]\\\\GraphQL\\\\Controllers')\n    ->setGeneratedSchemaDirectory(__DIR__ . '\\\\[BaseNamespace]\\\\GraphQL\\\\GeneratedSchema');\n\n// Assume $request contains the PSR-7 request.\n$entryPoint = new HttpEntryPoint($configuration);\n$response = $entryPoint->executeRequest($request);\n\n// $response contains the PSR-7 response  You should now be able to query the GraphQL entry point. It will give out its introspection result, but it won't execute any query successfully since we have defined no controller yet.",
             "title": "Entry point"
-        }, 
+        },
         {
-            "location": "/getting-started/#running-and-testing", 
-            "text": "Finally, let's run and test our project.  php -S localhost:8000  Now, access  http://localhost:8000/  and you should be able to use it as a compatible GraphQL endpoint.", 
-            "title": "Running and testing"
-        }, 
+            "location": "/getting-started/#query-controller",
+            "text": "Let's define a sample query controller to get a single item. It should be located under  [BaseDirectory]\\GraphQL\\Controllers . Since we want to get the  item  field in the  Query  type defined in the schema higher up, we need a  QueryController :  <?php\n\nclass QueryController extends BaseController {\n    public function getItem() {\n        return $this->hydrator->fromSimpleArray(ItemDTO::class, [\n            'id' => $this->context->getArgument('id'),\n        ];\n    }\n}  Here, we simply return an  ItemDTO , which is the representation of what querying  Item  in an object. These DTOs are made by the generator to aid in development mostly.  Now, the following query should work:  query {\n    item(id: 1) {\n        id\n    }\n}",
+            "title": "Query controller"
+        },
         {
-            "location": "/configuration/", 
-            "text": "Configuration Object\n\n\nThe configuration object is essential to properly work with the GraphQL framework. It is strongly suggested to read \nGetting Started\n to ensure you do not get lost from here on out.\n\n\nBasic configuration\n\n\nControllers directory \n namespace\n\n\nConfigurable with \nsetControllersDirectory\n and \nsetControllersNamespace\n. Tells the GraphQL framework where the controllers are located at.\n\n\nGenerated schema directory \n namespace\n\n\nConfigurable with \nsetGeneratedSchemaDirectory\n and \nsetGeneratedSchemaNamespace\n. The schema must be generated with the GraphQL generator tool from an existing \ngraphqls\n file.\n\n\nLogger configuration\n\n\nConfigurable with \nsetLogger\n. It must be a PSR-4 compliant logger instance. If unset, no logging actions will be taken by GraphQL. Verbosity is assumed to be handled by the logger output.\n\n\nDevelopment environment configuration\n\n\nConfiguration with \nsetInDevMode\n. If true, caches will be disabled and better exceptions will be displayed to aid in development. As these errors have a performance overhead, it is strongly recommended to disable the development mode in production.\n\n\nCache configuration\n\n\nThe cache layers are only active in a production environment. However, if it is not configured, it will be not be used at all, so beware, as the Type registry and Controllers caches play a crucial role in the optimization of the framework. For more information about cache layers, see the \nCache page\n.\n\n\nPersistent cache configuration\n\n\nThe persistent cache is used to store information about the Type registry and Controllers caches.\n\n\nA PSR-6 cache adapter is supported in the configuration by calling the function \nsetCacheAdapter\n. If this adapter is not set, the cache layers 1 \n 2 won't work.\n\n\nPer-cache configuration\n\n\nIt is possible to disable an individual cache layer if required:\n- Type Registry Cache (Level 1): \nsetIsTypeRegistryCacheEnabled\n\n- Controllers Cache (Level 2): \nsetIsControllersCacheEnabled\n\n- Resolve Cache (Level 3): \nsetIsResolveCacheEnabled\n\n- Fetch adapter Cache (Level 4): \nsetIsFetchAdapterCacheEnabled\n\n\nAlthough the caches may appear enabled, the development mode overrides all caches and disable them.", 
-            "title": "Configuration"
-        }, 
-        {
-            "location": "/configuration/#configuration-object", 
-            "text": "The configuration object is essential to properly work with the GraphQL framework. It is strongly suggested to read  Getting Started  to ensure you do not get lost from here on out.", 
-            "title": "Configuration Object"
-        }, 
-        {
-            "location": "/configuration/#basic-configuration", 
-            "text": "", 
-            "title": "Basic configuration"
-        }, 
-        {
-            "location": "/configuration/#controllers-directory-namespace", 
-            "text": "Configurable with  setControllersDirectory  and  setControllersNamespace . Tells the GraphQL framework where the controllers are located at.", 
-            "title": "Controllers directory &amp; namespace"
-        }, 
-        {
-            "location": "/configuration/#generated-schema-directory-namespace", 
-            "text": "Configurable with  setGeneratedSchemaDirectory  and  setGeneratedSchemaNamespace . The schema must be generated with the GraphQL generator tool from an existing  graphqls  file.", 
-            "title": "Generated schema directory &amp; namespace"
-        }, 
-        {
-            "location": "/configuration/#logger-configuration", 
-            "text": "Configurable with  setLogger . It must be a PSR-4 compliant logger instance. If unset, no logging actions will be taken by GraphQL. Verbosity is assumed to be handled by the logger output.", 
-            "title": "Logger configuration"
-        }, 
-        {
-            "location": "/configuration/#development-environment-configuration", 
-            "text": "Configuration with  setInDevMode . If true, caches will be disabled and better exceptions will be displayed to aid in development. As these errors have a performance overhead, it is strongly recommended to disable the development mode in production.", 
-            "title": "Development environment configuration"
-        }, 
-        {
-            "location": "/configuration/#cache-configuration", 
-            "text": "The cache layers are only active in a production environment. However, if it is not configured, it will be not be used at all, so beware, as the Type registry and Controllers caches play a crucial role in the optimization of the framework. For more information about cache layers, see the  Cache page .", 
-            "title": "Cache configuration"
-        }, 
-        {
-            "location": "/configuration/#persistent-cache-configuration", 
-            "text": "The persistent cache is used to store information about the Type registry and Controllers caches.  A PSR-6 cache adapter is supported in the configuration by calling the function  setCacheAdapter . If this adapter is not set, the cache layers 1   2 won't work.", 
-            "title": "Persistent cache configuration"
-        }, 
-        {
-            "location": "/configuration/#per-cache-configuration", 
-            "text": "It is possible to disable an individual cache layer if required:\n- Type Registry Cache (Level 1):  setIsTypeRegistryCacheEnabled \n- Controllers Cache (Level 2):  setIsControllersCacheEnabled \n- Resolve Cache (Level 3):  setIsResolveCacheEnabled \n- Fetch adapter Cache (Level 4):  setIsFetchAdapterCacheEnabled  Although the caches may appear enabled, the development mode overrides all caches and disable them.", 
-            "title": "Per-cache configuration"
-        }, 
-        {
-            "location": "/controllers/", 
-            "text": "Controllers\n\n\nTo the underlying PHP library, controllers are resolvers with enhanced automation capability. They are automatically found from the \nQueryResolver\n, and which directory \n namespace to seek can be configured directly in the initial \nGraphQLConfiguration\n passed to the service with \nsetControllersNamespace\n and \nsetControllersDirectory\n.\n\n\nMapping\n\n\nIt is assumed a controller manages one entity. \n\n\nField resolver functions\n\n\nA function \ngetFieldMemberQueryFunctionName\n is present in \nBaseController\n for determining the name of the function to use to query a specific member in the controller.\n\n\nResolving steps\n\n\n\n\nWhich controller to call is determined with the \nControllerMatcher\n class.\n\n\nOnce determined that the controller exists and is of correct type, the \ngetFieldMemberQueryFunctionName\n function is called.\n\n\nFinally, check to see if the function exists in the given class. If so, call it and use it as a resolver (returning its result to the GraphQL library).\n\n\n\n\nScalar types\n\n\nThe scalar types defined in the application should derive a special controller called \nScalarTypeController\n. They are not associated with the base controller by itself and they have no access to the application context directly.\n\n\nThey implement 3 functions:\n\n\n\n\nserialize($value)\n: Which converts from a GraphQL format to a storeable format.\n\n\ngetScalarFromValue($value)\n: When the value is fetched from a query argument and converted to a GraphQL compatible format.\n\n\ngetScalarFromLiteral($literalValue)\n: When the value was directly in the query argument and is converted to a GraphQL compatible format.\n\n\n\n\nInterfaces\n\n\nLastly, it is necessary for the underlying GraphQL library to know which type belongs to which implementation of an object. You can implement an \nInterfaceController\n for each existing interface. It should implement the \ngetTypeNameForValue($value)\n function.", 
-            "title": "Controllers"
-        }, 
-        {
-            "location": "/controllers/#controllers", 
-            "text": "To the underlying PHP library, controllers are resolvers with enhanced automation capability. They are automatically found from the  QueryResolver , and which directory   namespace to seek can be configured directly in the initial  GraphQLConfiguration  passed to the service with  setControllersNamespace  and  setControllersDirectory .", 
-            "title": "Controllers"
-        }, 
-        {
-            "location": "/controllers/#mapping", 
-            "text": "It is assumed a controller manages one entity.", 
-            "title": "Mapping"
-        }, 
-        {
-            "location": "/controllers/#field-resolver-functions", 
-            "text": "A function  getFieldMemberQueryFunctionName  is present in  BaseController  for determining the name of the function to use to query a specific member in the controller.", 
-            "title": "Field resolver functions"
-        }, 
-        {
-            "location": "/controllers/#resolving-steps", 
-            "text": "Which controller to call is determined with the  ControllerMatcher  class.  Once determined that the controller exists and is of correct type, the  getFieldMemberQueryFunctionName  function is called.  Finally, check to see if the function exists in the given class. If so, call it and use it as a resolver (returning its result to the GraphQL library).", 
-            "title": "Resolving steps"
-        }, 
-        {
-            "location": "/controllers/#scalar-types", 
-            "text": "The scalar types defined in the application should derive a special controller called  ScalarTypeController . They are not associated with the base controller by itself and they have no access to the application context directly.  They implement 3 functions:   serialize($value) : Which converts from a GraphQL format to a storeable format.  getScalarFromValue($value) : When the value is fetched from a query argument and converted to a GraphQL compatible format.  getScalarFromLiteral($literalValue) : When the value was directly in the query argument and is converted to a GraphQL compatible format.", 
-            "title": "Scalar types"
-        }, 
-        {
-            "location": "/controllers/#interfaces", 
-            "text": "Lastly, it is necessary for the underlying GraphQL library to know which type belongs to which implementation of an object. You can implement an  InterfaceController  for each existing interface. It should implement the  getTypeNameForValue($value)  function.", 
-            "title": "Interfaces"
-        }, 
-        {
-            "location": "/data/", 
-            "text": "Data / DTOs translation\n\n\nWhen receiving data from the underlying GraphQL library, it is received in an array format, like so:\n\n\n$args = [\n    'fieldOne' =\n 1,\n    'fieldTwo' =\n 2\n];\n\n// Get simple fields from args\n$fieldOneVal = $args['fieldOne'];\n$fieldTwoVal = $args['fieldTwo'];\n\n// The field might be set, but not always\n$fieldThreeVal = array_key_exists($args['fieldThree']) ? $args['fieldThree'] : null;\n\n\n\n\nAlong with creating a lot of code just for the fetching logic, the latter case can become problematic assuming a scalar type can also be given a null value through the GraphQL API. Also, a distinction needs to be made between \nUser did not set field\n and \nUser forcefully set field to null\n, which is not possible with this code.\n\n\nHydrators\n\n\nHydrators allow an array data structure to be translated into a DTO.\n\n\nBy calling \n$this-\nhydrator-\nfromSimpleArray($dtoFQN, $data)\n in a controller, you can create a DTO instance filled with values. Undefined values by the user are set to \nUndefinedValue\n.\n\n\nExample:\n\n\n// DTO Code\npublic class SampleDTO \n{\n    public $fieldOne;\n    public $fieldTwo;\n    public $fieldThree;\n}\n\n// (Arguments passed to query)\n$args = [\n    'fieldOne' =\n 1,\n    'fieldTwo' =\n null,\n];\n\n// Controller function code (from arguments)\n/** @var SampleDTO $dto */\n$dto = $this-\nhydrator-\nfromSimpleArray(SampleDTO::class, $this-\ngetContext()-\ngetCurrentArguments());\n\n\n\n\nResult:\n\n\n$dto-\nfieldOne === 1;\n$dto-\nfieldTwo === null;\n$dto-\nfieldThree instanceof UndefinedValue;\n\n\n\n\nNested DTOs\n\n\nSometimes, it is necessary to nest DTOs. The hydrators can be provided with a class extending \nBaseDTODefinition\n. This class contains an array definition of the DTO, describing what is to be nested or not. \n\n\nThe class should look as follows:\n\n\nclass DTODefinitionName\n{\n    public function __construct()\n    {\n        $this-\ndtoDefinition = [\n            'fqn' =\n RootDTO::class, // ClassName of the root DTO\n            'fields' =\n [ // Only put fields with a depth in here\n                'subField' =\n DepthSubDTO::class, // 'fieldNameInRootDTO' =\n dtoContainedInFieldClassName\n                'subField2' =\n [ // Deep nesting\n                    'fqn' =\n DeepNestedDTO::class, // Same as root definition\n                    'fields' =\n [ // Once again, only put fields with a depth in here\n                        'lastDTO' =\n LastDTO::class, // Same as before, 'fieldNameInRootDTO' =\n dtoContainedInFieldClassName,\n                        // ... Additional nesting levels work like the initial one\n                    ]\n                ]\n            ]\n        ];\n    }\n}\n\n\n\n\nAfterwards, you can pass the DTO definition class name in a controller:\n\n\n// $data being the input array\n$dto = $this-\nhydrator-\nfromDTODefinition(DTODefinitionName::class, $data);\n\n\n\n\nThe returned DTO will be filled with nested values. Be careful as an unset nested value will return an \nUndefinedValue\n in the DTO instead of the initially wanted DTO.", 
-            "title": "Data / DTOs translation"
-        }, 
-        {
-            "location": "/data/#data-dtos-translation", 
-            "text": "When receiving data from the underlying GraphQL library, it is received in an array format, like so:  $args = [\n    'fieldOne' =  1,\n    'fieldTwo' =  2\n];\n\n// Get simple fields from args\n$fieldOneVal = $args['fieldOne'];\n$fieldTwoVal = $args['fieldTwo'];\n\n// The field might be set, but not always\n$fieldThreeVal = array_key_exists($args['fieldThree']) ? $args['fieldThree'] : null;  Along with creating a lot of code just for the fetching logic, the latter case can become problematic assuming a scalar type can also be given a null value through the GraphQL API. Also, a distinction needs to be made between  User did not set field  and  User forcefully set field to null , which is not possible with this code.", 
-            "title": "Data / DTOs translation"
-        }, 
-        {
-            "location": "/data/#hydrators", 
-            "text": "Hydrators allow an array data structure to be translated into a DTO.  By calling  $this- hydrator- fromSimpleArray($dtoFQN, $data)  in a controller, you can create a DTO instance filled with values. Undefined values by the user are set to  UndefinedValue .  Example:  // DTO Code\npublic class SampleDTO \n{\n    public $fieldOne;\n    public $fieldTwo;\n    public $fieldThree;\n}\n\n// (Arguments passed to query)\n$args = [\n    'fieldOne' =  1,\n    'fieldTwo' =  null,\n];\n\n// Controller function code (from arguments)\n/** @var SampleDTO $dto */\n$dto = $this- hydrator- fromSimpleArray(SampleDTO::class, $this- getContext()- getCurrentArguments());  Result:  $dto- fieldOne === 1;\n$dto- fieldTwo === null;\n$dto- fieldThree instanceof UndefinedValue;", 
-            "title": "Hydrators"
-        }, 
-        {
-            "location": "/data/#nested-dtos", 
-            "text": "Sometimes, it is necessary to nest DTOs. The hydrators can be provided with a class extending  BaseDTODefinition . This class contains an array definition of the DTO, describing what is to be nested or not.   The class should look as follows:  class DTODefinitionName\n{\n    public function __construct()\n    {\n        $this- dtoDefinition = [\n            'fqn' =  RootDTO::class, // ClassName of the root DTO\n            'fields' =  [ // Only put fields with a depth in here\n                'subField' =  DepthSubDTO::class, // 'fieldNameInRootDTO' =  dtoContainedInFieldClassName\n                'subField2' =  [ // Deep nesting\n                    'fqn' =  DeepNestedDTO::class, // Same as root definition\n                    'fields' =  [ // Once again, only put fields with a depth in here\n                        'lastDTO' =  LastDTO::class, // Same as before, 'fieldNameInRootDTO' =  dtoContainedInFieldClassName,\n                        // ... Additional nesting levels work like the initial one\n                    ]\n                ]\n            ]\n        ];\n    }\n}  Afterwards, you can pass the DTO definition class name in a controller:  // $data being the input array\n$dto = $this- hydrator- fromDTODefinition(DTODefinitionName::class, $data);  The returned DTO will be filled with nested values. Be careful as an unset nested value will return an  UndefinedValue  in the DTO instead of the initially wanted DTO.", 
-            "title": "Nested DTOs"
-        }, 
-        {
-            "location": "/fetch-adapter/", 
-            "text": "Fetch Adapters\n\n\nFetch adapters are used to obtain data from an underlying data source, be it a database or a service layer.\n\n\nDatabase fetch adapter (DoctrineFetchAdapter)\n\n\nAlthough you will eventually want to decouple your application from your database, a fetch adapter closely linked to it is a good start. The \nDoctrineFetchAdapter\n allows linking to a relational database supported by the Doctrine ORM.\n\n\nFilters specified in the \nDoctrineFetchAdapter\n must be of type \nDoctrineFilterInterface\n. These filters apply to a \nQueryBuilder\n. Upon calling fetch, the results are taken and kept in a local cache.\n\n\nArray fetch adapter (ArrayFetchAdapter)\n\n\nThis adapter is mostly used for testing. Simply pass an array to it, and it will be used as a datasource. Afterwards, \nArrayFetchFilterInterface\n filters can be used to filter and sort the results.", 
-            "title": "Fetch Adapters"
-        }, 
-        {
-            "location": "/fetch-adapter/#fetch-adapters", 
-            "text": "Fetch adapters are used to obtain data from an underlying data source, be it a database or a service layer.", 
-            "title": "Fetch Adapters"
-        }, 
-        {
-            "location": "/fetch-adapter/#database-fetch-adapter-doctrinefetchadapter", 
-            "text": "Although you will eventually want to decouple your application from your database, a fetch adapter closely linked to it is a good start. The  DoctrineFetchAdapter  allows linking to a relational database supported by the Doctrine ORM.  Filters specified in the  DoctrineFetchAdapter  must be of type  DoctrineFilterInterface . These filters apply to a  QueryBuilder . Upon calling fetch, the results are taken and kept in a local cache.", 
-            "title": "Database fetch adapter (DoctrineFetchAdapter)"
-        }, 
-        {
-            "location": "/fetch-adapter/#array-fetch-adapter-arrayfetchadapter", 
-            "text": "This adapter is mostly used for testing. Simply pass an array to it, and it will be used as a datasource. Afterwards,  ArrayFetchFilterInterface  filters can be used to filter and sort the results.", 
-            "title": "Array fetch adapter (ArrayFetchAdapter)"
-        }, 
-        {
-            "location": "/filters/", 
-            "text": "Filters\n\n\nFilters are applied directly to \nFetchAdapters\n. If creating your own Fetch Adapter, a custom filter based on \nFilterInterface\n should also be created.\n\n\nDoctrineFilterInterface\n\n\nThese filters are applied directly to a Doctrine \nQueryBuilder\n. Simply extending the \nDoctrineFilterInterface\n and detailing the function \napplyToQueryBuilder\n suffices.\n\n\nExample filter:\n\n\nclass IdentifierInFilter implements DoctrineFilterInterface\n{\n    protected $ids;\n\n    public function __construct(array $ids)\n    {\n        $this-\nids = $ids;\n    }\n\n    public function applyToQueryBuilder(QueryBuilder $queryBuilder)\n    {\n        return $queryBuilder-\nwhere($queryBuilder-\nexpr()\n            -\nin('id', $this-\nids)\n        );\n    }\n}\n\n\n\n\nArrayFilterInterface\n\n\nThese filters are applied directly to an array. The dataset is already loaded in memory at that point, and the filters only need to filter out the unnecessary array values.\n\n\nExample filter:\n\n\nclass IdentifierInFilter implements ArrayFetchFilterInterface\n{\n    protected $ids;\n\n    public function __construct(array $ids)\n    {\n        $this-\nids = $ids;\n    }\n\n    public function filterArrayResults(array $value)\n    {\n        return array_filter($value, function ($entry) {\n            return in_array($entry['id'], $this-\nids);\n        });\n    }\n}", 
-            "title": "Filters"
-        }, 
-        {
-            "location": "/filters/#filters", 
-            "text": "Filters are applied directly to  FetchAdapters . If creating your own Fetch Adapter, a custom filter based on  FilterInterface  should also be created.", 
-            "title": "Filters"
-        }, 
-        {
-            "location": "/filters/#doctrinefilterinterface", 
-            "text": "These filters are applied directly to a Doctrine  QueryBuilder . Simply extending the  DoctrineFilterInterface  and detailing the function  applyToQueryBuilder  suffices.  Example filter:  class IdentifierInFilter implements DoctrineFilterInterface\n{\n    protected $ids;\n\n    public function __construct(array $ids)\n    {\n        $this- ids = $ids;\n    }\n\n    public function applyToQueryBuilder(QueryBuilder $queryBuilder)\n    {\n        return $queryBuilder- where($queryBuilder- expr()\n            - in('id', $this- ids)\n        );\n    }\n}", 
-            "title": "DoctrineFilterInterface"
-        }, 
-        {
-            "location": "/filters/#arrayfilterinterface", 
-            "text": "These filters are applied directly to an array. The dataset is already loaded in memory at that point, and the filters only need to filter out the unnecessary array values.  Example filter:  class IdentifierInFilter implements ArrayFetchFilterInterface\n{\n    protected $ids;\n\n    public function __construct(array $ids)\n    {\n        $this- ids = $ids;\n    }\n\n    public function filterArrayResults(array $value)\n    {\n        return array_filter($value, function ($entry) {\n            return in_array($entry['id'], $this- ids);\n        });\n    }\n}", 
-            "title": "ArrayFilterInterface"
-        }, 
-        {
-            "location": "/entry/", 
-            "text": "Entry Point\n\n\nThe entry points are used for initializing a call to the GraphQL framework. Queries can come from multiple sources, such as an HTTP request or an inner service call. Entry points provide a way of calling the inner GraphQL framework services without having to deal with trivial initialization procedures. They can also provide helpful exception-wrapping.\n\n\nHttpEntryPoint\n\n\nThis entry point takes a standardized HTTP request (PSR-7) as its initial values, and returns a PSR-7 HTTP response. The configuration object must also be passed here.\n\n\n// Setup configuration\n$configuration = new GraphQLConfiguration();\n// ...\n\n// Fetch PSR-7 Request\n$request = Request::fromGlobals();\n\n// Execute from EntryPoint\n$entryPoint = new HttpEntryPoint($configuration);\n$response = $entryPoint-\nexecuteQuery($request);\n\n\n\n\nOr with the short-hand function:\n\n\n// Set $configuration and $request...\n$response = HttpEntryPoint::executeQueryWithConfig($request, $configuration);\n\n\n\n\nRawQueryEntryPoint\n\n\nUseful if you need to call the GraphQL service from your inner services. This entry point takes as input the query itself and the parameters, returning the raw response string as a result.\n\n\n// Set $configuration, $query and $arguments...\n$response = RawQueryEntryPoint::executeQueryWithConfig($query, $arguments, $configuration);", 
-            "title": "Entry Point"
-        }, 
-        {
-            "location": "/entry/#entry-point", 
-            "text": "The entry points are used for initializing a call to the GraphQL framework. Queries can come from multiple sources, such as an HTTP request or an inner service call. Entry points provide a way of calling the inner GraphQL framework services without having to deal with trivial initialization procedures. They can also provide helpful exception-wrapping.", 
-            "title": "Entry Point"
-        }, 
-        {
-            "location": "/entry/#httpentrypoint", 
-            "text": "This entry point takes a standardized HTTP request (PSR-7) as its initial values, and returns a PSR-7 HTTP response. The configuration object must also be passed here.  // Setup configuration\n$configuration = new GraphQLConfiguration();\n// ...\n\n// Fetch PSR-7 Request\n$request = Request::fromGlobals();\n\n// Execute from EntryPoint\n$entryPoint = new HttpEntryPoint($configuration);\n$response = $entryPoint- executeQuery($request);  Or with the short-hand function:  // Set $configuration and $request...\n$response = HttpEntryPoint::executeQueryWithConfig($request, $configuration);", 
-            "title": "HttpEntryPoint"
-        }, 
-        {
-            "location": "/entry/#rawqueryentrypoint", 
-            "text": "Useful if you need to call the GraphQL service from your inner services. This entry point takes as input the query itself and the parameters, returning the raw response string as a result.  // Set $configuration, $query and $arguments...\n$response = RawQueryEntryPoint::executeQueryWithConfig($query, $arguments, $configuration);", 
-            "title": "RawQueryEntryPoint"
-        }, 
-        {
-            "location": "/development-mode/", 
-            "text": "Development Mode\n\n\nEnabling the development mode adds several additional exceptions that the GraphQL framework can throw, aiding you through your development. Additionally, all caches are disabled.", 
-            "title": "Development Mode"
-        }, 
-        {
-            "location": "/development-mode/#development-mode", 
-            "text": "Enabling the development mode adds several additional exceptions that the GraphQL framework can throw, aiding you through your development. Additionally, all caches are disabled.", 
-            "title": "Development Mode"
-        }, 
-        {
-            "location": "/generator/", 
-            "text": "Schema generator", 
-            "title": "Schema Generator"
-        }, 
-        {
-            "location": "/generator/#schema-generator", 
-            "text": "", 
+            "location": "/generator/",
+            "text": "Schema generator\n\n\nAn external library is used to transform a \ngraphqls\n (GraphQL Schema) file into its relevant parts which is essential to get this library to work by itself.\n\n\nGrunt tooling\n\n\nThe schema generator does need PHP to be installed locally, along with NodeJS and Grunt. This assumes you have an initialized \npackage.json\n. \n\n\ncomposer install --dev graphql-generator\nnpm install --save-dev grunt-graphql-php-generator\n\n\n\n\nAfterwards, the generator needs to be configured through the Gruntfile by adding an entry to Grunt's \ninitConfig\n object:\n\n\n    'autogen-schema': {\n        options: {\n            source: '{FilePathOfGraphQLSchema}',\n            destination: '{GeneratedSchemaDirectory}',\n            generatorCmdPath: './vendor/bin/graphqlgen',\n            namespace: '{NamespaceOfGraphQLSchema}',\n            deleteAndRecreate: {true:if you want to delete and recreate GraphQL files everytime},\n            runPHPCSFixer: {true:to code format in PSR-1/2}\n        }\n    }\n\n\n\n\nThe generator can then be ran with \n\n\ngrunt autogen-schema",
             "title": "Schema generator"
-        }, 
+        },
         {
-            "location": "/type-registry/", 
-            "text": "Type Registry", 
-            "title": "Type Registry"
-        }, 
+            "location": "/generator/#schema-generator",
+            "text": "An external library is used to transform a  graphqls  (GraphQL Schema) file into its relevant parts which is essential to get this library to work by itself.",
+            "title": "Schema generator"
+        },
         {
-            "location": "/type-registry/#type-registry", 
-            "text": "", 
-            "title": "Type Registry"
-        }, 
+            "location": "/generator/#grunt-tooling",
+            "text": "The schema generator does need PHP to be installed locally, along with NodeJS and Grunt. This assumes you have an initialized  package.json .   composer install --dev graphql-generator\nnpm install --save-dev grunt-graphql-php-generator  Afterwards, the generator needs to be configured through the Gruntfile by adding an entry to Grunt's  initConfig  object:      'autogen-schema': {\n        options: {\n            source: '{FilePathOfGraphQLSchema}',\n            destination: '{GeneratedSchemaDirectory}',\n            generatorCmdPath: './vendor/bin/graphqlgen',\n            namespace: '{NamespaceOfGraphQLSchema}',\n            deleteAndRecreate: {true:if you want to delete and recreate GraphQL files everytime},\n            runPHPCSFixer: {true:to code format in PSR-1/2}\n        }\n    }  The generator can then be ran with   grunt autogen-schema",
+            "title": "Grunt tooling"
+        },
         {
-            "location": "/cache/", 
-            "text": "Cache\n\n\nThe GraphQL framework handles 4 cache levels from the get-go. Turning on developer mode in the configuration will fully disabled all \npersistent\n cache layers (levels 1 and 2 for now), so they are effectively only active in production.\n\n\nA cache adapter must be configured in order to enable the cache in production.\n\n\nLevels\n\n\nLevel 1: Type Registry cache\n\n\nIn particular, this caches the available types from an \nAutomatedTypeRegistry\n. After the first request is done, this cache is built and will prevent listing all files under the generated schema directory.\n\n\nThis cache level \nNEEDS TO\n be persisted between requests.\n\n\nA type registry cache is created each time the controllers directory or namespace changes.\n\n\nLevel 2: Controllers cache\n\n\nThe controllers cache handle the following:\n\n\n\n\nListing available controllers under the specified directory.\n\n\nFetching the controller name from its type name.\n\n\n\n\nBy enabling the cache, the development mode is also disabled. This prevents development help actions from happening. For more information about this, see the \nDevelopment Mode\n section.\n\n\nThis cache level \nNEEDS TO\n be persisted between requests.\n\n\nLevel 3: Resolve cache\n\n\nAssuming a resolve function is called with the same arguments as a previous call in the same query, the resolve cache will return the result it has in cache instead of calling the same resolve function over again.\n\n\nThis cache level \nIS NOT\n persisted between requests.\n\n\nLevel 4: Fetch adapter cache\n\n\nAssuming a fetch adapter call is the very same as a previous call in the same query, the fetch adapter cache will return the result it has in cache instead of fetching the results over again.\n\n\nThis cache level \nIS NOT\n persisted between requests.\n\n\nPersistence\n\n\nThe cache levels 1 \n 2 absolutely needs to be persisted between requests, or they simply add a useless layer of processing to the request. If they cannot be enabled for any reason, you can disable them through the \nGraphQLConfiguration object\n.", 
-            "title": "Cache"
-        }, 
+            "location": "/configuration/",
+            "text": "Configuration Object\n\n\nThe configuration object is an essential part of the framework. Access to it is provided to the underlying controllers, and essentially your whole execution context afterwards.\n\n\nRequired configuration\n\n\nThe following snippet of code outlines the required configuration object.\n\n\n<?php\n\n$configuration = FrameworkConfiguration::create()\n    // Directory which contains your controllers   \n    ->setControllersDirectory(\"./graphql/Controllers\")\n    // Directory which contains your generated schema\n    ->setGeneratedSchemaDirectory(\"./graphql/Schema\");\n\n\n\n\nAdditional configuration\n\n\n<?php\n\n$configuration = FrameworkConfiguration::create()\n    // Enables development mode. Refer to doc section for more info.\n    ->enableDevMode()\n    // Sets a PSR-3 logger interface to be used by the framework itself.\n    ->setLogger($logger);\n\n\n\n\nCustom context\n\n\nNeeds arise to pass information through the framework back to your business logic. A custom context includes elements that are agnostic to the framework, but that are still needed to make your application work correctly. For example:\n\n\n\n\nThe authentication context\n\n\nCore services context (database, logging)\n\n\nService locators\n\n\n\n\n<?php\n$config = new FrameworkConfiguration();\n\n// Custom context definition\nclass CustomContext {\n    public $username;\n    public $userId;\n}\n\n// Initialize custom context\n$context = new CustomContext();\n$context->username = 'test';\n$context->userId = 1;\n\n// Set it in framework configuration\n$config->setCustomContext($context);\n\n// Initialize framework from config\n// ...\n\n\n\n\nYou can define any class you want as your custom context. Just be aware that it can only be set in the initial configuration (but the internals of it can be modified later down the road).\n\n\nAccessing the custom context\n\n\nThe custom context can then be accessed from the controller.\n\n\n<?php\nclass Controller extends BaseController\n{\n    public function getField() \n    {\n        // Fetch custom context. Also, set doccomment to provide autocompletion of it.\n        /** @var CustomContext $context */\n        $context = $this->context->getConfiguration()->getCustomContext();\n\n        // User ID: 1, Username: test\n        echo \"User ID: {$context->userId}, Username: {$context->username}\";\n    }\n}\n\n\n\n\nMiddlewares\n\n\nMiddlewares can alter GraphQL requests and response processed through the framework.\n\n\nThey can be set globally through the configuration object:\n\n\n<?php\n$configuration = FrameworkConfiguration::create();\n\n// Initialize a dummy middleware\n$relayMiddleware = new RelayMiddleware('id');\n\n// Add then remove middleware\n$configuration->addMiddleware($relayMiddleware);\n$configuration->removeMiddleware($relayMiddleware);",
+            "title": "Configuration"
+        },
         {
-            "location": "/cache/#cache", 
-            "text": "The GraphQL framework handles 4 cache levels from the get-go. Turning on developer mode in the configuration will fully disabled all  persistent  cache layers (levels 1 and 2 for now), so they are effectively only active in production.  A cache adapter must be configured in order to enable the cache in production.", 
-            "title": "Cache"
-        }, 
+            "location": "/configuration/#configuration-object",
+            "text": "The configuration object is an essential part of the framework. Access to it is provided to the underlying controllers, and essentially your whole execution context afterwards.",
+            "title": "Configuration Object"
+        },
         {
-            "location": "/cache/#levels", 
-            "text": "", 
-            "title": "Levels"
-        }, 
+            "location": "/configuration/#required-configuration",
+            "text": "The following snippet of code outlines the required configuration object.  <?php\n\n$configuration = FrameworkConfiguration::create()\n    // Directory which contains your controllers   \n    ->setControllersDirectory(\"./graphql/Controllers\")\n    // Directory which contains your generated schema\n    ->setGeneratedSchemaDirectory(\"./graphql/Schema\");",
+            "title": "Required configuration"
+        },
         {
-            "location": "/cache/#level-1-type-registry-cache", 
-            "text": "In particular, this caches the available types from an  AutomatedTypeRegistry . After the first request is done, this cache is built and will prevent listing all files under the generated schema directory.  This cache level  NEEDS TO  be persisted between requests.  A type registry cache is created each time the controllers directory or namespace changes.", 
-            "title": "Level 1: Type Registry cache"
-        }, 
+            "location": "/configuration/#additional-configuration",
+            "text": "<?php\n\n$configuration = FrameworkConfiguration::create()\n    // Enables development mode. Refer to doc section for more info.\n    ->enableDevMode()\n    // Sets a PSR-3 logger interface to be used by the framework itself.\n    ->setLogger($logger);",
+            "title": "Additional configuration"
+        },
         {
-            "location": "/cache/#level-2-controllers-cache", 
-            "text": "The controllers cache handle the following:   Listing available controllers under the specified directory.  Fetching the controller name from its type name.   By enabling the cache, the development mode is also disabled. This prevents development help actions from happening. For more information about this, see the  Development Mode  section.  This cache level  NEEDS TO  be persisted between requests.", 
-            "title": "Level 2: Controllers cache"
-        }, 
+            "location": "/configuration/#custom-context",
+            "text": "Needs arise to pass information through the framework back to your business logic. A custom context includes elements that are agnostic to the framework, but that are still needed to make your application work correctly. For example:   The authentication context  Core services context (database, logging)  Service locators   <?php\n$config = new FrameworkConfiguration();\n\n// Custom context definition\nclass CustomContext {\n    public $username;\n    public $userId;\n}\n\n// Initialize custom context\n$context = new CustomContext();\n$context->username = 'test';\n$context->userId = 1;\n\n// Set it in framework configuration\n$config->setCustomContext($context);\n\n// Initialize framework from config\n// ...  You can define any class you want as your custom context. Just be aware that it can only be set in the initial configuration (but the internals of it can be modified later down the road).",
+            "title": "Custom context"
+        },
         {
-            "location": "/cache/#level-3-resolve-cache", 
-            "text": "Assuming a resolve function is called with the same arguments as a previous call in the same query, the resolve cache will return the result it has in cache instead of calling the same resolve function over again.  This cache level  IS NOT  persisted between requests.", 
-            "title": "Level 3: Resolve cache"
-        }, 
+            "location": "/configuration/#accessing-the-custom-context",
+            "text": "The custom context can then be accessed from the controller.  <?php\nclass Controller extends BaseController\n{\n    public function getField() \n    {\n        // Fetch custom context. Also, set doccomment to provide autocompletion of it.\n        /** @var CustomContext $context */\n        $context = $this->context->getConfiguration()->getCustomContext();\n\n        // User ID: 1, Username: test\n        echo \"User ID: {$context->userId}, Username: {$context->username}\";\n    }\n}",
+            "title": "Accessing the custom context"
+        },
         {
-            "location": "/cache/#level-4-fetch-adapter-cache", 
-            "text": "Assuming a fetch adapter call is the very same as a previous call in the same query, the fetch adapter cache will return the result it has in cache instead of fetching the results over again.  This cache level  IS NOT  persisted between requests.", 
-            "title": "Level 4: Fetch adapter cache"
-        }, 
+            "location": "/configuration/#middlewares",
+            "text": "Middlewares can alter GraphQL requests and response processed through the framework.  They can be set globally through the configuration object:  <?php\n$configuration = FrameworkConfiguration::create();\n\n// Initialize a dummy middleware\n$relayMiddleware = new RelayMiddleware('id');\n\n// Add then remove middleware\n$configuration->addMiddleware($relayMiddleware);\n$configuration->removeMiddleware($relayMiddleware);",
+            "title": "Middlewares"
+        },
         {
-            "location": "/cache/#persistence", 
-            "text": "The cache levels 1   2 absolutely needs to be persisted between requests, or they simply add a useless layer of processing to the request. If they cannot be enabled for any reason, you can disable them through the  GraphQLConfiguration object .", 
-            "title": "Persistence"
+            "location": "/controllers/",
+            "text": "Controllers\n\n\nControllers act as automatic resolvers for the incoming GraphQL queries. \n\n\nNaming convention\n\n\nAll controllers should be named \n{TypeName}Controller\n \nand\n be located under the controllers directory as defined in the \nRequired configuration section\n. Resolution of a controller by name is recursive, so subdirectories can be created under the given directory.\n\n\nAdditionnally, a controller must extend a specific existing one in order to determine which type to use:\n\n\n\n\nBaseController\n: For \nObject types\n\n\nScalarController\n: For \nScalar types\n\n\nInterfaceController\n: For \nInterface types\n \n\n\n\n\nContext\n\n\nA context is provided to all controller base implementations. It is accessed through \n$this->context\n.\n\n\n\n\ngetConfiguration()\n: Returns the configuration initially passed to the framework.\n\n\ngetCurrentParentObject()\n: Returns the result of the parent call.\n\n\ngetArguments()\n: Returns all the arguments provided to the level of this query. Always an array, but empty if it was going to be null.\n\n\ngetArgument($path)\n: Returns an argument by path. For example:\n\n\n\n\n<?php\n$arguments = [\n    'a' => [\n        'b' => true\n    ]\n];\n\n// Can be queried with...\n$this->getArgument('a.b'); // Returns true\n\n\n\n\n\n\ngetFullQueryString()\n: Returns the full query string passed to the client.\n\n\ngetIdFromArgument($path)\n: Returns the id contained in a Relay argument. Also requires a dot-notation path like \ngetArgument\n.\n\n\n\n\nThe context object is immutable, which means the controller cannot modify it by itself. It is altered between every controller call by the inner framework, but it cannot be modified by the controllers themselves.\n\n\nObject type resolution\n\n\nDerived from the base class \nBaseController\n.\n\n\nOnce the matching controller is found, a function matching the detailed field is then sought in the format \nget{FieldName}\n. The function is then called, and its result returned to be processed by the middleware, and ultimately to be returned to the original client.\n\n\nHydrators\n\n\nHydrators can convert an array to any DTO object from a given definition. See \nAdvanced data handling\n for more details.\n\n\nScalar type resolution\n\n\nThe scalar types controllers defined in the application should derive a special controller called \nScalarTypeController\n. They are not associated with the base controller by itself and they have no access to the application context directly. Scalar type controller \nneed to\n extend \nScalarController\n.\n\n\nAll methods that must be implemented by it are found in the scalar controller:\n\n\n\n\nserializeScalarValue($value)\n: For outgoing requests. Takes \n$value\n and converts it into a format that is to be read by the client.\n\n\ngetScalarFromValue($value)\n & \ngetScalarFromLiteral($literalValue)\n: From incoming requests arguments. Takes \n$value\n and converts it into a format that is going to be processed by the controller. Both functions should return the same value.\n\n\n\n\nInterface type resolution\n\n\nInterface types controllers derive from the \nInterfaceController\n. It contains a single function called \nresolveInterfaceType($value)\n. This function is executed when a response is sent to the client, and \n$value\n is encapsulated in a DTO at this point. This should return the type name of \n$value\n as a string known by the \nTypeStore\n.",
+            "title": "Controllers"
+        },
+        {
+            "location": "/controllers/#controllers",
+            "text": "Controllers act as automatic resolvers for the incoming GraphQL queries.",
+            "title": "Controllers"
+        },
+        {
+            "location": "/controllers/#naming-convention",
+            "text": "All controllers should be named  {TypeName}Controller   and  be located under the controllers directory as defined in the  Required configuration section . Resolution of a controller by name is recursive, so subdirectories can be created under the given directory.  Additionnally, a controller must extend a specific existing one in order to determine which type to use:   BaseController : For  Object types  ScalarController : For  Scalar types  InterfaceController : For  Interface types",
+            "title": "Naming convention"
+        },
+        {
+            "location": "/controllers/#context",
+            "text": "A context is provided to all controller base implementations. It is accessed through  $this->context .   getConfiguration() : Returns the configuration initially passed to the framework.  getCurrentParentObject() : Returns the result of the parent call.  getArguments() : Returns all the arguments provided to the level of this query. Always an array, but empty if it was going to be null.  getArgument($path) : Returns an argument by path. For example:   <?php\n$arguments = [\n    'a' => [\n        'b' => true\n    ]\n];\n\n// Can be queried with...\n$this->getArgument('a.b'); // Returns true   getFullQueryString() : Returns the full query string passed to the client.  getIdFromArgument($path) : Returns the id contained in a Relay argument. Also requires a dot-notation path like  getArgument .   The context object is immutable, which means the controller cannot modify it by itself. It is altered between every controller call by the inner framework, but it cannot be modified by the controllers themselves.",
+            "title": "Context"
+        },
+        {
+            "location": "/controllers/#object-type-resolution",
+            "text": "Derived from the base class  BaseController .  Once the matching controller is found, a function matching the detailed field is then sought in the format  get{FieldName} . The function is then called, and its result returned to be processed by the middleware, and ultimately to be returned to the original client.",
+            "title": "Object type resolution"
+        },
+        {
+            "location": "/controllers/#hydrators",
+            "text": "Hydrators can convert an array to any DTO object from a given definition. See  Advanced data handling  for more details.",
+            "title": "Hydrators"
+        },
+        {
+            "location": "/controllers/#scalar-type-resolution",
+            "text": "The scalar types controllers defined in the application should derive a special controller called  ScalarTypeController . They are not associated with the base controller by itself and they have no access to the application context directly. Scalar type controller  need to  extend  ScalarController .  All methods that must be implemented by it are found in the scalar controller:   serializeScalarValue($value) : For outgoing requests. Takes  $value  and converts it into a format that is to be read by the client.  getScalarFromValue($value)  &  getScalarFromLiteral($literalValue) : From incoming requests arguments. Takes  $value  and converts it into a format that is going to be processed by the controller. Both functions should return the same value.",
+            "title": "Scalar type resolution"
+        },
+        {
+            "location": "/controllers/#interface-type-resolution",
+            "text": "Interface types controllers derive from the  InterfaceController . It contains a single function called  resolveInterfaceType($value) . This function is executed when a response is sent to the client, and  $value  is encapsulated in a DTO at this point. This should return the type name of  $value  as a string known by the  TypeStore .",
+            "title": "Interface type resolution"
+        },
+        {
+            "location": "/entry/",
+            "text": "Entry Point\n\n\nThe entry points are used for initializing a call to the GraphQL framework. Queries can come from multiple sources, such as an HTTP request or an inner service call. Entry points provide a way of calling the inner GraphQL framework logic through standard ways.\n\n\nHttpEntryPoint\n\n\nThis entry point takes a standardized HTTP request (PSR-7) as its initial values, and returns a PSR-7 HTTP response. The configuration object must also be passed here.\n\n\n// Setup configuration\n$configuration = FrameworkConfiguration::create();\n// ...\n\n// Fetch PSR-7 Request\n$request = Request::fromGlobals();\n\n// Execute from EntryPoint\n$entryPoint = new HttpEntryPoint($configuration);\n$response = $entryPoint->executeRequest($request);\n\n// Further handle PSR-7 response here",
+            "title": "Entry Point"
+        },
+        {
+            "location": "/entry/#entry-point",
+            "text": "The entry points are used for initializing a call to the GraphQL framework. Queries can come from multiple sources, such as an HTTP request or an inner service call. Entry points provide a way of calling the inner GraphQL framework logic through standard ways.",
+            "title": "Entry Point"
+        },
+        {
+            "location": "/entry/#httpentrypoint",
+            "text": "This entry point takes a standardized HTTP request (PSR-7) as its initial values, and returns a PSR-7 HTTP response. The configuration object must also be passed here.  // Setup configuration\n$configuration = FrameworkConfiguration::create();\n// ...\n\n// Fetch PSR-7 Request\n$request = Request::fromGlobals();\n\n// Execute from EntryPoint\n$entryPoint = new HttpEntryPoint($configuration);\n$response = $entryPoint->executeRequest($request);\n\n// Further handle PSR-7 response here",
+            "title": "HttpEntryPoint"
+        },
+        {
+            "location": "/development-mode/",
+            "text": "Development Mode\n\n\nFor now, enabling the development mode simply allows exceptions to pass through the underlying GraphQL service to the HTTP frontend. This essentially makes debugging much easier.",
+            "title": "Development Mode"
+        },
+        {
+            "location": "/development-mode/#development-mode",
+            "text": "For now, enabling the development mode simply allows exceptions to pass through the underlying GraphQL service to the HTTP frontend. This essentially makes debugging much easier.",
+            "title": "Development Mode"
+        },
+        {
+            "location": "/advanced-data-handling/",
+            "text": "Advanced data handling\n\n\nWhen receiving data from the underlying GraphQL library, it is received in an array format, like so:\n\n\n$args = [\n    'fieldOne' => 1,\n    'fieldTwo' => 2\n];\n\n// Get simple fields from args\n$fieldOneVal = $args['fieldOne'];\n$fieldTwoVal = $args['fieldTwo'];\n\n// The field might be set, but not always\n$fieldThreeVal = array_key_exists($args['fieldThree']) ? $args['fieldThree'] : null;\n\n\n\n\nAlong with creating a lot of code just for the fetching logic, the latter case can become problematic assuming a scalar type can also be given a null value through the GraphQL API. Also, a distinction needs to be made between \nUser did not set field\n and \nUser forcefully set field to null\n, which is not possible with this code.\n\n\nHydrators\n\n\nHydrators allow an array data structure to be translated into a DTO.\n\n\nBy calling \n$this->hydrator->fromSimpleArray($dtoFQN, $data)\n in a controller, you can create a DTO instance filled with values. Undefined values by the user are set to an instance of \nUndefinedValue\n.\n\n\nExample:\n\n\n// DTO Code\npublic class SampleDTO \n{\n    public $fieldOne;\n    public $fieldTwo;\n    public $fieldThree;\n}\n\n// (Arguments passed to query)\n$args = [\n    'fieldOne' => 1,\n    'fieldTwo' => null,\n];\n\n// Controller function code (from arguments)\n/** @var SampleDTO $dto */\n$dto = $this->hydrator->fromSimpleArray(SampleDTO::class, $this->getContext()->getCurrentArguments());\n\n\n\n\nResult:\n\n\n$dto->fieldOne === 1;\n$dto->fieldTwo === null;\n$dto->fieldThree instanceof UndefinedValue;\n\n\n\n\nNested DTOs\n\n\nSometimes, it is necessary to nest DTOs. The hydrators can be provided with a class extending \nBaseDTODefinition\n. This class contains an array definition of the DTO, describing what is to be nested or not. \n\n\nThe class should look as follows:\n\n\nclass DTODefinitionName\n{\n    public function __construct()\n    {\n        $this->dtoDefinition = [\n            'fqn' => RootDTO::class, // ClassName of the root DTO\n            'fields' => [ // Optional: in this case, subField & subField2 nest DTOs\n                'subField' => DepthSubDTO::class, // Shorthand: 'fieldNameInRootDTO' => dtoContainedInFieldClassName (this shorthand is usable since subField doesn't nest any deeper)\n                'subField2' => [ // Deep nesting\n                    'fqn' => DeepNestedDTO::class, // Same as root definition\n                    'fields' => [ // Once again, only put fields with a depth in here\n                        'lastDTO' => LastDTO::class, // Same as before, 'fieldNameInRootDTO' => dtoContainedInFieldClassName,\n                        // ... Additional nesting levels work like the initial one\n                    ]\n                ]\n            ]\n        ];\n    }\n}\n\n\n\n\nAfterwards, you can pass the DTO definition class name in a controller:\n\n\n// $data being the input array\n$dto = $this->hydrator->fromDTODefinition(DTODefinitionName::class, $data);\n\n\n\n\nThe returned DTO will be filled with nested values. Be careful as an unset nested value will return an \nUndefinedValue\n in the DTO instead of the initially wanted DTO.",
+            "title": "Advanced data handling"
+        },
+        {
+            "location": "/advanced-data-handling/#advanced-data-handling",
+            "text": "When receiving data from the underlying GraphQL library, it is received in an array format, like so:  $args = [\n    'fieldOne' => 1,\n    'fieldTwo' => 2\n];\n\n// Get simple fields from args\n$fieldOneVal = $args['fieldOne'];\n$fieldTwoVal = $args['fieldTwo'];\n\n// The field might be set, but not always\n$fieldThreeVal = array_key_exists($args['fieldThree']) ? $args['fieldThree'] : null;  Along with creating a lot of code just for the fetching logic, the latter case can become problematic assuming a scalar type can also be given a null value through the GraphQL API. Also, a distinction needs to be made between  User did not set field  and  User forcefully set field to null , which is not possible with this code.",
+            "title": "Advanced data handling"
+        },
+        {
+            "location": "/advanced-data-handling/#hydrators",
+            "text": "Hydrators allow an array data structure to be translated into a DTO.  By calling  $this->hydrator->fromSimpleArray($dtoFQN, $data)  in a controller, you can create a DTO instance filled with values. Undefined values by the user are set to an instance of  UndefinedValue .  Example:  // DTO Code\npublic class SampleDTO \n{\n    public $fieldOne;\n    public $fieldTwo;\n    public $fieldThree;\n}\n\n// (Arguments passed to query)\n$args = [\n    'fieldOne' => 1,\n    'fieldTwo' => null,\n];\n\n// Controller function code (from arguments)\n/** @var SampleDTO $dto */\n$dto = $this->hydrator->fromSimpleArray(SampleDTO::class, $this->getContext()->getCurrentArguments());  Result:  $dto->fieldOne === 1;\n$dto->fieldTwo === null;\n$dto->fieldThree instanceof UndefinedValue;",
+            "title": "Hydrators"
+        },
+        {
+            "location": "/advanced-data-handling/#nested-dtos",
+            "text": "Sometimes, it is necessary to nest DTOs. The hydrators can be provided with a class extending  BaseDTODefinition . This class contains an array definition of the DTO, describing what is to be nested or not.   The class should look as follows:  class DTODefinitionName\n{\n    public function __construct()\n    {\n        $this->dtoDefinition = [\n            'fqn' => RootDTO::class, // ClassName of the root DTO\n            'fields' => [ // Optional: in this case, subField & subField2 nest DTOs\n                'subField' => DepthSubDTO::class, // Shorthand: 'fieldNameInRootDTO' => dtoContainedInFieldClassName (this shorthand is usable since subField doesn't nest any deeper)\n                'subField2' => [ // Deep nesting\n                    'fqn' => DeepNestedDTO::class, // Same as root definition\n                    'fields' => [ // Once again, only put fields with a depth in here\n                        'lastDTO' => LastDTO::class, // Same as before, 'fieldNameInRootDTO' => dtoContainedInFieldClassName,\n                        // ... Additional nesting levels work like the initial one\n                    ]\n                ]\n            ]\n        ];\n    }\n}  Afterwards, you can pass the DTO definition class name in a controller:  // $data being the input array\n$dto = $this->hydrator->fromDTODefinition(DTODefinitionName::class, $data);  The returned DTO will be filled with nested values. Be careful as an unset nested value will return an  UndefinedValue  in the DTO instead of the initially wanted DTO.",
+            "title": "Nested DTOs"
         }
     ]
 }

@@ -62,6 +62,11 @@
     <a class="" href="../getting-started/">Getting Started</a>
 	    </li>
           
+            <li class="toctree-l1">
+		
+    <a class="" href="../generator/">Schema generator</a>
+	    </li>
+          
             <li class="toctree-l1 current">
 		
     <a class="current" href="./">Configuration</a>
@@ -71,9 +76,13 @@
     
         <ul>
         
-            <li><a class="toctree-l3" href="#basic-configuration">Basic configuration</a></li>
+            <li><a class="toctree-l3" href="#required-configuration">Required configuration</a></li>
         
-            <li><a class="toctree-l3" href="#cache-configuration">Cache configuration</a></li>
+            <li><a class="toctree-l3" href="#additional-configuration">Additional configuration</a></li>
+        
+            <li><a class="toctree-l3" href="#custom-context">Custom context</a></li>
+        
+            <li><a class="toctree-l3" href="#middlewares">Middlewares</a></li>
         
         </ul>
     
@@ -88,21 +97,6 @@
           
             <li class="toctree-l1">
 		
-    <a class="" href="../data/">Data / DTOs translation</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../fetch-adapter/">Fetch Adapters</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../filters/">Filters</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
     <a class="" href="../entry/">Entry Point</a>
 	    </li>
           
@@ -113,17 +107,7 @@
           
             <li class="toctree-l1">
 		
-    <a class="" href="../generator/">Schema Generator</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../type-registry/">Type Registry</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../cache/">Cache</a>
+    <a class="" href="../advanced-data-handling/">Advanced data handling</a>
 	    </li>
           
         </ul>
@@ -159,28 +143,87 @@
             <div class="section">
               
                 <h1 id="configuration-object">Configuration Object</h1>
-<p>The configuration object is essential to properly work with the GraphQL framework. It is strongly suggested to read <a href="../getting-started/">Getting Started</a> to ensure you do not get lost from here on out.</p>
-<h2 id="basic-configuration">Basic configuration</h2>
-<h3 id="controllers-directory-namespace">Controllers directory &amp; namespace</h3>
-<p>Configurable with <code>setControllersDirectory</code> and <code>setControllersNamespace</code>. Tells the GraphQL framework where the controllers are located at.</p>
-<h3 id="generated-schema-directory-namespace">Generated schema directory &amp; namespace</h3>
-<p>Configurable with <code>setGeneratedSchemaDirectory</code> and <code>setGeneratedSchemaNamespace</code>. The schema must be generated with the GraphQL generator tool from an existing <code>graphqls</code> file.</p>
-<h3 id="logger-configuration">Logger configuration</h3>
-<p>Configurable with <code>setLogger</code>. It must be a PSR-4 compliant logger instance. If unset, no logging actions will be taken by GraphQL. Verbosity is assumed to be handled by the logger output.</p>
-<h3 id="development-environment-configuration">Development environment configuration</h3>
-<p>Configuration with <code>setInDevMode</code>. If true, caches will be disabled and better exceptions will be displayed to aid in development. As these errors have a performance overhead, it is strongly recommended to disable the development mode in production.</p>
-<h2 id="cache-configuration">Cache configuration</h2>
-<p>The cache layers are only active in a production environment. However, if it is not configured, it will be not be used at all, so beware, as the Type registry and Controllers caches play a crucial role in the optimization of the framework. For more information about cache layers, see the <a href="../cache/">Cache page</a>.</p>
-<h3 id="persistent-cache-configuration">Persistent cache configuration</h3>
-<p>The persistent cache is used to store information about the Type registry and Controllers caches.</p>
-<p>A PSR-6 cache adapter is supported in the configuration by calling the function <code>setCacheAdapter</code>. If this adapter is not set, the cache layers 1 &amp; 2 won't work.</p>
-<h3 id="per-cache-configuration">Per-cache configuration</h3>
-<p>It is possible to disable an individual cache layer if required:
-- Type Registry Cache (Level 1): <code>setIsTypeRegistryCacheEnabled</code>
-- Controllers Cache (Level 2): <code>setIsControllersCacheEnabled</code>
-- Resolve Cache (Level 3): <code>setIsResolveCacheEnabled</code>
-- Fetch adapter Cache (Level 4): <code>setIsFetchAdapterCacheEnabled</code></p>
-<p>Although the caches may appear enabled, the development mode overrides all caches and disable them.</p>
+<p>The configuration object is an essential part of the framework. Access to it is provided to the underlying controllers, and essentially your whole execution context afterwards.</p>
+<h2 id="required-configuration">Required configuration</h2>
+<p>The following snippet of code outlines the required configuration object.</p>
+<pre><code>&lt;?php
+
+$configuration = FrameworkConfiguration::create()
+    // Directory which contains your controllers   
+    -&gt;setControllersDirectory(&quot;./graphql/Controllers&quot;)
+    // Directory which contains your generated schema
+    -&gt;setGeneratedSchemaDirectory(&quot;./graphql/Schema&quot;);
+</code></pre>
+
+<h2 id="additional-configuration">Additional configuration</h2>
+<pre><code>&lt;?php
+
+$configuration = FrameworkConfiguration::create()
+    // Enables development mode. Refer to doc section for more info.
+    -&gt;enableDevMode()
+    // Sets a PSR-3 logger interface to be used by the framework itself.
+    -&gt;setLogger($logger);
+</code></pre>
+
+<h2 id="custom-context">Custom context</h2>
+<p>Needs arise to pass information through the framework back to your business logic. A custom context includes elements that are agnostic to the framework, but that are still needed to make your application work correctly. For example:</p>
+<ul>
+<li>The authentication context</li>
+<li>Core services context (database, logging)</li>
+<li>Service locators</li>
+</ul>
+<pre><code>&lt;?php
+$config = new FrameworkConfiguration();
+
+// Custom context definition
+class CustomContext {
+    public $username;
+    public $userId;
+}
+
+// Initialize custom context
+$context = new CustomContext();
+$context-&gt;username = 'test';
+$context-&gt;userId = 1;
+
+// Set it in framework configuration
+$config-&gt;setCustomContext($context);
+
+// Initialize framework from config
+// ...
+</code></pre>
+
+<p>You can define any class you want as your custom context. Just be aware that it can only be set in the initial configuration (but the internals of it can be modified later down the road).</p>
+<h3 id="accessing-the-custom-context">Accessing the custom context</h3>
+<p>The custom context can then be accessed from the controller.</p>
+<pre><code>&lt;?php
+class Controller extends BaseController
+{
+    public function getField() 
+    {
+        // Fetch custom context. Also, set doccomment to provide autocompletion of it.
+        /** @var CustomContext $context */
+        $context = $this-&gt;context-&gt;getConfiguration()-&gt;getCustomContext();
+
+        // User ID: 1, Username: test
+        echo &quot;User ID: {$context-&gt;userId}, Username: {$context-&gt;username}&quot;;
+    }
+}
+</code></pre>
+
+<h2 id="middlewares">Middlewares</h2>
+<p>Middlewares can alter GraphQL requests and response processed through the framework.</p>
+<p>They can be set globally through the configuration object:</p>
+<pre><code>&lt;?php
+$configuration = FrameworkConfiguration::create();
+
+// Initialize a dummy middleware
+$relayMiddleware = new RelayMiddleware('id');
+
+// Add then remove middleware
+$configuration-&gt;addMiddleware($relayMiddleware);
+$configuration-&gt;removeMiddleware($relayMiddleware);
+</code></pre>
               
             </div>
           </div>
@@ -191,7 +234,7 @@
         <a href="../controllers/" class="btn btn-neutral float-right" title="Controllers">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../getting-started/" class="btn btn-neutral" title="Getting Started"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../generator/" class="btn btn-neutral" title="Schema generator"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -217,7 +260,7 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../getting-started/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../generator/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
         <span style="margin-left: 15px"><a href="../controllers/" style="color: #fcfcfc">Next &raquo;</a></span>
