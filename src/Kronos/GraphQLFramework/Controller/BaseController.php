@@ -20,13 +20,14 @@ abstract class BaseController
 	protected $hydrator;
 
 	/**
+     * @Inject
 	 * @param GraphQLContext $context
 	 * @param DTOHydrator|null $hydrator
 	 */
-	public function __construct(GraphQLContext $context, DTOHydrator $hydrator = null)
+	public function __construct(GraphQLContext $context, DTOHydrator $hydrator)
 	{
 		$this->context = $context;
-		$this->hydrator = $hydrator ?: new DTOHydrator();
+		$this->hydrator = $hydrator;
 	}
 
 	/**

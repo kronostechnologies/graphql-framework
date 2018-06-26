@@ -11,12 +11,14 @@ use Kronos\GraphQLFramework\Controller\InterfaceController;
 use Kronos\GraphQLFramework\Controller\ScalarController;
 use Kronos\GraphQLFramework\FrameworkConfiguration;
 use Kronos\GraphQLFramework\Resolver\Context\ContextUpdater;
+use Kronos\GraphQLFramework\Resolver\Context\GraphQLContext;
 use Kronos\GraphQLFramework\Resolver\Controller\ControllerStore;
 use Kronos\GraphQLFramework\Resolver\Controller\Exception\InvalidControllerTypeException;
 use Kronos\GraphQLFramework\Resolver\Controller\Exception\NoMatchingControllerFoundException;
 use Kronos\GraphQLFramework\Resolver\Exception\MissingFieldResolverException;
 use Kronos\GraphQLFramework\Utils\Reflection\ClassMethodsReader;
 use Kronos\GraphQLFramework\Utils\Reflection\Exception\NoClassMethodFoundException;
+use Psr\Container\ContainerInterface;
 
 class Resolver
 {
@@ -32,6 +34,11 @@ class Resolver
 	 * @var FrameworkConfiguration
 	 */
 	protected $configuration;
+
+    /**
+     * @var ContainerInterface
+     */
+	protected $container;
 
 	/**
 	 * @var ContextUpdater
@@ -49,10 +56,27 @@ class Resolver
 	public function __construct(FrameworkConfiguration $configuration)
 	{
 		$this->configuration = $configuration;
+		$this->container = $this->getExtendedContainerBuilder()->build();
 		$this->contextUpdater = new ContextUpdater();
 		$this->contextUpdater->setConfiguration($configuration);
 		$this->controllerStore = new ControllerStore($configuration);
 	}
+
+    /**
+     * @return \DI\ContainerBuilder
+     */
+	protected function getExtendedContainerBuilder()
+    {
+        $containerBuilder = $this->configuration->getContainerBuilder();
+        $containerBuilder->useAnnotations(true);
+        $containerBuilder->addDefinitions([
+            GraphQLContext::class => function() {
+                return $this->contextUpdater->getActiveContext();
+            }
+        ]);
+
+        return $containerBuilder;
+    }
 
 	/**
 	 * @param string $typeName
@@ -79,7 +103,7 @@ class Resolver
 	{
 		$controllerFQN = $this->getControllerForTypeExpectingGroup($typeName, $expectedGroup);
 
-		return new $controllerFQN($this->contextUpdater->getActiveContext());
+		return $this->container->get($controllerFQN);
 	}
 
 	/**

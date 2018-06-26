@@ -5,6 +5,7 @@ namespace Kronos\GraphQLFramework;
 
 
 use Closure;
+use DI\ContainerBuilder;
 use Kronos\GraphQLFramework\Exception\NoCacheAdapterConfiguredException;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Log\LoggerInterface;
@@ -58,9 +59,9 @@ class FrameworkConfiguration
     protected $forceFetchAdapterCacheOnOrOff;
 
     /**
-     * @var \stdClass|null
+     * @var ContainerBuilder
      */
-    protected $customContext;
+    protected $containerBuilder;
 
     /**
      * @var FrameworkMiddleware[]
@@ -330,24 +331,6 @@ class FrameworkConfiguration
     }
 
     /**
-     * @return null|\stdClass
-     */
-    public function getCustomContext()
-    {
-        return $this->customContext;
-    }
-
-    /**
-     * @param null|\stdClass $customContext
-     * @return FrameworkConfiguration
-     */
-    public function setCustomContext($customContext)
-    {
-        $this->customContext = $customContext;
-        return $this;
-    }
-
-    /**
      * @param FrameworkMiddleware $middleware
      * @return $this
      */
@@ -394,4 +377,19 @@ class FrameworkConfiguration
 		$this->exceptionHandler = $exceptionHandler;
 		return $this;
 	}
+
+    /**
+     * Gets the container builder. The container is built once the application framework is initialized. Dependency
+     * injection can be used at the controller level.
+     *
+     * @return ContainerBuilder
+     */
+	public function getContainerBuilder()
+    {
+        if (!$this->containerBuilder) {
+            $this->containerBuilder = new ContainerBuilder();
+        }
+
+        return $this->containerBuilder;
+    }
 }
