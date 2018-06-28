@@ -5,8 +5,10 @@ namespace Kronos\GraphQLFramework\Relay;
 
 
 use function array_key_exists;
+use function base64_decode;
 use function is_object;
 use Kronos\GraphQLFramework\FrameworkMiddleware;
+use Kronos\GraphQLFramework\Relay\Exception\InvalidPayloadException;
 use ReflectionClass;
 use function str_replace;
 
@@ -91,15 +93,31 @@ class RelayMiddleware implements FrameworkMiddleware
 
                     $relayGID->setEntityName($shortenedEntityName);
 
-                    $property->setValue($response, $relayGID->serialize());
+                    if (!$this->isAlreadyRelayId($property->getValue($response))) {
+                        $property->setValue($response, $relayGID->serialize());
+                    }
                 } else if (is_object($property->getValue($response))) {
-                    $property->setValue($response, $this->modifyResponse($property->getValue($response)));
+                    if (!$this->isAlreadyRelayId($property->getValue($response))) {
+                        $property->setValue($response, $this->modifyResponse($property->getValue($response)));
+                    }
                 }
             }
 
             return $response;
         } else {
             return $response;
+        }
+    }
+
+    protected function isAlreadyRelayId($value)
+    {
+        try {
+            $gid = new RelayGlobalIdentifier();
+            $gid->deserialize($value);
+
+            return true;
+        } catch (\Exception $ex) {
+            return false;
         }
     }
 }

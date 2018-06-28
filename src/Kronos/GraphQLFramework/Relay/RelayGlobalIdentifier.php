@@ -72,7 +72,7 @@ class RelayGlobalIdentifier
      */
     public function deserialize($gidB64)
     {
-        $gidB64Decoded = base64_decode($gidB64, true);
+        $gidB64Decoded = @base64_decode($gidB64, true);
         $this->validateDecodedB64($gidB64Decoded);
 
         $gidDecodedJSON = json_decode($gidB64Decoded);
