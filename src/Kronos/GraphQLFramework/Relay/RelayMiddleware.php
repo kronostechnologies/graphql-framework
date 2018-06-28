@@ -45,6 +45,7 @@ class RelayMiddleware implements FrameworkMiddleware
                 $relayIdentifier->deserialize($request[$this->idFieldName]);
 
                 $request[$this->idFieldName] = $relayIdentifier->getIdentifier();
+                $request[$this->idFieldName . '.entity'] = $relayIdentifier->getEntityName();
             }
 
             foreach ($request as $key => $value) {
@@ -92,7 +93,7 @@ class RelayMiddleware implements FrameworkMiddleware
 
                     $property->setValue($response, $relayGID->serialize());
                 } else if (is_object($property->getValue($response))) {
-                    $property->setValue($response, $this->modifyResponse($property->getValue()));
+                    $property->setValue($response, $this->modifyResponse($property->getValue($response)));
                 }
             }
 

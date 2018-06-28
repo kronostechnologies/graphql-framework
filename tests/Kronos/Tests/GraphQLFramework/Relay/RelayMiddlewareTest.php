@@ -59,8 +59,16 @@ class RelayMiddlewareTest extends TestCase
 
         $output = $this->defaultMiddleware->modifyRequest($input);
 
-        $expected = [self::DEFAULT_ID => self::RELAY_ID_ROOT];
-        $this->assertEquals($expected, $output);
+        $this->assertEquals(self::RELAY_ID_ROOT, $output[self::DEFAULT_ID]);
+    }
+
+    public function test_ArrayRequestSpecificIdField_modifyRequest_ReturnsRequestWithEntityName()
+    {
+        $input = [self::DEFAULT_ID => $this->getRelayGID(self::RELAY_ID_ROOT, 'RootDTO')->serialize()];
+
+        $output = $this->defaultMiddleware->modifyRequest($input);
+
+        $this->assertEquals('RootDTO', $output[self::DEFAULT_ID . '.entity']);
     }
 
     public function test_ArrayRequestDifferentSpecificIdField_modifyRequest_ReturnsRequestWithFlatId()
@@ -69,8 +77,16 @@ class RelayMiddlewareTest extends TestCase
 
         $output = $this->specificIdMiddleware->modifyRequest($input);
 
-        $expected = [self::SPECIFIC_ID => self::RELAY_ID_ROOT];
-        $this->assertEquals($expected, $output);
+        $this->assertEquals(self::RELAY_ID_ROOT, $output[self::SPECIFIC_ID]);
+    }
+
+    public function test_ArrayRequestDifferentSpecificIdField_modifyRequest_ReturnsRequestWithEntityName()
+    {
+        $input = [self::SPECIFIC_ID => $this->getRelayGID(self::RELAY_ID_ROOT, 'RootDTO')->serialize()];
+
+        $output = $this->specificIdMiddleware->modifyRequest($input);
+
+        $this->assertEquals('RootDTO', $output[self::SPECIFIC_ID . '.entity']);
     }
 
     public function test_ArrayRequestMalformedRelayGID_modifyRequest_ThrowsInvalidPayloadException()

@@ -21,6 +21,11 @@ class Executor
 	 */
 	protected $configuration;
 
+    /**
+     * @var Resolver
+     */
+	protected $resolver;
+
 	/**
 	 * @var AutomatedTypeRegistry
 	 */
@@ -53,9 +58,9 @@ class Executor
 	{
 		$schemaDefinition = new GeneratedSchemaDefinition($schemaDirectory);
 		$typesDirectory = $schemaDefinition->getTypesDirectory();
-		$resolver = new Resolver($this->configuration);
+        $this->resolver = new Resolver($this->configuration);
 
-		$this->typeRegistry = new AutomatedTypeRegistry($resolver, $typesDirectory);
+		$this->typeRegistry = new AutomatedTypeRegistry($this->resolver, $typesDirectory);
 	}
 
 	protected function loadSchema()
@@ -63,7 +68,10 @@ class Executor
 		if ($this->schema === null) {
 			$this->schema = new Schema([
 				'query' => $this->typeRegistry->getQueryType(),
-				'mutation' => $this->typeRegistry->getMutationType()
+				'mutation' => $this->typeRegistry->getMutationType(),
+                'types' => array_map(function ($fqn) {
+                    return new $fqn($this->typeRegistry, $this->resolver);
+                }, $this->configuration->getForcedAcknowledgedTypes()),
 			]);
 		}
 	}

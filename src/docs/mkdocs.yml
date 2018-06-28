@@ -10,4 +10,5 @@ pages:
   - 'Entry Point': 'entry.md'
   - 'Development Mode': 'development-mode.md'
   - 'Advanced data handling': 'advanced-data-handling.md'
+  - 'Dependency Injection': 'dependency-injection.md'
 site_dir: '../../docs'
