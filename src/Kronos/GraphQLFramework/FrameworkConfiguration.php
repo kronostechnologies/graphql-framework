@@ -73,6 +73,11 @@ class FrameworkConfiguration
 	 */
     protected $exceptionHandler;
 
+    /**
+     * @var string[]
+     */
+    protected $forcedAcknowledgedTypes = [];
+
     public function __construct()
 	{
 		$this->logger = new NullLogger();
@@ -391,5 +396,27 @@ class FrameworkConfiguration
         }
 
         return $this->containerBuilder;
+    }
+
+    /**
+     * Some types are not recognized by the underlying GraphQL library automatically.
+     * This usually happens with interface implementations. Register them here.
+     *
+     * @param string $type
+     * @return self
+     */
+    public function addForcedAcknowledgeType($type)
+    {
+        $this->forcedAcknowledgedTypes[] = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getForcedAcknowledgedTypes()
+    {
+        return $this->forcedAcknowledgedTypes;
     }
 }

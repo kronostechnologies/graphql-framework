@@ -93,7 +93,7 @@ class RelayMiddleware implements FrameworkMiddleware
 
                     $property->setValue($response, $relayGID->serialize());
                 } else if (is_object($property->getValue($response))) {
-                    $property->setValue($response, $this->modifyResponse($property->getValue()));
+                    $property->setValue($response, $this->modifyResponse($property->getValue($response)));
                 }
             }
 

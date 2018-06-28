@@ -103,6 +103,8 @@ class Resolver
 	{
 		$controllerFQN = $this->getControllerForTypeExpectingGroup($typeName, $expectedGroup);
 
+		$this->container->set(GraphQLContext::class, $this->contextUpdater->getActiveContext());
+
 		return $this->container->get($controllerFQN);
 	}
 
