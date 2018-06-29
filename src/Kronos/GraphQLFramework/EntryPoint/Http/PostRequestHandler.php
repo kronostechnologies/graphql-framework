@@ -13,32 +13,19 @@ use Psr\Http\Message\ServerRequestInterface;
 class PostRequestHandler implements HttpRequestHandlerInterface
 {
     /**
-     * @var ServerRequestInterface
-     */
-    protected $request;
-
-    /**
-     * GetRequestHandler constructor.
      * @param ServerRequestInterface $request
-     */
-    public function __construct(ServerRequestInterface $request)
-    {
-        $this->request = $request;
-    }
-
-    /**
      * @return HandledPayloadResult
-     * @throws MalformedRequestException
      * @throws CannotHandleRequestException
      * @throws HttpQueryRequiredException
+     * @throws MalformedRequestException
      */
-    public function handle()
+    public function handle(ServerRequestInterface $request)
     {
-        if (!$this->canHandle()) {
-            throw new CannotHandleRequestException($this->request->getMethod());
+        if (!$this->canHandle($request)) {
+            throw new CannotHandleRequestException($request->getMethod());
         }
 
-        $parsedBody = $this->getParsedBodyAsJson();
+        $parsedBody = $this->getParsedBodyAsJson($request);
 
         $queryText = $this->getQueryText($parsedBody);
         $variables = $this->getVariablesArray($parsedBody);
@@ -76,20 +63,22 @@ class PostRequestHandler implements HttpRequestHandlerInterface
     }
 
     /**
+     * @param ServerRequestInterface $request
      * @return bool
      */
-    public function canHandle()
+    public function canHandle(ServerRequestInterface $request)
     {
-        return $this->request->getMethod() === 'POST';
+        return $request->getMethod() === 'POST';
     }
 
     /**
+     * @param ServerRequestInterface $request
      * @return mixed
      * @throws MalformedRequestException
      */
-    protected function getParsedBodyAsJson()
+    protected function getParsedBodyAsJson(ServerRequestInterface $request)
     {
-        $parsedBody = @json_decode($this->request->getParsedBody(), true);
+        $parsedBody = @json_decode($request->getBody()->getContents(), true);
         if (!is_array($parsedBody)) {
             throw new MalformedRequestException("query");
         }

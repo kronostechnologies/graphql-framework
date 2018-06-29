@@ -36,20 +36,16 @@ class Executor
 	 */
 	protected $schema;
 
-	/**
-	 * @param FrameworkConfiguration $configuration
-	 * @param AutomatedTypeRegistry|null $customTypeRegistry Only used for mocking currently.
-	 */
-	public function __construct(FrameworkConfiguration $configuration, $customTypeRegistry = null)
-	{
-		$this->configuration = $configuration;
+	public function configure(FrameworkConfiguration $configuration, $customTypeRegistry = null)
+    {
+        $this->configuration = $configuration;
 
-		if ($customTypeRegistry === null) {
-			$this->configureAutomatedTypesRegistry($this->configuration->getGeneratedSchemaDirectory());
-		} else {
-			$this->typeRegistry = $customTypeRegistry;
-		}
-	}
+        if ($customTypeRegistry === null) {
+            $this->configureAutomatedTypesRegistry($this->configuration->getGeneratedSchemaDirectory());
+        } else {
+            $this->typeRegistry = $customTypeRegistry;
+        }
+    }
 
 	/**
 	 * @param string $schemaDirectory

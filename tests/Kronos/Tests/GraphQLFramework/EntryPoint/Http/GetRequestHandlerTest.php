@@ -47,8 +47,15 @@ class GetRequestHandlerTest extends TestCase
      */
     protected $withVarsGetRequest;
 
+    /**
+     * @var GetRequestHandler
+     */
+    protected $requestHandler;
+
     protected function setUp()
     {
+        $this->requestHandler = new GetRequestHandler();
+
         $baseRequest = new ServerRequest('GET', new Uri(''));
         $this->withVarsGetRequest = $baseRequest->withQueryParams([
             'query' => self::REQ_QUERY,
@@ -70,59 +77,45 @@ class GetRequestHandlerTest extends TestCase
 
     public function test_WithVarsGetRequest_canHandle_ReturnsTrue()
     {
-        $handler = new GetRequestHandler($this->withVarsGetRequest);
-
-        $this->assertTrue($handler->canHandle());
+        $this->assertTrue($this->requestHandler->canHandle($this->withVarsGetRequest));
     }
 
     public function test_PostRequest_canHandle_ReturnsFalse()
     {
-        $handler = new GetRequestHandler($this->postRequest);
-
-        $this->assertFalse($handler->canHandle());
+        $this->assertFalse($this->requestHandler->canHandle($this->postRequest));
     }
 
     public function test_WithVarsGetRequest_handle_ReturnsHandledPayloadResult()
     {
-        $handler = new GetRequestHandler($this->withVarsGetRequest);
-
-        $actual = $handler->handle();
+        $actual = $this->requestHandler->handle($this->withVarsGetRequest);
 
         $this->assertInstanceOf(HandledPayloadResult::class, $actual);
     }
 
     public function test_WithVarsGetRequest_handle_ResultContainsExpectedQueryData()
     {
-        $handler = new GetRequestHandler($this->withVarsGetRequest);
-
-        $actual = $handler->handle();
+        $actual = $this->requestHandler->handle($this->withVarsGetRequest);
 
         $this->assertSame(self::REQ_QUERY, $actual->getQuery());
     }
 
     public function test_WithVarsGetRequest_handle_ResultContainsExpectedVariableData()
     {
-        $handler = new GetRequestHandler($this->withVarsGetRequest);
-
-        $actual = $handler->handle();
+        $actual = $this->requestHandler->handle($this->withVarsGetRequest);
 
         $this->assertEquals(self::REQ_VARS_PARSED, $actual->getVariables());
     }
 
     public function test_NoVarsGetRequest_handle_ResultContainsExpectedQueryData()
     {
-        $handler = new GetRequestHandler($this->noVarsGetRequest);
-
-        $actual = $handler->handle();
+        $actual = $this->requestHandler->handle($this->noVarsGetRequest);
 
         $this->assertSame(self::REQ_QUERY, $actual->getQuery());
     }
 
     public function test_NoVarsGetRequest_handle_ResultVariablesIsEmptyArray()
     {
-        $handler = new GetRequestHandler($this->noVarsGetRequest);
-
-        $actual = $handler->handle();
+        $actual = $this->requestHandler->handle($this->noVarsGetRequest);
 
         $this->assertSame([], $actual->getVariables());
     }
@@ -131,23 +124,20 @@ class GetRequestHandlerTest extends TestCase
     {
         $this->expectException(HttpQueryRequiredException::class);
 
-        $handler = new GetRequestHandler($this->noQueryGetRequest);
-        $handler->handle();
+        $this->requestHandler->handle($this->noQueryGetRequest);
     }
 
     public function test_PostRequest_handle_ThrowsCannotHandleRequestException()
     {
         $this->expectException(CannotHandleRequestException::class);
 
-        $handler = new GetRequestHandler($this->postRequest);
-        $handler->handle();
+        $this->requestHandler->handle($this->postRequest);
     }
 
     public function test_MalformedVarsGetRequest_handle_ThrowsMalformedRequestException()
     {
         $this->expectException(MalformedRequestException::class);
 
-        $handler = new GetRequestHandler($this->malformedVarsGetRequest);
-        $handler->handle();
+        $this->requestHandler->handle($this->malformedVarsGetRequest);
     }
 }

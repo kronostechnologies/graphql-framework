@@ -5,6 +5,7 @@ namespace Kronos\Tests\GraphQLFramework\EntryPoint\Http;
 
 
 use GuzzleHttp\Psr7\ServerRequest;
+use function GuzzleHttp\Psr7\stream_for;
 use GuzzleHttp\Psr7\Uri;
 use Kronos\GraphQLFramework\EntryPoint\Exception\CannotHandleRequestException;
 use Kronos\GraphQLFramework\EntryPoint\Exception\HttpQueryRequiredException;
@@ -49,65 +50,60 @@ class PostRequestHandlerTest extends TestCase
      */
     protected $withVarsPostRequest;
 
+    /**
+     * @var PostRequestHandler
+     */
+    protected $requestHandler;
+
     protected function setUp()
     {
+        $this->requestHandler = new PostRequestHandler();
+
         $baseRequest = new ServerRequest('POST', new Uri(''));
-        $this->withVarsPostRequest = $baseRequest->withParsedBody(self::REQ_QUERY_WITH_VARS);
+        $this->withVarsPostRequest = $baseRequest->withBody(stream_for(self::REQ_QUERY_WITH_VARS));
 
-        $this->malformedVarsPostRequest = $baseRequest->withParsedBody(self::REQ_MALFORMED);
+        $this->malformedVarsPostRequest = $baseRequest->withBody(stream_for(self::REQ_MALFORMED));
 
-        $this->noQueryPostRequest = $baseRequest->withParsedBody(self::REQ_NO_QUERY);
-        $this->noVarsPostRequest = $baseRequest->withParsedBody(self::REQ_QUERY);
+        $this->noQueryPostRequest = $baseRequest->withBody(stream_for(self::REQ_NO_QUERY));
+        $this->noVarsPostRequest = $baseRequest->withBody(stream_for(self::REQ_QUERY));
 
         $this->getRequest = new ServerRequest('GET', new Uri(''));
     }
 
     public function test_WithVarsPostRequest_canHandle_ReturnsTrue()
     {
-        $handler = new PostRequestHandler($this->withVarsPostRequest);
-
-        $this->assertTrue($handler->canHandle());
+        $this->assertTrue($this->requestHandler->canHandle($this->withVarsPostRequest));
     }
 
     public function test_GetRequest_canHandle_ReturnsFalse()
     {
-        $handler = new PostRequestHandler($this->getRequest);
-
-        $this->assertFalse($handler->canHandle());
+        $this->assertFalse($this->requestHandler->canHandle($this->getRequest));
     }
 
     public function test_WithVarsPostRequest_handle_ReturnsHandledPayloadResult()
     {
-        $handler = new PostRequestHandler($this->withVarsPostRequest);
-
-        $actual = $handler->handle();
+        $actual = $this->requestHandler->handle($this->withVarsPostRequest);
 
         $this->assertInstanceOf(HandledPayloadResult::class, $actual);
     }
 
     public function test_WithVarsPostRequest_handle_ResultContainsExpectedQueryData()
     {
-        $handler = new PostRequestHandler($this->withVarsPostRequest);
-
-        $actual = $handler->handle();
+        $actual = $this->requestHandler->handle($this->withVarsPostRequest);
 
         $this->assertSame(self::REQ_QUERY_PARSED, $actual->getQuery());
     }
 
     public function test_WithVarsPostRequest_handle_ResultContainsExpectedVariableData()
     {
-        $handler = new PostRequestHandler($this->withVarsPostRequest);
-
-        $actual = $handler->handle();
+        $actual = $this->requestHandler->handle($this->withVarsPostRequest);
 
         $this->assertEquals(self::REQ_VARS_PARSED, $actual->getVariables());
     }
 
     public function test_NoVarsPostRequest_handle_ResultContainsExpectedQueryData()
     {
-        $handler = new PostRequestHandler($this->noVarsPostRequest);
-
-        $actual = $handler->handle();
+        $actual = $this->requestHandler->handle($this->noVarsPostRequest);
 
         $this->assertSame(self::REQ_QUERY_PARSED, $actual->getQuery());
     }
@@ -115,9 +111,7 @@ class PostRequestHandlerTest extends TestCase
 
     public function test_NoVarsPostRequest_handle_ResultVariablesIsEmptyArray()
     {
-        $handler = new PostRequestHandler($this->noVarsPostRequest);
-
-        $actual = $handler->handle();
+        $actual = $this->requestHandler->handle($this->noVarsPostRequest);
 
         $this->assertSame([], $actual->getVariables());
     }
@@ -126,23 +120,20 @@ class PostRequestHandlerTest extends TestCase
     {
         $this->expectException(HttpQueryRequiredException::class);
 
-        $handler = new PostRequestHandler($this->noQueryPostRequest);
-        $handler->handle();
+        $this->requestHandler->handle($this->noQueryPostRequest);
     }
 
     public function test_GetRequest_handle_ThrowsCannotHandleRequestException()
     {
         $this->expectException(CannotHandleRequestException::class);
 
-        $handler = new PostRequestHandler($this->getRequest);
-        $handler->handle();
+        $this->requestHandler->handle($this->getRequest);
     }
 
     public function test_MalformedVarsPostRequest_handle_ThrowsMalformedRequestException()
     {
         $this->expectException(MalformedRequestException::class);
 
-        $handler = new PostRequestHandler($this->malformedVarsPostRequest);
-        $handler->handle();
+        $this->requestHandler->handle($this->malformedVarsPostRequest);
     }
 }

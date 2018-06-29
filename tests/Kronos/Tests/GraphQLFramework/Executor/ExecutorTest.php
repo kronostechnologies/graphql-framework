@@ -28,7 +28,7 @@ class ExecutorTest extends TestCase
 	public function test_InvalidQueryType_executeQuery_ResultHasError()
 	{
 		$configuration = new FrameworkConfiguration();
-		$executor = new Executor($configuration, $this->typeRegistryMock);
+		$executor = $this->getConfiguredExecutor($configuration);
 
 		$result = $executor->executeQuery("", []);
 
@@ -38,7 +38,7 @@ class ExecutorTest extends TestCase
 	public function test_ValidQueryType_executeQuery_LoadsQueryType()
 	{
 		$configuration = new FrameworkConfiguration();
-		$executor = new Executor($configuration, $this->typeRegistryMock);
+        $executor = $this->getConfiguredExecutor($configuration);
 
 		$this->typeRegistryMock
 			->expects($this->once())
@@ -51,7 +51,7 @@ class ExecutorTest extends TestCase
 	public function test_NullMutationType_executeQuery_LoadsMutationType()
 	{
 		$configuration = new FrameworkConfiguration();
-		$executor = new Executor($configuration, $this->typeRegistryMock);
+        $executor = $this->getConfiguredExecutor($configuration);
 
 		$this->typeRegistryMock
 			->expects($this->once())
@@ -64,8 +64,9 @@ class ExecutorTest extends TestCase
 	public function test_ValidQueryType_executeQuery_HasNoError()
 	{
 		$configuration = new FrameworkConfiguration();
-		$executor = new Executor($configuration, $this->typeRegistryMock);
-		$this->typeRegistryMock
+        $executor = $this->getConfiguredExecutor($configuration);
+
+        $this->typeRegistryMock
 			->method('getQueryType')
 			->willReturn(new ObjectType([ 'name' => 'Query' ]));
 
@@ -77,7 +78,7 @@ class ExecutorTest extends TestCase
 	public function test_InvalidQueryTypeNotDevMode_executeQuery_ContainsInternalErrorResponseText()
 	{
 		$configuration = new FrameworkConfiguration();
-		$executor = new Executor($configuration, $this->typeRegistryMock);
+        $executor = $this->getConfiguredExecutor($configuration);
 
 		$result = $executor->executeQuery("", []);
 
@@ -88,7 +89,7 @@ class ExecutorTest extends TestCase
 	{
 		$configuration = new FrameworkConfiguration();
 		$configuration->enableDevMode();
-		$executor = new Executor($configuration, $this->typeRegistryMock);
+        $executor = $this->getConfiguredExecutor($configuration);
 
 		$result = $executor->executeQuery("", []);
 
@@ -98,7 +99,7 @@ class ExecutorTest extends TestCase
 	public function test_ClientExceptionExceptionThrownDevModeOff_executeQuery_ContainsClientExceptionMessage()
 	{
 		$configuration = new FrameworkConfiguration();
-		$executor = new Executor($configuration, $this->typeRegistryMock);
+        $executor = $this->getConfiguredExecutor($configuration);
 
 		$this->typeRegistryMock->method('getQueryType')->will($this->throwException(new DummyClientException()));
 
@@ -110,7 +111,7 @@ class ExecutorTest extends TestCase
 	public function test_ClientExceptionExceptionThrownDevModeOff_executeQuery_ContainsClientExceptionCode()
 	{
 		$configuration = new FrameworkConfiguration();
-		$executor = new Executor($configuration, $this->typeRegistryMock);
+        $executor = $this->getConfiguredExecutor($configuration);
 
 		$this->typeRegistryMock->method('getQueryType')->will($this->throwException(new DummyClientException()));
 
@@ -122,7 +123,7 @@ class ExecutorTest extends TestCase
 	public function test_ClientExceptionExceptionThrownDevModeOff_executeQuery_ContainsClientExceptionStatusCode()
 	{
 		$configuration = new FrameworkConfiguration();
-		$executor = new Executor($configuration, $this->typeRegistryMock);
+        $executor = $this->getConfiguredExecutor($configuration);
 
 		$this->typeRegistryMock->method('getQueryType')->will($this->throwException(new DummyClientException()));
 
@@ -134,7 +135,7 @@ class ExecutorTest extends TestCase
 	public function test_ServerExceptionExceptionThrownDevModeOff_executeQuery_ContainsGenericInternalExceptionMessage()
 	{
 		$configuration = new FrameworkConfiguration();
-		$executor = new Executor($configuration, $this->typeRegistryMock);
+        $executor = $this->getConfiguredExecutor($configuration);
 
 		$this->typeRegistryMock->method('getQueryType')->will($this->throwException(new DummyServerException()));
 
@@ -146,7 +147,7 @@ class ExecutorTest extends TestCase
 	public function test_ServerExceptionExceptionThrownDevModeOff_executeQuery_DoesNotLeakExceptionData()
 	{
 		$configuration = new FrameworkConfiguration();
-		$executor = new Executor($configuration, $this->typeRegistryMock);
+        $executor = $this->getConfiguredExecutor($configuration);
 
 		$this->typeRegistryMock->method('getQueryType')->will($this->throwException(new DummyServerException()));
 
@@ -165,7 +166,7 @@ class ExecutorTest extends TestCase
 		$configuration->setExceptionHandler(function ($exception) {
 			$this->assertTrue(true);
 		});
-		$executor = new Executor($configuration, $this->typeRegistryMock);
+        $executor = $this->getConfiguredExecutor($configuration);
 
 		$this->typeRegistryMock->method('getQueryType')->will($this->throwException(new DummyServerException()));
 
@@ -179,10 +180,22 @@ class ExecutorTest extends TestCase
 		$configuration->setExceptionHandler(function ($exception) use ($thrownEx) {
 			$this->assertSame($thrownEx, $exception);
 		});
-		$executor = new Executor($configuration, $this->typeRegistryMock);
+        $executor = $this->getConfiguredExecutor($configuration);
 
 		$this->typeRegistryMock->method('getQueryType')->will($this->throwException($thrownEx));
 
 		$executor->executeQuery("query { a { id } }", []);
 	}
+
+    /**
+     * @param FrameworkConfiguration $configuration
+     * @return Executor
+     */
+	protected function getConfiguredExecutor($configuration)
+    {
+        $executor = new Executor();
+        $executor->configure($configuration, $this->typeRegistryMock);
+
+        return $executor;
+    }
 }

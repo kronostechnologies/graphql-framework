@@ -13,32 +13,19 @@ use Psr\Http\Message\ServerRequestInterface;
 class GetRequestHandler implements HttpRequestHandlerInterface
 {
     /**
-     * @var ServerRequestInterface
-     */
-    protected $request;
-
-    /**
-     * GetRequestHandler constructor.
      * @param ServerRequestInterface $request
-     */
-    public function __construct(ServerRequestInterface $request)
-    {
-        $this->request = $request;
-    }
-
-    /**
      * @return HandledPayloadResult
-     * @throws MalformedRequestException
-     * @throws HttpQueryRequiredException
      * @throws CannotHandleRequestException
+     * @throws HttpQueryRequiredException
+     * @throws MalformedRequestException
      */
-    public function handle()
+    public function handle(ServerRequestInterface $request)
     {
-        if (!$this->canHandle()) {
-            throw new CannotHandleRequestException($this->request->getMethod());
+        if (!$this->canHandle($request)) {
+            throw new CannotHandleRequestException($request->getMethod());
         }
 
-        $queryString = $this->request->getQueryParams();
+        $queryString = $request->getQueryParams();
 
         $queryText = $this->getQueryText($queryString);
         $variables = $this->getVariablesArray($queryString);
@@ -47,11 +34,12 @@ class GetRequestHandler implements HttpRequestHandlerInterface
     }
 
     /**
+     * @param ServerRequestInterface $request
      * @return bool
      */
-    public function canHandle()
+    public function canHandle(ServerRequestInterface $request)
     {
-        return $this->request->getMethod() === 'GET';
+        return $request->getMethod() === 'GET';
     }
 
     /**

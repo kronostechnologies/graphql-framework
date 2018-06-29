@@ -7,6 +7,10 @@ namespace Kronos\GraphQLFramework\EntryPoint;
 use GuzzleHttp\Psr7\Response;
 use Kronos\GraphQLFramework\EntryPoint\Exception\HttpQueryRequiredException;
 use Kronos\GraphQLFramework\EntryPoint\Exception\HttpVariablesIncorrectlyDefinedException;
+use Kronos\GraphQLFramework\EntryPoint\Http\GetRequestHandler;
+use Kronos\GraphQLFramework\EntryPoint\Http\HttpRequestDispatcher;
+use Kronos\GraphQLFramework\EntryPoint\Http\HttpRequestHandlerInterface;
+use Kronos\GraphQLFramework\EntryPoint\Http\PostRequestHandler;
 use Kronos\GraphQLFramework\Exception\ClientDisplayableExceptionInterface;
 use Kronos\GraphQLFramework\Executor\Executor;
 use Kronos\GraphQLFramework\FrameworkConfiguration;
@@ -21,119 +25,52 @@ class HttpEntryPoint
      */
     protected $configuration;
 
-    public function __construct(FrameworkConfiguration $configuration)
+    /**
+     * @var HttpRequestDispatcher
+     */
+    protected $dispatcher;
+
+    /**
+     * @var Executor
+     */
+    protected $executor;
+
+    /**
+     * @param FrameworkConfiguration $configuration
+     * @param HttpRequestDispatcher|null $dispatcher
+     */
+    public function __construct(FrameworkConfiguration $configuration, HttpRequestDispatcher $dispatcher = null, Executor $executor = null)
     {
         $this->configuration = $configuration;
+        $this->dispatcher = $dispatcher ?: new HttpRequestDispatcher();
+        $this->executor = $executor ?: new Executor();
     }
 
 	/**
 	 * @param ServerRequestInterface $request
 	 * @return ResponseInterface
-	 * @throws \HttpException
-	 * @throws HttpQueryRequiredException
-	 * @throws HttpVariablesIncorrectlyDefinedException
 	 */
     public function executeRequest(ServerRequestInterface $request)
     {
-        if ($request->getMethod() === 'GET') {
-            return $this->executeGetRequest($request);
-        } else if ($request->getMethod() === 'POST') {
-            return $this->executePostRequest($request);
-        } else {
-            throw new \HttpException("Unsupported method {$request->getMethod()} for GraphQL. Only GET and POST are allowed.", 405);
+        try {
+            $result = $this->dispatcher->dispatch($request);
+        } catch (\Exception $ex) {
+            return new Response(405, [], $ex->getMessage());
         }
+
+        return $this->executeQueryAndGetResponse($result->getQuery(), $result->getVariables());
     }
-
-	/**
-	 * @param ServerRequestInterface $request
-	 * @return ResponseInterface
-	 * @throws HttpQueryRequiredException
-	 * @throws HttpVariablesIncorrectlyDefinedException
-	 */
-    protected function executeGetRequest(ServerRequestInterface $request)
-    {
-        $queryParams = $request->getQueryParams();
-
-        if (!array_key_exists('query', $queryParams)) {
-        	throw new HttpQueryRequiredException('GET');
-		}
-
-        $variables = array_key_exists('variables', $queryParams) ? $queryParams['variables'] : null;
-		$query = $queryParams['query'];
-
-		if (strpos($query, "query ") !== 0) {
-			$query = "query " . $query;
-		}
-
-		$areVariablesSet = ($variables !== null && trim($variables) !== "");
-
-		if ($areVariablesSet) {
-			$variables = json_decode($variables, true);
-
-			if ($variables === null) {
-				throw new HttpVariablesIncorrectlyDefinedException('GET');
-			}
-		} else {
-			$variables = [];
-		}
-
-		return $this->executeQueryAndGetResponse($query, $variables);
-    }
-
-	/**
-	 * @param ServerRequestInterface $request
-	 * @return ResponseInterface
-	 * @throws HttpQueryRequiredException
-	 * @throws HttpVariablesIncorrectlyDefinedException
-	 */
-    protected function executePostRequest(ServerRequestInterface $request)
-    {
-        $parsedBody = json_decode($request->getBody()->getContents(), true);
-
-		if ($parsedBody === null || !array_key_exists('query', $parsedBody)) {
-			throw new HttpQueryRequiredException('POST');
-		}
-
-        $variables = array_key_exists('variables', $parsedBody) ? $parsedBody['variables'] : null;
-        $query = $parsedBody['query'];
-
-        $areVariablesSet = ($variables !== null && !empty($variables));
-
-        if ($areVariablesSet) {
-            if (is_string($variables)) {
-                $variables = json_decode($variables, true);
-            }
-
-			if ($variables === null) {
-				throw new HttpVariablesIncorrectlyDefinedException('POST');
-			}
-		} else {
-        	$variables = [];
-		}
-
-		return $this->executeQueryAndGetResponse($query, $variables);
-    }
-
-	/**
-	 * Useful for mocking.
-	 *
-	 * @return Executor
-	 */
-    protected function getExecutor()
-	{
-		return new Executor($this->configuration);
-	}
 
 	/**
 	 * @param string $queryString
-	 * @param array $variables
+	 * @param array $variablesf
 	 * @return ResponseInterface
 	 */
 	protected function executeQueryAndGetResponse($queryString, array $variables)
 	{
-		$executor = $this->getExecutor();
+	    $this->executor->configure($this->configuration);
 
-		$result = $executor->executeQuery($queryString, $variables);
+		$result = $this->executor->executeQuery($queryString, $variables);
 
 		if ($result->hasError()) {
 			$underlyingException = $result->getUnderlyingException();
