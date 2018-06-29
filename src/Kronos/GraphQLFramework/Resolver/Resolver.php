@@ -4,8 +4,6 @@
 namespace Kronos\GraphQLFramework\Resolver;
 
 
-use function is_object;
-use Kronos\CRM\Gateway\InfoPrimes\Data\Validation\Exception;
 use Kronos\GraphQLFramework\Controller\BaseController;
 use Kronos\GraphQLFramework\Controller\InterfaceController;
 use Kronos\GraphQLFramework\Controller\ScalarController;
@@ -105,7 +103,7 @@ class Resolver
 
 		$this->container->set(GraphQLContext::class, $this->contextUpdater->getActiveContext());
 
-		return $this->container->get($controllerFQN);
+		return $this->container->make($controllerFQN);
 	}
 
 	/**
