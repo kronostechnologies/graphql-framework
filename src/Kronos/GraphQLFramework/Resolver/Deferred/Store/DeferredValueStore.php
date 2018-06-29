@@ -46,4 +46,12 @@ class DeferredValueStore
 
         return $newGroup;
     }
+
+    /**
+     * @return DeferredValueGroup[]
+     */
+    public function getGroups()
+    {
+        return $this->groups;
+    }
 }
