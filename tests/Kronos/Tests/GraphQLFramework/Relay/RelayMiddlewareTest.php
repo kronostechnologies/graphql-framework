@@ -16,6 +16,7 @@ class RelayMiddlewareTest extends TestCase
 {
     const DEFAULT_ID = 'id';
     const SPECIFIC_ID = 'anotherId';
+    const ALREADY_ENCODED_ID = 'eyJlbnRpdHkiOiJUZXN0RFRPIiwiaWQiOjExMX0=';
 
     const RELAY_ID_ROOT = 1;
 
@@ -145,6 +146,16 @@ class RelayMiddlewareTest extends TestCase
         $output = $this->specificIdMiddleware->modifyResponse($input);
 
         $this->assertNotSame($input->anotherId, $output->anotherId);
+    }
+
+    public function test_ObjectResponseIdAlreadyEncoded_modifyResponse_DoesNotModifyIdField()
+    {
+        $input = new SpecificIdDTO();
+        $input->anotherId = self::ALREADY_ENCODED_ID;
+
+        $output = $this->specificIdMiddleware->modifyResponse($input);
+
+        $this->assertSame(self::ALREADY_ENCODED_ID, $output->anotherId);
     }
 
     public function test_NonObjectResponse_modifyResponse_ReturnsSameResponse()

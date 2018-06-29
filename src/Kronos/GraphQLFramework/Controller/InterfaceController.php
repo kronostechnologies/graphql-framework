@@ -14,6 +14,7 @@ abstract class InterfaceController
 	protected $context;
 
 	/**
+     * @Inject
 	 * @param GraphQLContext $context
 	 */
 	public function __construct(GraphQLContext $context)
