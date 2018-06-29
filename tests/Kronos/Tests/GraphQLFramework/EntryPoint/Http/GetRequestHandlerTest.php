@@ -8,6 +8,7 @@ use GuzzleHttp\Psr7\ServerRequest;
 use GuzzleHttp\Psr7\Uri;
 use Kronos\GraphQLFramework\EntryPoint\Exception\CannotHandleRequestException;
 use Kronos\GraphQLFramework\EntryPoint\Exception\HttpQueryRequiredException;
+use Kronos\GraphQLFramework\EntryPoint\Exception\MalformedRequestException;
 use Kronos\GraphQLFramework\EntryPoint\HandledPayloadResult;
 use Kronos\GraphQLFramework\EntryPoint\Http\GetRequestHandler;
 use PHPUnit\Framework\TestCase;
@@ -18,6 +19,13 @@ class GetRequestHandlerTest extends TestCase
     const REQ_QUERY = 'query { test { id } }';
     const REQ_VARS = '{"a":1,"b":2}';
     const REQ_VARS_PARSED = ['a' => 1, 'b' => 2];
+
+    const MALFORMED_VARS_JSON = 'aabbbsdfkm--';
+
+    /**
+     * @var ServerRequestInterface
+     */
+    protected $malformedVarsGetRequest;
 
     /**
      * @var ServerRequestInterface
@@ -45,6 +53,11 @@ class GetRequestHandlerTest extends TestCase
         $this->withVarsGetRequest = $baseRequest->withQueryParams([
             'query' => self::REQ_QUERY,
             'variables' => self::REQ_VARS,
+        ]);
+
+        $this->malformedVarsGetRequest = $baseRequest->withQueryParams([
+            'query' => self::REQ_QUERY,
+            'variables' => self::MALFORMED_VARS_JSON,
         ]);
 
         $this->noQueryGetRequest = clone $baseRequest;
@@ -126,7 +139,15 @@ class GetRequestHandlerTest extends TestCase
     {
         $this->expectException(CannotHandleRequestException::class);
 
-        $handler = new GetRequestHandler($this->noQueryGetRequest);
+        $handler = new GetRequestHandler($this->postRequest);
+        $handler->handle();
+    }
+
+    public function test_MalformedVarsGetRequest_handle_ThrowsMalformedRequestException()
+    {
+        $this->expectException(MalformedRequestException::class);
+
+        $handler = new GetRequestHandler($this->malformedVarsGetRequest);
         $handler->handle();
     }
 }
